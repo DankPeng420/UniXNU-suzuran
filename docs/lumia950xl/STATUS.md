@@ -38,15 +38,29 @@ Boot arguments in use:
 | CPU clocks left by the firmware | A53 768 MHz, A57 384 MHz (both cluster PLL0 at 1536 MHz, ÷2 / ÷4) |
 | CPU clocks now | A53 768 MHz, A57 633.6 MHz (measured by timed dependent adds per core) |
 | Rails | A53 (S8) 1000 mV, A57 (S9-S11) 900 mV, MX (S2) 1035 mV |
-| eMMC reads | PIO ~10 MB/s → ADMA2 64 KiB ~27 MB/s |
+| eMMC reads | PIO ~10 MB/s → ADMA2 64 KiB ~27 MB/s → ADMA2 512 KiB ~29 MB/s |
 | Time to launchd | ~350 s → ~180 s (the 4K code-signature pass reads the 2.7 GB shared cache) |
+
+Boot timings (kernel console, `procmon` ticks every 20 s; "launchd" = first tick with userland tasks):
+
+| Boot | Storage | Shared-cache pass: reading / hashing | launchd running by |
+| --- | --- | --- | --- |
+| 17 (2026-10-31) | PIO | 278 s / 23 s | ~369 s |
+| 19 (2026-10-31) | ADMA2, 64 KiB per command | 100 s / 23 s | ~189 s |
+| 20 (2026-11-01) | ADMA2, 512 KiB per command | 95 s / 23 s | ~189 s |
+
+Bigger commands barely helped: the bus (8-bit, 50 MHz, single data rate) is now the limit. DDR52 or
+HS200 would be next, and overlapping the hashing with the reads would hide another ~20 s.
 | Rendering | CoreAnimation's software renderer (`CA::OGL::SW`); backboardd uses up to ~2.4 cores while animating |
 
 ## Known issues and limits
 
 - **No GPU.** iOS 16 has no CPU path in CoreImage (only Metal and OpenGL ES contexts); with no Metal device
   it creates an OpenGL ES context whose function table is empty and calls address 0. Blur views are grey;
-  anything that needs CoreImage crashes. A Mesa/Freedreno OpenGL ES (as HackiOS did on Adreno) is the route.
+  anything that needs CoreImage crashes. Seen so far: new app icons (IconServices), and **Settings >
+  Accessibility > Bold Text**, which makes CoreUI restyle glyph images through `CUIShapeEffectStack`'s
+  CIContext and crashes SpringBoard (it respawns). A Mesa/Freedreno OpenGL ES (as HackiOS did on Adreno)
+  is the route.
 - **2× rendering** (fewer pixels) works for SpringBoard but icons are cached only at 3× and new ones need
   CoreImage, so Settings and apps crash; 375×812 points at 2× also has no status-bar layout. Back to 3×.
 - **A57 at 960 MHz** (1025 mV) ran ~6 minutes, then the SoC reset itself (PS_HOLD): above the second CPR

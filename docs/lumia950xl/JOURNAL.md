@@ -88,3 +88,10 @@ called *Yuzu* below.
 - **Boot time**: the 5-minute wait before launchd was the 4K code-signature pass reading the 2.7 GB shared
   cache: 278 s reading eMMC by PIO, 23 s hashing. **ADMA2 reads** (self-tested against PIO, falling back
   on any error): 100 s, launchd at ~180 s instead of ~350 s. Then 512 KiB per command.
+
+## 2026-11-01
+
+- 512 KiB ADMA2 commands: the shared-cache pass read in 95 s (was 100 s with 64 KiB, 278 s by PIO);
+  launchd still running by the ~189 s tick. The 50 MHz single-data-rate bus is now the limit.
+- Turning on Bold Text crashed SpringBoard twice: CoreUI's `CUIShapeEffectStack` asks CoreImage for a
+  context, and CoreImage has only GPU back-ends (see STATUS.md).
