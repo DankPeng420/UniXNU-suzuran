@@ -363,7 +363,7 @@ def _check_cpus(cpus: Node, errors: list[str]) -> None:
             affinities.add(affinity)
             if affinity in (0, 1, 2, 3):
                 expected_compatible = b"arm,cortex-a53\0"
-            elif affinity in (0x100, 0x101):
+            elif affinity in (0x100, 0x101, 0x102, 0x103):  # 0x102/0x103: MSM8994 (950 XL)
                 expected_compatible = b"arm,cortex-a57\0"
             else:
                 expected_compatible = None
@@ -588,7 +588,7 @@ def self_test() -> int:
     expect_failure(encode(tree), "compatible", "boot A53 mislabeled as A57")
 
     tree = parse(good)
-    tree.child("cpus").children[-1].prop("reg").value = struct.pack("<I", 0x103)
+    tree.child("cpus").children[-1].prop("reg").value = struct.pack("<I", 0x104)
     expect_failure(encode(tree), "MSM8992 affinity", "nonexistent CPU affinity")
 
     tree = parse(good)

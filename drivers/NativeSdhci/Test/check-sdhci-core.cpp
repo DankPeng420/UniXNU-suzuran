@@ -134,6 +134,67 @@ int main()
     expectEq(sdhci::maxValidLba(32ULL << 30), (32ULL << 21) - 1, "last LBA of 32 GiB");
     expectEq(sdhci::maxValidLba(0), 0, "an empty medium has no valid LBA");
 
+    // --- GPT ---------------------------------------------------------------
+    expectEq(sdhci::crc32(reinterpret_cast<const u8 *>("123456789"), 9), 0xcbf43926u, "CRC-32 check value");
+    {
+        const u64 lastLba = 61071359;
+        static u8 header[512];
+        static u8 entries[128 * 128];
+        auto put32 = [](u8 *at, u32 value) { for (u32 i = 0; i < 4; ++i) at[i] = static_cast<u8>(value >> (8 * i)); };
+        auto put64 = [&](u8 *at, u64 value) { put32(at, static_cast<u32>(value)); put32(at + 4, static_cast<u32>(value >> 32)); };
+        auto name = [](u8 *entry, const char *text) {
+            for (u32 i = 0; i < 72; ++i) entry[56 + i] = 0;
+            for (u32 i = 0; text[i]; ++i) entry[56 + 2 * i] = static_cast<u8>(text[i]);
+        };
+        auto partition = [&](u32 index, const char *text, u64 first, u64 last) {
+            u8 *entry = entries + index * 128;
+            entry[0] = 0xaf;                       // any non-zero type GUID marks the entry used
+            entry[16] = static_cast<u8>(index + 1);
+            put64(entry + 32, first);
+            put64(entry + 40, last);
+            name(entry, text);
+        };
+        auto seal = [&]() {
+            put32(header + 88, sdhci::crc32(entries, sizeof entries));
+            put32(header + 16, 0);
+            put32(header + 16, sdhci::crc32(header, 92));
+        };
+        std::memcpy(header, "EFI PART", 8);
+        put32(header + 8, 0x00010000);
+        put32(header + 12, 92);
+        put64(header + 24, 1);
+        put64(header + 32, lastLba);
+        put64(header + 40, 34);
+        put64(header + 48, lastLba - 33);
+        put64(header + 72, 2);
+        put32(header + 80, 128);
+        put32(header + 84, 128);
+        partition(0, "userdata", 8323072, 25100287);
+        partition(1, "ios", 25100288, 61069311);
+        partition(2, "iosx", 100, 200);
+        seal();
+        sdhci::GptRange range = {};
+        expect(sdhci::findGptPartition(header, entries, sizeof entries, lastLba, "ios", &range), "the ios partition is found");
+        expectEq(range.first, 25100288, "ios first LBA");
+        expectEq(range.last, 61069311, "ios last LBA");
+        expect(!sdhci::findGptPartition(header, entries, sizeof entries, lastLba, "io", &range), "a name prefix does not match");
+        expect(!sdhci::findGptPartition(header, entries, 1024, lastLba, "ios", &range), "a short entry array is refused");
+        expect(!sdhci::findGptPartition(header, entries, sizeof entries, 1000, "ios", &range), "a usable range past the medium is refused");
+        entries[200] ^= 1;
+        expect(!sdhci::findGptPartition(header, entries, sizeof entries, lastLba, "ios", &range), "an entry CRC mismatch is refused");
+        entries[200] ^= 1;
+        header[60] ^= 1;
+        expect(!sdhci::findGptPartition(header, entries, sizeof entries, lastLba, "ios", &range), "a header CRC mismatch is refused");
+        header[60] ^= 1;
+        partition(3, "ios", 300, 400);
+        seal();
+        expect(!sdhci::findGptPartition(header, entries, sizeof entries, lastLba, "ios", &range), "a duplicated name is refused");
+        partition(3, "other", 300, 400);
+        partition(1, "ios", 25100288, lastLba);
+        seal();
+        expect(!sdhci::findGptPartition(header, entries, sizeof entries, lastLba, "ios", &range), "a partition past the usable range is refused");
+    }
+
     if (failures) {
         std::printf("\n%d check(s) failed\n", failures);
         return 1;

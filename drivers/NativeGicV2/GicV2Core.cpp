@@ -102,8 +102,16 @@ bool Controller::configure(const RegisterIo &registers, u32 distributorBytes, u3
     io = registers;
     distBytes = distributorBytes;
     interfaceBytes = cpuBytes;
-    if (!verify(kDist, 0xfe8, 0x20, 0xf0)) { lastError = Error::WrongArchitecture; return false; }
     const u32 typer = read(kDist, 4);
+    if (!verify(kDist, 0xfe8, 0x20, 0xf0)) {
+        // The MSM8992/8994 QGIC2 leaves the peripheral ID registers unimplemented (PIDR2 reads 0 on
+        // the 950 XL). Accept that only when TYPER or IIDR answers, so an unmapped window still fails.
+        if (read(kDist, 0xfe8) != 0 || (typer == 0 && read(kDist, 8) == 0)) {
+            lastError = Error::WrongArchitecture;
+            return false;
+        }
+        registerFailure = {};
+    }
     interrupts = ((typer & 31) + 1) * 32;
     securityExtensions = (typer & (1u << 10)) != 0;
     if (interrupts > 1020) interrupts = 1020;

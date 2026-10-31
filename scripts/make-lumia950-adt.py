@@ -42,6 +42,7 @@ The tree is deterministic except for `random-seed`, which is fresh on every run
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 import struct
 import sys
@@ -78,11 +79,22 @@ MDSS_WINDOWS = (
     (0xFD828000, 0x108),     # mmss_misc_phys
 )
 MDSS_INTERRUPT = 83
+# The canvas iOS renders, and its scale: the iPhone X's own 1125x2436 at 3x. A 2x canvas would draw
+# far fewer pixels (CoreAnimation renders in software, and the framebuffer shows the canvas at
+# 886x1920 anyway), but boot 18 (750x1624 at 2x) showed what stands in the way: the icons are cached
+# only at 3x, and rendering new ones crashes (IconServices' CIContext falls back to an OpenGL ES
+# context, whose GLContext::init calls through a null pointer: no GPU driver), so Settings and apps
+# die; 375x812 points at 2x also has no status bar visual provider (rdar://45025538). Revisit once
+# CoreImage renders on the CPU; the points must then be a real iPhone's (414x896 at 2x = 828x1792).
+CANVAS = (1125, 2436)
+CANVAS_SCALE = 3
 # MPIDR affinities from Lumia950XLPkg's MSM8992 MADT: four A53s, then two A57s.
 DEFAULT_CPU_REGS = "0,1,2,3,0x100,0x101"
 CPU_COMPATIBLES = {
     0: "arm,cortex-a53", 1: "arm,cortex-a53", 2: "arm,cortex-a53", 3: "arm,cortex-a53",
     0x100: "arm,cortex-a57", 0x101: "arm,cortex-a57",
+    # MSM8994 (Lumia 950 XL) has two more A57s in the same cluster.
+    0x102: "arm,cortex-a57", 0x103: "arm,cortex-a57",
 }
 NVRAM_BANK_SIZE = 8192
 NVRAM_COMMON_DATA = 2048
@@ -111,6 +123,62 @@ def node(name: str, properties=(), children=()) -> bytes:
         result += struct.pack("<32sI", key.encode(), len(data))
         result += data + bytes(-len(data) % 4)
     return result + b"".join(children)
+
+
+def parse_node(data: bytes, at: int = 0):
+    """Decode one node of an Apple flattened device tree: (name, properties, children, end).
+    A property's length carries iBoot's placeholder flag in bit 31."""
+    nprops, nchildren = struct.unpack_from("<II", data, at)
+    at += 8
+    name, props = "", []
+    for _ in range(nprops):
+        key, length = struct.unpack_from("<32sI", data, at)
+        at += 36
+        size = length & 0x7FFFFFFF
+        value = data[at:at + size]
+        at += size + (-size % 4)
+        key = key.split(b"\0", 1)[0].decode()
+        if key == "name":
+            name = value.split(b"\0", 1)[0].decode()
+        else:
+            props.append((key, value, bool(length >> 31)))
+    children = []
+    for _ in range(nchildren):
+        child = parse_node(data, at)
+        children.append(child)
+        at = child[3]
+    return name, props, children, at
+
+
+def encode_parsed(parsed) -> bytes:
+    """Re-encode a parsed node without iBoot's placeholders (syscfg/... values it would fill in)."""
+    name, props, children, _ = parsed
+    return node(name, [(key, value) for key, value, placeholder in props if not placeholder],
+                [encode_parsed(child) for child in children])
+
+
+def iphone_identity(path: Path):
+    """Root identity and /product of the real device tree of the iPhone whose userland runs here.
+    MobileGestalt takes product type, device class, the home-button-less UI and artwork from them;
+    with the Lumia's own identity it treats the phone as a Home-button iPod."""
+    tree = parse_node(path.read_bytes())
+    root = {key: value for key, value, placeholder in tree[1] if not placeholder}
+    product = next((child for child in tree[2] if child[0] == "product"), None)
+    if product is None or "compatible" not in root or "model" not in root:
+        raise SystemExit(f"{path}: no compatible/model or /product; is it an Apple device tree?")
+    return root, encode_parsed(without_flash(product))
+
+
+def without_flash(product):
+    """/product with the iPhone's camera flash removed. MobileGestalt's camera-flash comes from
+    /product/camera/flash; with it, SpringBoard's lock screen builds an AVFlashlight, whose sync XPC
+    to mediaserverd's flashlight server never returns here (no camera stack), and the startup
+    transition to the lock screen waits on it forever (boot 4, 2026-10-31)."""
+    name, props, children, end = product
+    children = [(child[0], [p for p in child[1] if child[0] != "camera" or
+                            p[0] not in ("flash", "front-flash-capability")], child[2], child[3])
+                for child in children]
+    return name, props, children, end
 
 
 def u32(value: int) -> bytes:
@@ -207,6 +275,7 @@ def build_tree(
     persistent_data: bool = False,
     text_fixups: tuple[str, ...] = (),
     seed: bytes | None = None,
+    identity: Path | None = None,
 ) -> bytes:
     """Encode the whole tree. Every input is explicit so a test can pin it."""
     if osenvironment not in OSENVIRONMENTS:
@@ -230,6 +299,32 @@ def build_tree(
         chosen.append(("chip-id", u32(chip_id)))
     if unique_chip_id is not None:
         chosen.append(("unique-chip-id", u64(unique_chip_id)))
+    # iBoot's Image4 identity. The 16.x AppleImage4 reads each of these as a u32 from /chosen
+    # and panics on a missing one ("failed to get mix-n-match policy: 2" on the 950 XL). The
+    # first four are upstream's development-fused, undemoted values; mix-n-match prevention 0
+    # means mix-n-match is allowed, since no Apple manifest chain exists on this board.
+    chosen.extend([
+        ("certificate-production-status", u32(0)),
+        ("effective-production-status-ap", u32(0)),
+        ("certificate-security-mode", u32(1)),
+        ("effective-security-mode-ap", u32(1)),
+        ("effective-security-mode-sep", u32(1)),
+        ("mix-n-match-prevention-status", u32(0)),
+        ("research-enabled", u32(0)),
+        ("internal-use-only-unit", u32(0)),
+        ("engineering-use-only-unit", u32(0)),
+        ("factory-prerelease-global-trust", u32(0)),
+        # The "previous stage manifest hash": iBoot's SHA-384 of the boot manifest. AppleImage4's
+        # nonce manager panics with "failed to get previous stage manifest hash: 2" without it.
+        ("boot-manifest-hash", hashlib.sha384(os.urandom(32)).digest()),
+        # AMFI's initializer panics "no amfi-only-platform-code device tree node!" without it
+        # (950 XL, 16.7.16); 1 keeps AMFI in its platform-code-only policy, as upstream sets it.
+        ("amfi-only-platform-code", u32(1)),
+        # Non-zero makes AMFI log "delaying developer mode latching" instead of waiting for
+        # ApplePMGRNub to latch it into the PMGR always-on register; there is no Apple PMGR
+        # here, so it panicked "AMFI: No PMGR?" (ConfigurationSettings.cpp:152, 950 XL).
+        ("security-mode-change-enable", u32(1)),
+    ])
     chosen.extend(empty_nvram_proxy())
     if owned_memory_size is not None:
         chosen.append(("darwinboot-memory-size", u64(owned_memory_size)))
@@ -245,6 +340,10 @@ def build_tree(
         chosen.append(("ephemeral-storage", u32(1)))
     if text_fixups:
         chosen.append(("text-fixups", b"".join(item.encode() + b"\0" for item in text_fixups)))
+    if identity is not None:
+        # MobileGestalt's screen class: display-scale comes from /chosen (default 0 makes
+        # SpringBoard's FBSDisplayMode invalid), the pixel size from IOMobileFramebuffer.
+        chosen.append(("display-scale", u32(CANVAS_SCALE)))
 
     placeholders: list[tuple[str, bytes]] = []
     if data_ramdisk:
@@ -254,6 +353,18 @@ def build_tree(
     if trust_cache:
         placeholders.append(("TrustCache", bytes(16)))
     chosen_children = [node("memory-map", placeholders)]
+    # iBoot copies the boot manifest's properties here. AppleImage4's start panics with "failed
+    # to get manifest properties" when the node is missing (950 XL), then reads BNCH, a 48-byte
+    # SHA-384 boot-nonce hash, and ECID on its NVRAM nonce-sync path.
+    manifest = [("BNCH", hashlib.sha384(os.urandom(32)).digest())]
+    if unique_chip_id is not None:
+        manifest.append(("ECID", u64(unique_chip_id)))
+    chosen_children.append(node("manifest-properties", manifest))
+    # Local boot policy (kern_csr.c csr_bootstrap): lp-sip0 relaxes SIP like `csrutil disable`
+    # (untrusted kexts, unrestricted FS, task_for_pid, kernel debugger, dtrace, nvram) and lp-sip1
+    # allows the unauthenticated root. The merged HFS+ root's dyld shared cache is not
+    # SF_RESTRICTED, so vm_unix.c maps it only with CSR_ALLOW_UNRESTRICTED_FS.
+    chosen_children.append(node("asmb", [("lp-sip0", u64(0x6f)), ("lp-sip1", u32(1))]))
 
     intc = node(
         "intc",
@@ -311,7 +422,21 @@ def build_tree(
             # use absolute SoC addresses, so an offset is the address.
             ("ranges", u64(0) + u64(0) + u64(1 << 32)),
         ],
-        [intc, sdhci, kgsl, mdss],
+        [intc, sdhci, kgsl, mdss] + ([node(
+            "disp0",
+            [
+                # IOMobileFramebuffer.framework counts /arm-io children of this device_type, waits
+                # for that many IOMobileFramebuffer services and reads the canvas from the node:
+                # the presented size (NativeDisplay fits it into the 1440x2560 panel).
+                ("device_type", string("display-subsystem")),
+                ("compatible", string("lumia950,display")),
+                # The display hardware it stands for (the MDP block); NativeDisplay maps nothing:
+                # it scans out through the firmware's GOP framebuffer.
+                ("reg", u64(MDSS_WINDOWS[0][0]) + u64(MDSS_WINDOWS[0][1])),
+                ("canvas-width", u32(CANVAS[0])),
+                ("canvas-height", u32(CANVAS[1])),
+            ],
+        )] if identity is not None else []),
     )
 
     children = [
@@ -321,22 +446,51 @@ def build_tree(
     if len(regs) > 1 and psci_method != "none":
         children.append(node("psci", [("compatible", string("arm,psci-1.0")), ("method", string(psci_method))]))
     children += [
-        node("defaults", [("sleep-disabled", u32(1))]),
+        # no-effaceable-storage: keybagd reads /private/var/keybags/systembag.kb as a plain plist
+        # instead of unwrapping it with an effaceable-storage key this phone does not have.
+        # kern.maxvnodes: the real D221AP value. Without it the BCM2837 config's <xsmall>
+        # CONFIG_VNODES=1024 caps the vnode table and a full iOS boot spends its time in
+        # "vnode: table is full" retries.
+        # kern.vm_compressor 2 = in-core compressor, no swap: the kernel's default (8, the
+        # deprecated freezer pager) leaves the compressor inactive, so memory pressure can only
+        # evict file pages and re-read them from eMMC. D221AP uses 0x20, which adds freezer swap.
+        node("defaults", [("sleep-disabled", u32(1)), ("no-effaceable-storage", u32(1)),
+                          ("kern.maxvnodes", u32(10000)), ("kern.vm_compressor", u32(2))]),
         node("options"),
-        node(
-            "product",
-            [
-                ("product-name", string("Lumia 950")),
-                ("model", string("microsoft,lumia950")),
-            ],
-        ),
-        arm_io,
     ]
+    if identity is None:
+        children.append(node("product", [("product-name", string("Lumia 950")),
+                                         ("model", string("microsoft,lumia950"))]))
+        children.append(arm_io)
+        return node(
+            "device-tree",
+            [
+                ("model", string("Microsoft Lumia 950")),
+                ("compatible", string("microsoft,lumia950", "qcom,msm8992")),
+                ("#address-cells", u32(2)),
+                ("#size-cells", u32(2)),
+            ],
+            children,
+        )
+    # The iPhone identity: compatible[0] becomes hw.model/hw.target and model hw.machine/hw.product
+    # (D221AP / iPhone10,6), which MobileGestalt expects; the Lumia strings stay in compatible.
+    root, product = iphone_identity(identity)
+    apple = [value.decode() for value in root["compatible"].split(b"\0") if value]
+    compatible = [value for value in apple if value != "AppleARM"] + ["microsoft,lumia950", "qcom,msm8992", "AppleARM"]
+    # MobileGestalt HomeButtonType = IODeviceTree:/buttons home-button-type (2: no Home button).
+    children.append(node("buttons", [("button-names", string("volup", "voldown", "hold")),
+                                     ("home-button-type", u32(2)),
+                                     ("opposed-power-vol-buttons", u32(1))]))
+    children.append(product)
+    children.append(arm_io)
     return node(
         "device-tree",
         [
-            ("model", string("Microsoft Lumia 950")),
-            ("compatible", string("microsoft,lumia950", "qcom,msm8992")),
+            ("model", root["model"]),
+            ("compatible", string(*compatible)),
+            ("target-type", root.get("target-type", string("D221"))),
+            ("target-sub-type", root.get("target-sub-type", string("D221AP"))),
+            ("manufacturer", root.get("manufacturer", string("Apple Inc."))),
             ("#address-cells", u32(2)),
             ("#size-cells", u32(2)),
         ],
@@ -373,6 +527,9 @@ def main() -> int:
     parser.add_argument("--ipad-identity", action="store_true",
                         help="accepted from the payload contract; this board is not an iPad")
     parser.add_argument("--persistent-data", action="store_true")
+    parser.add_argument("--iphone-identity", type=Path,
+                        help="the real device tree (DeviceTree.d221ap.im4p payload) whose root identity "
+                             "and /product the iOS userland expects")
     parser.add_argument("--text-fixup", action="append", default=[])
     args = parser.parse_args()
 
@@ -409,6 +566,7 @@ def main() -> int:
         trust_cache=args.trust_cache or args.owner_trust_cache,
         persistent_data=args.persistent_data,
         text_fixups=tuple(args.text_fixup),
+        identity=args.iphone_identity,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(tree)

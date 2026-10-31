@@ -1,0 +1,35 @@
+--- a/osfmk/console/video_console.c
++++ b/osfmk/console/video_console.c
+@@ -1227,9 +1227,32 @@
+ 	gc_ops.update_color(color, fore);
+ }
+ 
++/*
++ * Set by the display driver once the GUI owns the panel: the text console stops drawing over the
++ * frames it copies into the same framebuffer. Panics and debugger entries still draw.
++ */
++int native_console_muted = 0;
++
++/*
++ * Every character the console draws, muted or not, in a ring the storage driver copies to the
++ * medium once a second, so a boot can be read back afterwards instead of photographed.
++ * native_console_ring_head counts characters ever written; the ring index is head modulo the size.
++ */
++#define NATIVE_CONSOLE_RING_BYTES (1u << 20)
++char native_console_ring[NATIVE_CONSOLE_RING_BYTES];
++const uint32_t native_console_ring_bytes = NATIVE_CONSOLE_RING_BYTES;
++volatile uint64_t native_console_ring_head = 0;
++
+ void
+ vcputc_options(char c, __unused bool poll)
+ {
++	uint64_t head = native_console_ring_head;
++	native_console_ring[head & (NATIVE_CONSOLE_RING_BYTES - 1)] = c;
++	__atomic_store_n(&native_console_ring_head, head + 1, __ATOMIC_RELEASE);
++
++	if (native_console_muted && kernel_debugger_entry_count == 0) {
++		return;
++	}
+ 	if (gc_initialized && gc_enabled) {
+ 		VCPUTC_LOCK_LOCK();
+ 		if (gc_enabled) {

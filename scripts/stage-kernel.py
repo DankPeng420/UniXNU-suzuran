@@ -154,6 +154,9 @@ def adt_command(spec: dict, adt: Path, args: argparse.Namespace) -> list[str]:
             command.append("--persistent-data")
     for fixup in spec.get("text_fixups", []):
         command += ["--text-fixup", fixup]
+    if values.get("iphone_identity"):
+        # Relative to the device repository: the real device tree is an Apple artifact in build/.
+        command += ["--iphone-identity", str(ROOT / values["iphone_identity"])]
     return command
 
 

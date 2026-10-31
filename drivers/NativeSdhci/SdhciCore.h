@@ -32,6 +32,9 @@ struct ExtCsdInfo {
     u32 sectorBytes;
     u8 revision;
     u8 partitionAccess;
+    u8 busWidth;         // BUS_WIDTH [183]: write-only, reads back 0 on real cards
+    u8 hsTiming;         // HS_TIMING [185]: 0 legacy, 1 high speed
+    u8 deviceType;       // DEVICE_TYPE [196]: bit 1 = high speed at 52 MHz
     bool commandQueueEnabled;
 };
 
@@ -64,6 +67,22 @@ u32 buildAdma2(const Adma2Chunk *chunks, u32 count, u64 *table, u32 tableEntries
 
 // Last valid 512-byte LBA of a medium, or 0 for an empty one.
 u64 maxValidLba(u64 capacityBytes);
+
+// The reflected IEEE CRC-32 GPT uses.
+u32 crc32(const u8 *bytes, u32 length);
+
+// A partition's inclusive 512-byte LBA range.
+struct GptRange {
+    u64 first;
+    u64 last;
+};
+
+// Finds the one partition named `name` (ASCII, compared with the UTF-16LE GPT name) in a primary GPT:
+// `header` is LBA 1 (512 bytes) and `entries` the partition array it points to, `entriesBytes` long.
+// Both CRCs, the header revision and size, the entry geometry and the partition bounds against the
+// usable range and `lastLba` of the medium are checked; a missing or duplicated name is refused.
+bool findGptPartition(const u8 *header, const u8 *entries, u32 entriesBytes, u64 lastLba,
+                      const char *name, GptRange *out);
 
 } // namespace sdhci
 

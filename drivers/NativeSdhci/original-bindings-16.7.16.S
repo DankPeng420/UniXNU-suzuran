@@ -1,0 +1,33 @@
+// NativeSdhci's IOBlockStorageDevice imports bound to the original IOStorageFamily of the pinned
+// iOS 16.7.16 kernelcache (iPhone10,6 20H392), as placed by [kernel.prelink] (slide -0xdc4000).
+// The class has upstream's audited Darwin 23 shape: 190 slots, 14 pure virtual, size 0x90, one
+// protected constructor forwarding to IOService, D1/D0 abstract traps, D2 = D1 - 4 tail-calling
+// IOService's D2. Inherited methods are bound through the original vtable 0xfffffff005eaff50.
+.globl __ZN20IOBlockStorageDevice10gMetaClassE
+.set __ZN20IOBlockStorageDevice10gMetaClassE, 0xfffffff006c451d0
+.globl __ZTV20IOBlockStorageDevice
+.set __ZTV20IOBlockStorageDevice, 0xfffffff005eaff50
+.globl __ZN20IOBlockStorageDeviceC2EPK11OSMetaClass
+.set __ZN20IOBlockStorageDeviceC2EPK11OSMetaClass, 0xfffffff004815d98
+.globl __ZN20IOBlockStorageDeviceD2Ev
+.set __ZN20IOBlockStorageDeviceD2Ev, 0xfffffff004815db8
+.globl __ZN20IOBlockStorageDevice4initEP12OSDictionary
+.set __ZN20IOBlockStorageDevice4initEP12OSDictionary, 0xfffffff004815e30
+.globl __ZNK20IOBlockStorageDevice11getPropertyEPK8OSSymbol
+.set __ZNK20IOBlockStorageDevice11getPropertyEPK8OSSymbol, 0xfffffff004815e88
+.globl __ZN20IOBlockStorageDevice13setPropertiesEP8OSObject
+.set __ZN20IOBlockStorageDevice13setPropertiesEP8OSObject, 0xfffffff004815f38
+.globl __ZN20IOBlockStorageDevice18getWriteCacheStateEPb
+.set __ZN20IOBlockStorageDevice18getWriteCacheStateEPb, 0xfffffff004816038
+.globl __ZN20IOBlockStorageDevice18setWriteCacheStateEb
+.set __ZN20IOBlockStorageDevice18setWriteCacheStateEb, 0xfffffff004816044
+.globl __ZN20IOBlockStorageDevice11requestIdleEv
+.set __ZN20IOBlockStorageDevice11requestIdleEv, 0xfffffff004816050
+.globl __ZN20IOBlockStorageDevice7doUnmapEP26IOBlockStorageDeviceExtentjj
+.set __ZN20IOBlockStorageDevice7doUnmapEP26IOBlockStorageDeviceExtentjj, 0xfffffff00481605c
+.globl __ZN20IOBlockStorageDevice13doSetPriorityEP26IOBlockStorageDeviceExtentjh
+.set __ZN20IOBlockStorageDevice13doSetPriorityEP26IOBlockStorageDeviceExtentjh, 0xfffffff004816068
+.globl __ZN20IOBlockStorageDevice13doSynchronizeEyyj
+.set __ZN20IOBlockStorageDevice13doSynchronizeEyyj, 0xfffffff004816080
+.globl __ZN20IOBlockStorageDevice20doGetProvisionStatusEyyPjP35IOBlockStorageProvisionDeviceExtenty
+.set __ZN20IOBlockStorageDevice20doGetProvisionStatusEyyPjP35IOBlockStorageProvisionDeviceExtenty, 0xfffffff00481608c

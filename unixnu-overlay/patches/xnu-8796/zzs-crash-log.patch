@@ -1,0 +1,17 @@
+--- a/bsd/kern/kern_exit.c
++++ b/bsd/kern/kern_exit.c
+@@ -1883,6 +1883,14 @@
+ 		    ((int)ut->uu_code & 0xfffff);
+ 		subcode = ut->uu_subcode;
+ 		etype = ut->uu_exception;
++
++		/* Crash report on the console: no crash log leaves this phone, and corpses stop early. */
++		if (p == current_proc()) {
++			extern void native_crash_log(const char *, int, int, uint64_t, uint64_t, const char *);
++			native_crash_log(p->p_comm, proc_getpid(p), WTERMSIG(rv),
++			    ((uint64_t)ut->uu_exception << 32) | (uint32_t)ut->uu_code, ut->uu_subcode,
++			    PROC_HAS_EXITREASON(p) ? exit_reason_get_string_desc(p->p_exit_reason) : NULL);
++		}
+ 
+ 		/* Defualt to EXC_CRASH if the exception is not an EXC_RESOURCE or EXC_GUARD */
+ 		if (etype != EXC_RESOURCE || etype != EXC_GUARD) {

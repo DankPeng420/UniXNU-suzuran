@@ -11,7 +11,7 @@ name = "lumia950"
 soc = "MSM8992"
 description = "Microsoft Lumia 950 — P1 build research"
 kit = "lumia950"                   # package/ of this repository becomes kits/lumia950
-example = true
+# example guard cleared in the CI scratch copy
 
 [kernel]
 defconfig = "lumia950_defconfig"
@@ -25,7 +25,8 @@ archives = [
   "build-corecrypto-14.py --namespace",
   "build-arm-driver.py ArmDTPlatform",
   "build-arm-driver.py ArmCpu",
-  "build-arm-driver.py NativeSdhci",
+  # NativeSdhci plus its IOStorageFamily 16.7.16 bindings (it subclasses IOBlockStorageDevice).
+  "build-native-sdhci16.py",
   # Rung 1 of the GPU (see README.md, "The GPU"): identity only. It is built so
   # the archive and the personality cannot drift from the ADT node; it publishes
   # no GPU service, so linking it changes nothing a client can find.
@@ -39,6 +40,23 @@ archives = [
   # so the kernel needs the symbol even with the flag off. The defconfig force-loads
   # this archive through XNU_EXTRA_LD_ARCHIVES.
   "build-arm-driver.py NativeLegacyDisplay",
+  # IOAESAccelerator for AppleImage4's nonce manager (drivers/NativeAES16): without one it waits
+  # forever and launchd stalls in dyld's ignition on the ignition-blob gate.
+  "build-native-aes16.py",
+  # AppleKeyStore stand-in for keybagd/MobileKeyBag (no SEP): upstream's NativeKeyStoreEvents.
+  "build-arm-driver.py NativeKeyStoreEvents",
+  # IOWatchdog stand-in: watchdogd crash-loops without it (drivers/NativeWatchdog).
+  "build-arm-driver.py NativeWatchdog",
+  # The iOS display: IOSurface + IOMobileFramebuffer scanning out to the GOP framebuffer.
+  "build-arm-driver.py NativeDisplay",
+  # Touchscreen and side keys: the Synaptics controller and the PM8994 keys (drivers/NativeTouch).
+  "build-arm-driver.py NativeTouch",
+  # What the firmware left the CPU clusters running at, logged once (drivers/NativeCpuClock).
+  "build-arm-driver.py NativeCpuClock",
+  # The battery for powerd and the status bar: charge level and charger state (drivers/NativeBattery).
+  "build-arm-driver.py NativeBattery",
+  # backboardd's HID event services (touch screen, buttons), ported from ios-sweet (drivers/NativeHID).
+  "build-arm-driver.py NativeHID",
   # "build-arm-driver.py NativeRamBlock",   # Data volume; also needs the virtio bindings builder
 ]
 # TODO: obtain the real userdata GPT geometry (first_lba, last_lba) read-only from the phone.
@@ -96,11 +114,38 @@ tool = "kits/NativePrelink/emit_prelink.py"
 kernel = "build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837/mach.development.bcm2837.unstripped"
 kernelcache_sha256 = "2ec297bac95bcba01046fd0148e97e7e5885c05a6c18827f39f534ba375c1221"
 slide = "-0xdc4000"
+# AMFI's own initializer (registers the AMFI MAC policy and calls amfi_interface_register);
+# nothing in the kext calls it, so the native-prelink-security-init hook runs it after start.
+# Original 16.7.16 kernelcache VA; the function begins after the preceding noreturn panic call.
+early_security_init = "com.apple.driver.AppleMobileFileIntegrity=0xfffffff005703c54"
 roots = [
   "com.apple.AppleFSCompression.AppleFSCompressionTypeZlib",
+  # Code signing: exec of /sbin/launchd faults on the NULL `amfi` interface table
+  # (ubc_cs_blob_add > accelerate_entitlement_queries) without it.
+  "com.apple.driver.AppleMobileFileIntegrity",
   "com.apple.filesystems.apfs",
+  # The merged iOS root on p55 is case-sensitive journaled HFS+ (the iOS 16 route of ios-sweet/negroni):
+  # Apple's own HFS 627.100.6, which links only the base KPIs.
+  "com.apple.filesystems.hfs.kext",
   "com.apple.iokit.IOStorageFamily",
   "com.apple.kec.corecrypto",
+  # bsd_init panics "pthread kernel extension not loaded" in pth_proc_hashinit without it.
+  # Upstream's source pthread (CONFIG_XNU_SOURCE_PTHREAD) is the Darwin 23 libpthread and
+  # does not compile against xnu-8796, so the 16.7.16 kext itself is kept.
+  "com.apple.kec.pthread",
+]
+
+# The root image: `unixnu build userdata` writes the IPSW's unchanged OS and Cryptex1,SystemOS disk
+# images behind a SHNGROOT manifest. On this phone it does not go into Android's userdata but into p55
+# "ios" (type AF00), carved out of userdata on 2026-10-30; the eMMC has 512-byte LBAs. NativeSdhci
+# finds the partition by that name and publishes the windows.
+[userdata]
+first_lba = 25100288
+last_lba = 61069311
+lba_bytes = 512
+windows = [
+  { name = "OS", component = "OS" },
+  { name = "SystemOS", component = "Cryptex1,SystemOS" },
 ]
 
 # [firmware] stays absent on purpose. The route is chainload: the phone's own UEFI
@@ -135,8 +180,17 @@ dram_base = 0
 tool = "scripts/make-lumia950-adt.py"
 # The firmware MADT's list: four A53s in cluster 0, two A57s in cluster 1, boot CPU first. A
 # phone that reports a different boot core is a one-line change here, not a driver change.
-cpu_regs = "0,1,2,3,0x100,0x101"
+cpu_regs = "0,1,2,3,0x100,0x101,0x102,0x103"
 # PSCI on 8992/8994 is conveyed over HVC and it is incomplete: no SYSTEM_OFF and no
 # SYSTEM_RESET, which is why the menu's two power actions are firmware ResetSystem calls.
 psci_method = "hvc"
+# DarwinBoot's contiguous RAM window (/chosen/darwinboot-memory-size); without it the kernel gets
+# 256 MiB and iOS pages its shared cache back in from eMMC nonstop (9 MB/s, measured 2026-10-31).
+# LumiaProbe saw 1536 MiB as the largest free run, before DarwinBoot loads its own files into it.
+owned_memory_size = 0x58000000
 chip_id = 0x8015
+# The iOS userland's identity (MobileGestalt): root compatible/model and /product of the real
+# iPhone10,6 device tree, plus /buttons, /chosen display-scale and the /arm-io/disp0 display node.
+# The tree is the IPSW's DeviceTree.d221ap.im4p payload (`ipsw img4 im4p extract`); it is an Apple
+# artifact, so it lives in build/ and stays out of git.
+iphone_identity = "build/d221ap.adt"

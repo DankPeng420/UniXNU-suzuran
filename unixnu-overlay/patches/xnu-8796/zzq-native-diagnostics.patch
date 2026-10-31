@@ -1,0 +1,263 @@
+--- a/bsd/dev/mem.c
++++ b/bsd/dev/mem.c
+@@ -153,6 +153,45 @@
+ 	return 0;
+ }
+ 
++/*
++ * launchd points the stdout and stderr of most daemons at /dev/null. What the processes named in
++ * boot-arg nativenull (comma separated, default "backboardd,SpringBoard", "-" = off) write there
++ * goes to the console, and so to the persistent console log, as "|name| text", at most 3000 writes
++ * per boot. After ios-sweet's patch 0048 (MIT).
++ */
++static char native_null_names[128];
++static int native_null_parsed;
++static uint32_t native_null_writes;
++
++static bool
++native_null_tee(char *name, size_t len)
++{
++	if (!native_null_parsed) {
++		if (!PE_parse_boot_argn("nativenull", native_null_names, sizeof(native_null_names))) {
++			strlcpy(native_null_names, "backboardd,SpringBoard", sizeof(native_null_names));
++		}
++		native_null_parsed = 1;
++	}
++	if (native_null_names[0] == '-' || native_null_writes >= 3000) {
++		return false;
++	}
++	proc_selfname(name, (int)len);
++	size_t n = strlen(name);
++	for (const char *t = native_null_names; *t;) {
++		const char *end = strchr(t, ',');
++		size_t tl = end ? (size_t)(end - t) : strlen(t);
++		if (tl == n && n > 0 && strncmp(t, name, n) == 0) {
++			native_null_writes++;
++			return true;
++		}
++		if (!end) {
++			break;
++		}
++		t = end + 1;
++	}
++	return false;
++}
++
+ int
+ mmrw(dev_t dev, struct uio *uio, enum uio_rw rw)
+ {
+@@ -216,6 +255,20 @@
+ 			if (rw == UIO_READ) {
+ 				return 0;
+ 			}
++			{
++				char name[32];
++				if (native_null_tee(name, sizeof(name))) {
++					char text[256];
++					c = MIN(uio_curriovlen(uio), sizeof(text));
++					error = uiomove(text, (int)c, uio);
++					if (error) {
++						break;
++					}
++					printf("|%s| %.*s%s", name, (int)c, text,
++					    (c > 0 && text[c - 1] == '\n') ? "" : "\n");
++					continue; /* Keep going until UIO is done */
++				}
++			}
+ 			c = uio_curriovlen(uio);
+ 
+ 			error = 0; /* Always succeeds, always consumes all input */
+--- a/iokit/Kernel/IOUserClient.cpp
++++ b/iokit/Kernel/IOUserClient.cpp
+@@ -2597,6 +2597,59 @@
+ 	boolean_t *matches)
+ {
+ 	return internal_io_service_match_property_table(service, matching, matchingCnt, matches);
++}
++
++/*
++ * IOKit trace: what the processes named in boot-arg nativeiolog (comma separated, default
++ * "backboardd,SpringBoard", "-" = off) look up in the registry, match, are notified about and open,
++ * as "IOK name: ..." lines, at most 600 per boot. A service a daemon waits for that no driver
++ * publishes shows up here as "0 found" / "none". After ios-sweet's patch 0049 (MIT).
++ */
++extern "C" void proc_selfname(char * buf, int size);
++static char native_iolog_names[128];
++static bool native_iolog_parsed;
++static uint32_t native_iolog_lines;
++
++static bool
++native_iolog(char *name, size_t len)
++{
++	if (!native_iolog_parsed) {
++		if (!PE_parse_boot_argn("nativeiolog", native_iolog_names, sizeof(native_iolog_names))) {
++			strlcpy(native_iolog_names, "backboardd,SpringBoard", sizeof(native_iolog_names));
++		}
++		native_iolog_parsed = true;
++	}
++	if (native_iolog_lines >= 600 || native_iolog_names[0] == '-') {
++		return false;
++	}
++	proc_selfname(name, (int)len);
++	size_t n = strlen(name);
++	for (const char *t = native_iolog_names; *t;) {
++		const char *end = strchr(t, ',');
++		size_t tl = end ? (size_t)(end - t) : strlen(t);
++		if (tl == n && n > 0 && strncmp(t, name, n) == 0) {
++			native_iolog_lines++;
++			return true;
++		}
++		if (!end) {
++			break;
++		}
++		t = end + 1;
++	}
++	return false;
++}
++
++/* A matching dictionary as compact XML, at most 240 characters. */
++static void
++native_iolog_dict(const char *name, const char *what, OSObject *dict, const char *result)
++{
++	OSSerialize *ser = OSSerialize::withCapacity(256);
++	const char *text = "?";
++	if (ser != NULL && dict != NULL && dict->serialize(ser)) {
++		text = ser->text();
++	}
++	IOLog("IOK %s: %s %.240s -> %s\n", name, what, text, result);
++	OSSafeReleaseNULL(ser);
+ }
+ 
+ static kern_return_t
+@@ -2619,7 +2672,21 @@
+ 
+ 	if ((dict = OSDynamicCast( OSDictionary, obj))) {
+ 		IOTaskRegistryCompatibilityMatching(current_task(), dict);
+-		*existing = IOUserIterator::withIterator(IOService::getMatchingServices( dict ));
++		OSIterator *found = IOService::getMatchingServices( dict );
++		char traceName[32];
++		if (native_iolog(traceName, sizeof(traceName))) {
++			unsigned int count = 0;
++			if (found != NULL) {
++				while (found->getNextObject() != NULL) {
++					count++;
++				}
++				found->reset();
++			}
++			char result[16];
++			snprintf(result, sizeof(result), "%u found", count);
++			native_iolog_dict(traceName, "matching", dict, result);
++		}
++		*existing = IOUserIterator::withIterator(found);
+ 		kr = kIOReturnSuccess;
+ 	} else {
+ 		kr = kIOReturnBadArgument;
+@@ -2703,6 +2770,11 @@
+ 	if ((dict = OSDynamicCast( OSDictionary, obj))) {
+ 		IOTaskRegistryCompatibilityMatching(current_task(), dict);
+ 		*service = IOService::copyMatchingService( dict );
++		char traceName[32];
++		if (native_iolog(traceName, sizeof(traceName))) {
++			native_iolog_dict(traceName, "matching1", dict,
++			    *service ? (*service)->getMetaClass()->getClassName() : "none");
++		}
+ 		kr = *service ? kIOReturnSuccess : kIOReturnNotFound;
+ 	} else {
+ 		kr = kIOReturnBadArgument;
+@@ -2807,6 +2879,12 @@
+ 			continue;
+ 		}
+ 		IOTaskRegistryCompatibilityMatching(current_task(), dict);
++		{
++			char traceName[32];
++			if (native_iolog(traceName, sizeof(traceName))) {
++				native_iolog_dict(traceName, notification_type, dict, "notify");
++			}
++		}
+ 
+ 		if ((sym == gIOPublishNotification)
+ 		    || (sym == gIOFirstPublishNotification)) {
+@@ -3274,6 +3352,13 @@
+ 	}
+ 
+ 	entry = IORegistryEntry::fromPath( path );
++	{
++		char traceName[32];
++		if (native_iolog(traceName, sizeof(traceName))) {
++			IOLog("IOK %s: path %.200s -> %s\n", traceName, path,
++			    entry ? entry->getMetaClass()->getClassName() : "none");
++		}
++	}
+ 
+ 	if (!entry && IOTaskRegistryCompatibility(current_task())) {
+ 		OSDictionary * matching;
+@@ -4332,6 +4417,13 @@
+ #endif
+ 		res = service->newUserClient( owningTask, (void *) owningTask,
+ 		    connect_type, propertiesDict, &client );
++		{
++			char traceName[32];
++			if (native_iolog(traceName, sizeof(traceName))) {
++				IOLog("IOK %s: open %s type %u -> 0x%x\n", traceName,
++				    service->getMetaClass()->getClassName(), connect_type, res);
++			}
++		}
+ 
+ 		if (propertiesDict) {
+ 			propertiesDict->release();
+--- a/osfmk/kern/debug.c
++++ b/osfmk/kern/debug.c
+@@ -1203,7 +1203,13 @@
+  *
+  * This routine handles kicking off local coredumps, paniclogs, calling into the Debugger/KDP (if it's configured),
+  * and calling out to any other functions we have for collecting diagnostic info.
++ */
++/*
++ * NativeSdhci writes the console ring, which holds the panic text by the time the diagnostics are
++ * done, to the console log on the medium, so a panic can be read back without a photo.
+  */
++extern void native_panic_flush(void);
++
+ static void
+ debugger_collect_diagnostics(unsigned int exception, unsigned int code, unsigned int subcode, void *state)
+ {
+@@ -1308,6 +1314,7 @@
+ 
+ 		/* DEBUGGER_OPTION_PANICLOGANDREBOOT is used for two finger resets on embedded so we get a paniclog */
+ 		if (debugger_panic_options & DEBUGGER_OPTION_PANICLOGANDREBOOT) {
++			native_panic_flush();
+ 			PEHaltRestart(kPEPanicDiagnosticsDone);
+ 			PEHaltRestart(kPEPanicRestartCPUNoCallouts);
+ 		}
+@@ -1321,6 +1328,7 @@
+ 	 */
+ 	if ((debugger_panic_options & DEBUGGER_OPTION_SKIP_LOCAL_COREDUMP) &&
+ 	    (debug_boot_arg & DB_REBOOT_POST_CORE)) {
++		native_panic_flush();
+ 		PEHaltRestart(kPEPanicDiagnosticsDone);
+ 		kdp_machine_reboot_type(kPEPanicRestartCPU, debugger_panic_options);
+ 	}
+@@ -1386,6 +1394,7 @@
+ 			 */
+ 			if ((debug_boot_arg & DB_REBOOT_POST_CORE) &&
+ 			    ((ret == 0) || (debugger_panic_options & DEBUGGER_OPTION_ATTEMPTCOREDUMPANDREBOOT))) {
++				native_panic_flush();
+ 				PEHaltRestart(kPEPanicDiagnosticsDone);
+ 				kdp_machine_reboot_type(kPEPanicRestartCPU, debugger_panic_options);
+ 			}
+@@ -1394,6 +1403,7 @@
+ 
+ 	if (debugger_current_op == DBOP_PANIC ||
+ 	    ((debugger_current_op == DBOP_DEBUGGER) && debugger_is_panic)) {
++		native_panic_flush();
+ 		PEHaltRestart(kPEPanicDiagnosticsDone);
+ 	}
+ 
+@@ -1443,6 +1453,7 @@
+ 
+ #else /* CONFIG_KDP_INTERACTIVE_DEBUGGING */
+ 
++	native_panic_flush();
+ 	PEHaltRestart(kPEPanicDiagnosticsDone);
+ 
+ #endif /* CONFIG_KDP_INTERACTIVE_DEBUGGING */

@@ -1,0 +1,37 @@
+--- a/DarwinBootPkg/Driver/DarwinBoot.c
++++ b/DarwinBootPkg/Driver/DarwinBoot.c
+@@ -282,6 +282,7 @@
+   UINTN End;
+   UINTN Entries;
+   UINTN Entry;
++  UINTN Width;
+ 
+   if (Size < 8) { return FALSE; }
+   Count = U32 (Data);
+@@ -290,13 +291,20 @@
+     Start = U32 (Data + 4 + Index * 4);
+     End = (Index + 1 < Count) ? U32 (Data + 8 + Index * 4) : Size;
+     if ((Start < 4 + Count * 4) || (Start & 3) || (End > Size) ||
+-        (End < Start) || (End - Start < 24) || (U32 (Data + Start) != 2)) { return FALSE; }
+-    Entries = U32 (Data + Start + 20);
+-    if ((Entries > (End - Start - 24) / 24) || (End - Start != 24 + Entries * 24)) { return FALSE; }
+-    for (Entry = 0; Entry < Entries; Entry++) {
+-      CONST UINT8 *Hash = Data + Start + 24 + Entry * 24;
++        (End < Start) || (End - Start < 24)) { return FALSE; }
++    //
++    // Version 2 entries are 24 bytes (cdhash, hash type, flags, constraint category, reserved).
++    // Version 1, what the iOS 16 IPSWs ship, has no constraint category: 22-byte entries.
++    //
++    if (U32 (Data + Start) == 2) { Width = 24; }
++    else if (U32 (Data + Start) == 1) { Width = 22; }
++    else { return FALSE; }
++    Entries = U32 (Data + Start + 20);
++    if ((Entries > (End - Start - 24) / Width) || (End - Start != 24 + Entries * Width)) { return FALSE; }
++    for (Entry = 0; Entry < Entries; Entry++) {
++      CONST UINT8 *Hash = Data + Start + 24 + Entry * Width;
+       if ((Hash[20] < 1) || (Hash[20] > 4) ||
+-          ((Entry != 0) && (CompareMem (Hash - 24, Hash, 20) >= 0))) { return FALSE; }
++          ((Entry != 0) && (CompareMem (Hash - Width, Hash, 20) >= 0))) { return FALSE; }
+     }
+   }
+   return TRUE;

@@ -38,6 +38,13 @@ COMPONENTS = {
         # osfmk is where the recorded recipe resolves <mach/...> from.
         "include": ["drivers/NativeSdhci", "build/storage-abi/include", ".cache/xnu-work/osfmk"],
     },
+    "NativeAES16": {
+        # upstream NativeAES on the iOS 16.7.16 IOAESAccelerator ABI, with derived per-device keys for
+        # hardware-key selectors; scripts/build-native-aes16.py adds its original bindings to the archive.
+        "sources": ["drivers/NativeAES16/NativeAES.cpp"],
+        "out": "native-aes16",
+        "include": ["drivers/NativeAES16"],
+    },
     "NativeAdreno418": {
         # Rung 1 of the GPU: maps the KGSL and MMSS windows, checks the GDSC state
         # and reads the revision registers. The cores hold the decoding, the ring
@@ -81,6 +88,51 @@ COMPONENTS = {
         # that upstream's bsd_init.c calls without an XNU_NATIVE_LEGACY_DISPLAY guard.
         "sources": ["drivers/NativeLegacyDisplay/NativeLegacyDisplay.cpp"],
         "out": "native-legacy-display",
+    },
+    "NativeKeyStoreEvents": {
+        # Upstream's AppleKeyStore stand-in (no keybag, no passcode, unlocked): keybagd --init needs
+        # aks_get_system to succeed or it reboots into recovery. Its hooks and the runtime personality
+        # live in the zzv overlay patch (IOStartIOKit.cpp).
+        "sources": ["drivers/NativeKeyStoreEvents/NativeKeyStoreEvents.cpp"],
+        "out": "native-keystore",
+    },
+    "NativeWatchdog": {
+        # IOWatchdog stand-in for watchdogd (no SoC watchdog, no Apple PMU); personality in zzv.
+        "sources": ["drivers/NativeWatchdog/NativeWatchdog.cpp"],
+        "out": "native-watchdog",
+    },
+    "NativeHID": {
+        # backboardd's HID event services (touch screen, buttons): Apple's IOHIDFamily-1915 event,
+        # queue and user client sources under a minimal IOHIDEventService, ported from ios-sweet
+        # (MIT); personalities in zzv. Hardware drivers feed native_hid_touch() / native_hid_key().
+        "sources": ["drivers/NativeHID/NativeHID.cpp", "drivers/NativeHID/IOHIDEvent.cpp",
+                    "drivers/NativeHID/IOHIDEventServiceQueue.cpp",
+                    "drivers/NativeHID/IOHIDEventServiceUserClient.cpp"],
+        "out": "native-hid",
+        "include": ["drivers/NativeHID"],
+    },
+    "NativeTouch": {
+        # Touchscreen (Synaptics RMI4 on BLSP1 QUP1) and the side keys (PM8994 PON + GPIOs over SPMI),
+        # polled into NativeHID; personality in zzv.
+        "sources": ["drivers/NativeTouch/NativeTouch.cpp"],
+        "out": "native-touch",
+    },
+    "NativeCpuClock": {
+        # Read-only CPU clock readout: cluster PLLs and muxes, and timed adds per core; personality in zzv.
+        "sources": ["drivers/NativeCpuClock/NativeCpuClock.cpp"],
+        "out": "native-cpu-clock",
+    },
+    "NativeBattery": {
+        # powerd's IOPMPowerSource: charge level and charger state from the PMI8994; personality in zzv.
+        "sources": ["drivers/NativeBattery/NativeBattery.cpp"],
+        "out": "native-battery",
+    },
+    "NativeDisplay": {
+        # IOSurface (IOCoreSurfaceRoot) + IOMobileFramebuffer (AppleCLCD) on the GOP framebuffer,
+        # ported from ios-sweet (MIT); personalities in zzv.
+        "sources": ["drivers/NativeDisplay/NativeSurface.cpp", "drivers/NativeDisplay/NativeDisplay.cpp"],
+        "out": "native-display",
+        "include": ["drivers/NativeDisplay"],
     },
     "NativeRamBlock": {
         "sources": ["drivers/NativeRamBlock/NativeRamBlock.cpp"],

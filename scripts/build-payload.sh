@@ -57,6 +57,23 @@ else
   echo "== DarwinBoot: label distinguishes loader handoff from XNU execution"
 fi
 
+# A root ramdisk too large for EFIESP is staged beside the kernel as <kernel>.ramdisk, and the
+# loader reads it from the kernel's volume when the menu passes no initrd.
+if git -C "$DARWINBOOT" apply --reverse --check "$ROOT/ci/darwinboot-payload-ramdisk.patch" >/dev/null 2>&1; then
+  echo "== DarwinBoot: payload ramdisk change already there"
+else
+  git -C "$DARWINBOOT" apply "$ROOT/ci/darwinboot-payload-ramdisk.patch"
+  echo "== DarwinBoot: reads <kernel>.ramdisk beside the kernel"
+fi
+
+# The iOS 16 IPSWs ship version-1 trust caches (22-byte entries); the validator took only v2.
+if git -C "$DARWINBOOT" apply --reverse --check "$ROOT/ci/darwinboot-trustcache-v1.patch" >/dev/null 2>&1; then
+  echo "== DarwinBoot: version-1 trust caches already accepted"
+else
+  git -C "$DARWINBOOT" apply "$ROOT/ci/darwinboot-trustcache-v1.patch"
+  echo "== DarwinBoot: accepts version-1 trust caches"
+fi
+
 echo "== UniXNU and UniXNUDxe"
 UNIXNU_EDK2=$EDK2 JOBS=$JOBS PYTHON_COMMAND=$PYTHON "$UNIXNU/package/build.sh" -b "$TARGET" -t "$TOOLCHAIN"
 

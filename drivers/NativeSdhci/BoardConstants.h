@@ -52,6 +52,34 @@ constexpr sdhci::u32 kXoHz = 19200000;
 // 512 bytes; transfers are performed in 512-byte blocks for now.
 constexpr sdhci::u32 kLogicalBlockBytes = 512;
 
+// Global clock controller (msm8994 "qcom,gcc" at 0xfc400000). Only SDCC1's root clock
+// generator and branch are touched, with the register layout and frequency plan of the
+// cityman kernel's clock-gcc-8994.c: CMD_RCGR 0x4d0 (CFG +4, M +8, N +0xc, D +0x10),
+// APPS_CBCR 0x4c4, AHB_CBCR 0x4c8. Sources: 0 is XO, 1 is GPLL0 (600 MHz).
+constexpr sdhci::u64 kGccPhys = 0xfc400000ULL;
+constexpr sdhci::u32 kGccSize = 0x1000;
+constexpr sdhci::u32 kGccSdcc1AppsCbcr = 0x4c4;
+constexpr sdhci::u32 kGccSdcc1AhbCbcr = 0x4c8;
+constexpr sdhci::u32 kGccSdcc1AppsCmdRcgr = 0x4d0;
+
+// The firmware's card does not answer after ExitBootServices (CMD13 times out at every
+// RCA), so the driver identifies it again and assigns this address.
+constexpr sdhci::u16 kColdRelativeAddress = 2;
+
+// Legacy (backward-compatible) eMMC timing tops out at 26 MHz; 25 MHz is the plan's
+// GPLL0 / 12 * 1/2 entry. HS and HS200 come later with CMD6 and the DLL.
+constexpr sdhci::u32 kTransferHz = 25000000;
+// High-speed SDR on the 8-bit bus once EXT_CSD offers it: GPLL0 / 12, the plan's 50 MHz entry.
+constexpr sdhci::u32 kHighSpeedHz = 50000000;
+
+// The one partition the write path may touch: p55, carved out of userdata for the iOS root. Writes
+// also need boot-arg sdhcirw=1; without both the medium reports itself write protected.
+constexpr char kWritablePartition[] = "ios";
+
+// The console log: a header block and this many ring blocks at the very end of the writable
+// partition, used only when they lie past the end of the HFS+ volume that starts it.
+constexpr sdhci::u32 kConsoleLogBlocks = 65536;   // 32 MiB of text
+
 // eMMC relative card address. The firmware assigned one and selected the card;
 // these are the values EDK2 and Linux hosts normally use, tried in order.
 constexpr sdhci::u16 kRcaCandidates[] = { 1, 2 };

@@ -7,6 +7,9 @@
 
 CONFIG_XNU_ARM_DT_PLATFORM=y
 CONFIG_XNU_ARMCPU=y
+# NativeSdhci subclasses IOBlockStorageDevice from the IOStorageFamily kext; scripts/
+# build-native-sdhci16.py binds it to the 16.7.16 family (drivers/NativeSdhci/original-bindings-
+# 16.7.16.S). Its personality is added at runtime by the zzv overlay patch (native_sdhci_publish).
 CONFIG_XNU_NATIVE_SDHCI=y
 # Rung 1 of the GPU: identity. The archive is built and the personality is
 # documented in README.md, "Linking it into the kernel"; no GPU service is
@@ -29,12 +32,25 @@ CONFIG_XNU_BUILD_ARCHIVES=y
 # XNU_NATIVE_LEGACY_DISPLAY guard that every other call site has, so the kernel needs
 # the symbol even with the display provider unselected. The kernel script's
 # XNU_EXTRA_LD_ARCHIVES hook is for exactly this: a stub for an unselected offline probe.
-CONFIG_XNU_EXTRA_LD_ARCHIVES="-Wl,-force_load,{tree}/build/native-legacy-display/libNativeLegacyDisplay.a"
+# It also force-loads upstream's NativeKeyStoreEvents (the AppleKeyStore stand-in), whose
+# hooks and runtime personality are in the zzv overlay patch, NativeWatchdog (IOWatchdog), NativeDisplay (IOSurface + IOMobileFramebuffer), NativeTouch and NativeHID (touch screen and button HID services).
+CONFIG_XNU_EXTRA_LD_ARCHIVES="-Wl,-force_load,{tree}/build/native-legacy-display/libNativeLegacyDisplay.a -Wl,-force_load,{tree}/build/native-keystore/libNativeKeyStoreEvents.a -Wl,-force_load,{tree}/build/native-watchdog/libNativeWatchdog.a -Wl,-force_load,{tree}/build/native-display/libNativeDisplay.a -Wl,-force_load,{tree}/build/native-touch/libNativeTouch.a -Wl,-force_load,{tree}/build/native-cpu-clock/libNativeCpuClock.a -Wl,-force_load,{tree}/build/native-battery/libNativeBattery.a -Wl,-force_load,{tree}/build/native-hid/libNativeHID.a"
 
 # The Data volume is a RAM block until the eMMC write path exists.
 # CONFIG_XNU_NATIVE_RAM_BLOCK is not set
 
 CONFIG_XNU_ARMVIRT_PLATFORM=n
 
-# The source-only early-boot image has no prelinked provider to initialize crypto.
-CONFIG_XNU_CRYPTO_BOOTSTRAP="source"
+# The prelinked com.apple.kec.corecrypto owns the PRNG (the source provider registering it too panics with "!prng_ready", seen on the 950 XL).
+CONFIG_XNU_CRYPTO_BOOTSTRAP="prelinked"
+
+# The static trust cache (DarwinBoot's <kernel>.trustcache, /chosen/memory-map/TrustCache) is
+# loaded through the prelinked AMFI; without it AMFI rejects the ramdisk's platform binaries.
+CONFIG_XNU_TRUST_CACHE_RUNTIME=y
+
+# AppleImage4 waits for an IOAESAccelerator before locking its nonce hashes, then encrypts with a
+# hardware-key selector; NativeAES16 (upstream NativeAES on the 16.7.16 ABI, derived device keys)
+# provides it. The flag also installs upstream's NativeAES personality (IOResources, IOBSD).
+CONFIG_XNU_NATIVE_AES=y
+CONFIG_XNU_NATIVE_AES_ARCHIVE="{tree}/build/native-aes16/libNativeAES16.a"
+CONFIG_XNU_NATIVE_CS_HASH_CACHE=y

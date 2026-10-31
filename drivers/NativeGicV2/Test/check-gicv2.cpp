@@ -206,6 +206,20 @@ void testRefusals()
     expect(shortWindow.error() == Error::WrongArchitecture, "wrong architecture has a diagnostic");
     expect(!shortWindow.prepareDistributor(), "unbound controller cannot prepare");
 
+    {
+        FakeGic qgic;
+        qgic.dist[0xfe8 / 4] = 0;
+        Controller controller;
+        expect(controller.configure(qgic.io(), 4096, 4096), "QGIC2 without PIDR2 configures from TYPER");
+        expect(controller.error() == Error::None, "accepted QGIC2 leaves no diagnostic");
+        FakeGic blank;
+        blank.dist[0xfe8 / 4] = 0;
+        blank.dist[4 / 4] = 0;
+        Controller unmapped;
+        expect(!unmapped.configure(blank.io(), 4096, 4096), "an all-zero window is not a GIC");
+        expect(unmapped.error() == Error::WrongArchitecture, "all-zero window has a diagnostic");
+    }
+
     for (u8 target : {static_cast<u8>(0), static_cast<u8>(3)}) {
         FakeGic badTarget(View::Single, target);
         Controller controller;

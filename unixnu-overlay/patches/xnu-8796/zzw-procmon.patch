@@ -1,0 +1,334 @@
+--- a/osfmk/kern/startup.c
++++ b/osfmk/kern/startup.c
+@@ -584,7 +584,310 @@
+ SECURITY_READ_ONLY_LATE(vm_offset_t) vm_kernel_addrperm_ext;
+ SECURITY_READ_ONLY_LATE(uint64_t) vm_kernel_addrhash_salt;
+ SECURITY_READ_ONLY_LATE(uint64_t) vm_kernel_addrhash_salt_ext;
++
++/*
++ * procmon=<seconds>: with no serial port and a userland that logs through os_log, the console
++ * cannot show what launchd and its children are doing. This thread periodically prints every
++ * task and, per thread, its state, wait event, user PC/LR and syscall (x16, x0, x1); for a
++ * thread blocked with a saved kernel context it also walks that context's frame chain, so a
++ * stall can be read off the panel and symbolized against the dSYM.
++ */
++extern int task_pid(task_t task);
++extern void native_aes_shim_publish(void);
++extern void native_sdhci_publish(void);
++extern void native_keystore_publish(void);
++extern void native_sandbox_register(void);
++extern void native_media_report(void);
++extern char *proc_name_address(void *p);
++
++static uint32_t procmon_interval;
++
++#include <vm/vm_shared_region.h>
++
++/*
++ * Crash report for a crashing user process, called from proc_prepareexit on its own thread: signal,
++ * exception and code, the shared cache slide (unslid = pc - slide) and the main image's Mach-O header
++ * (offset = pc - mh + 0x100000000), the user registers and a frame-pointer backtrace, and the
++ * exit-reason text (abort_with_payload: _objc_fatal, os_crash, ...). Only the first two crashes of a
++ * process name are printed, so a crash loop does not bury everything else.
++ */
++static struct {
++	char name[17];
++	uint32_t count;
++} native_crash_seen[48];
++
++void native_crash_log(const char *name, int pid, int sig, uint64_t code, uint64_t subcode, const char *reason);
++
++void
++native_crash_log(const char *name, int pid, int sig, uint64_t code, uint64_t subcode, const char *reason)
++{
++	unsigned slot;
++	for (slot = 0; slot < 48; slot++) {
++		if (native_crash_seen[slot].name[0] == '\0') {
++			strlcpy(native_crash_seen[slot].name, name, sizeof(native_crash_seen[slot].name));
++			break;
++		}
++		if (strncmp(native_crash_seen[slot].name, name, sizeof(native_crash_seen[slot].name) - 1) == 0) {
++			break;
++		}
++	}
++	if (slot < 48 && native_crash_seen[slot].count++ >= 2) {
++		return;
++	}
++	task_t task = current_task();
++	uint64_t slide = 0;
++	vm_shared_region_t region = vm_shared_region_get(task);
++	if (region != NULL) {
++		slide = region->sr_slide;
++		vm_shared_region_deallocate(region);
++	}
++	printf("CRASH %s[%d] sig %d code 0x%llx sub 0x%llx slide 0x%llx mh 0x%llx\n", name, pid, sig,
++	    code, subcode, slide, (unsigned long long)task->mach_header_vm_address);
++	if (reason != NULL) {
++		printf("CRASH %s reason: %s\n", name, reason);
++	}
++	arm_saved_state_t *user = current_thread()->machine.upcb;
++	if (user == NULL || !is_saved_state64(user)) {
++		return;
++	}
++	uint64_t fp = get_saved_state_fp(user);
++	printf("CRASH %s pc 0x%llx lr 0x%llx sp 0x%llx far 0x%llx\n", name,
++	    (unsigned long long)get_saved_state_pc(user), (unsigned long long)get_saved_state_lr(user),
++	    (unsigned long long)get_saved_state_sp(user), (unsigned long long)saved_state64(user)->far);
++	printf("CRASH %s bt", name);
++	for (int depth = 0; depth < 10 && fp != 0 && (fp & 7) == 0; depth++) {
++		uint64_t frame[2];
++		if (copyin((user_addr_t)fp, frame, sizeof(frame)) != 0) {
++			break;
++		}
++		printf(" 0x%llx", (unsigned long long)frame[1]);
++		if (frame[0] <= fp) {
++			break;
++		}
++		fp = frame[0];
++	}
++	printf("\n");
++}
++/* procmon_tasks=0: only the task count, the storage counters and the media lines, for a userland
++ * with too many threads to list on the panel every tick. */
++static uint32_t procmon_tasks = 1;
++
++static void
++procmon_backtrace(thread_t thread)
++{
++	if (thread->kernel_stack == 0 || thread->machine.kstackptr == 0 || thread->continuation != NULL) {
++		return;
++	}
++	const uintptr_t low = thread->kernel_stack;
++	const uintptr_t high = low + kernel_stack_size;
++	const arm_kernel_context_t *context = (const arm_kernel_context_t *)thread->machine.kstackptr;
++	uintptr_t fp = (uintptr_t)context->ss.fp;
++	printf("procmon:   k lr 0x%llx", (unsigned long long)context->ss.lr);
++	for (int depth = 0; depth < 12; depth++) {
++		if (fp < low || fp + 16 > high || (fp & 7)) {
++			break;
++		}
++		const uintptr_t *frame = (const uintptr_t *)fp;
++		printf(" 0x%llx", (unsigned long long)frame[1]);
++		if (frame[0] <= fp) {
++			break;
++		}
++		fp = frame[0];
++	}
++	printf("\n");
++}
++
++/*
++ * Top CPU users: each tick, the tasks that used the most CPU since the previous tick, from the
++ * recount lifetime totals, as "procmon: cpu name[pid] ms ...".
++ */
++#include <kern/recount.h>
++extern vm_map_t get_task_map(task_t);
++
++#define PROCMON_CPU_SLOTS 512
++#define PROCMON_CPU_TOP   8
++static struct {
++	int pid;
++	uint64_t mach;
++} procmon_cpu_prev[PROCMON_CPU_SLOTS];
++
++static uint64_t
++procmon_cpu_delta(int pid, uint64_t now)
++{
++	unsigned free_slot = PROCMON_CPU_SLOTS;
++	for (unsigned i = 0; i < PROCMON_CPU_SLOTS; i++) {
++		if (procmon_cpu_prev[i].pid == pid) {
++			uint64_t delta = now >= procmon_cpu_prev[i].mach ? now - procmon_cpu_prev[i].mach : now;
++			procmon_cpu_prev[i].mach = now;
++			return delta;
++		}
++		if (procmon_cpu_prev[i].pid == 0 && free_slot == PROCMON_CPU_SLOTS) {
++			free_slot = i;
++		}
++	}
++	if (free_slot == PROCMON_CPU_SLOTS) {
++		/* Full of pids that have exited and been replaced: start over. */
++		bzero(procmon_cpu_prev, sizeof(procmon_cpu_prev));
++		free_slot = 0;
++	}
++	procmon_cpu_prev[free_slot].pid = pid;
++	procmon_cpu_prev[free_slot].mach = now;
++	return now;
++}
++
++/*
++ * Stack samples: each tick, for the processes named in boot-arg nativesample (comma separated,
++ * default "SpringBoard,backboardd", "-" = off), every thread's user pc, lr and frame-pointer
++ * backtrace, as "SMP name[pid] ..." lines, with the shared cache slide and main image header to
++ * symbolicate them the same way as the CRASH lines. After ios-sweet's patch 0054 (MIT).
++ */
++static char procmon_sample_names[128];
++
++static bool
++procmon_sample_wanted(const char *name)
++{
++	size_t n = strlen(name);
++	if (procmon_sample_names[0] == '-') {
++		return false;
++	}
++	for (const char *t = procmon_sample_names; *t;) {
++		const char *end = strchr(t, ',');
++		size_t tl = end ? (size_t)(end - t) : strlen(t);
++		if (tl == n && n > 0 && strncmp(t, name, n) == 0) {
++			return true;
++		}
++		if (!end) {
++			break;
++		}
++		t = end + 1;
++	}
++	return false;
++}
++
++static void
++procmon_sample(task_t task, const char *name, int pid)
++{
++	uint64_t slide = 0;
++	vm_shared_region_t region = vm_shared_region_get(task);
++	if (region != NULL) {
++		slide = region->sr_slide;
++		vm_shared_region_deallocate(region);
++	}
++	printf("SMP %s[%d] slide 0x%llx mh 0x%llx threads %u\n", name, pid, slide,
++	    (unsigned long long)task->mach_header_vm_address, task->thread_count);
++	vm_map_t map = get_task_map(task);
++	int index = 0;
++	thread_t thread;
++	queue_iterate(&task->threads, thread, thread_t, task_threads) {
++		arm_saved_state_t *user = thread->machine.upcb;
++		if (user == NULL || !is_saved_state64(user)) {
++			continue;
++		}
++		char line[400];
++		uint64_t fp = get_saved_state_fp(user);
++		int n = snprintf(line, sizeof(line), "SMP %s t%d state 0x%x x16 %lld pc 0x%llx lr 0x%llx bt", name, index++,
++		    thread->state, (long long)get_saved_state_reg(user, 16),
++		    (unsigned long long)get_saved_state_pc(user), (unsigned long long)get_saved_state_lr(user));
++		for (int depth = 0; depth < 16 && fp != 0 && (fp & 7) == 0 && n < (int)sizeof(line) - 20; depth++) {
++			uint64_t frame[2];
++			if (vm_map_read_user(map, (vm_map_address_t)fp, frame, sizeof(frame)) != KERN_SUCCESS) {
++				break;
++			}
++			n += snprintf(line + n, sizeof(line) - n, " 0x%llx", (unsigned long long)frame[1]);
++			if (frame[0] <= fp) {
++				break;
++			}
++			fp = frame[0];
++		}
++		printf("%s\n", line);
++	}
++}
++
++static void
++procmon_thread(__unused void *param, __unused wait_result_t wr)
++{
++	printf("procmon: started, every %u s\n", procmon_interval);
++	for (;;) {
++		assert_wait_timeout((event_t)&procmon_interval, THREAD_UNINT, procmon_interval, NSEC_PER_SEC);
++		thread_block(THREAD_CONTINUE_NULL);
++		printf("procmon: t=%llu tasks %d\n", mach_absolute_time(), tasks_count);
++		struct {
++			int pid;
++			uint64_t mach;
++			char name[17];
++		} top[PROCMON_CPU_TOP] = {};
++		lck_mtx_lock(&tasks_threads_lock);
++		task_t task;
++		queue_iterate(&tasks, task, task_t, tasks) {
++			void *bsd = get_bsdtask_info(task);
++			int pid = task_pid(task);
++			if (pid <= 0) {
++				continue;
++			}
++			struct recount_times_mach times = recount_task_times(task);
++			uint64_t used = procmon_cpu_delta(pid, times.rtm_user + times.rtm_system);
++			for (int slot = 0; slot < PROCMON_CPU_TOP; slot++) {
++				if (used > top[slot].mach) {
++					for (int move = PROCMON_CPU_TOP - 1; move > slot; move--) {
++						top[move] = top[move - 1];
++					}
++					top[slot].pid = pid;
++					top[slot].mach = used;
++					strlcpy(top[slot].name, bsd ? proc_name_address(bsd) : "?", sizeof(top[slot].name));
++					break;
++				}
++			}
++			if (bsd && procmon_sample_wanted(proc_name_address(bsd))) {
++				procmon_sample(task, proc_name_address(bsd), pid);
++			}
++			if (!procmon_tasks) {
++				continue;
++			}
++			printf("procmon: pid %d %s threads %u\n", pid, bsd ? proc_name_address(bsd) : "?", task->thread_count);
++			thread_t thread;
++			queue_iterate(&task->threads, thread, thread_t, task_threads) {
++				arm_saved_state_t *user = thread->machine.upcb;
++				printf("procmon:  tid %llu state 0x%x wait 0x%llx pc 0x%llx lr 0x%llx x16 %lld x0 0x%llx x1 0x%llx\n",
++				    thread->thread_id, thread->state, (unsigned long long)thread->wait_event,
++				    user ? (unsigned long long)get_saved_state_pc(user) : 0ULL,
++				    user ? (unsigned long long)get_saved_state_lr(user) : 0ULL,
++				    user ? (long long)get_saved_state_reg(user, 16) : 0LL,
++				    user ? (unsigned long long)get_saved_state_reg(user, 0) : 0ULL,
++				    user ? (unsigned long long)get_saved_state_reg(user, 1) : 0ULL);
++				if (thread->state & TH_WAIT) {
++					procmon_backtrace(thread);
++				}
++			}
++		}
++		lck_mtx_unlock(&tasks_threads_lock);
++		printf("procmon: cpu");
++		for (int slot = 0; slot < PROCMON_CPU_TOP && top[slot].mach != 0; slot++) {
++			uint64_t ns;
++			absolutetime_to_nanoseconds(top[slot].mach, &ns);
++			printf(" %s[%d] %llums", top[slot].name, top[slot].pid, ns / NSEC_PER_MSEC);
++		}
++		printf("\n");
++		native_media_report();
++	}
++}
+ 
++static void
++procmon_start(void)
++{
++	thread_t thread;
++
++	if (!PE_parse_boot_argn("procmon", &procmon_interval, sizeof(procmon_interval)) || procmon_interval == 0) {
++		return;
++	}
++	PE_parse_boot_argn("procmon_tasks", &procmon_tasks, sizeof(procmon_tasks));
++	if (!PE_parse_boot_argn("nativesample", procmon_sample_names, sizeof(procmon_sample_names))) {
++		strlcpy(procmon_sample_names, "SpringBoard,backboardd", sizeof(procmon_sample_names));
++	}
++	if (kernel_thread_start(procmon_thread, NULL, &thread) == KERN_SUCCESS) {
++		thread_deallocate(thread);
++	}
++}
++
+ /*
+  * Now running in a thread.  Kick off other services,
+  * invoke user bootstrap, enter pageout loop.
+@@ -756,6 +1059,9 @@
+ 	OSKextRemoveKextBootstrap();
+ 
+ 	/* No changes to kernel text and rodata beyond this point. */
++	/* The permissive "Sandbox" MAC policy: mac_policy_list is read-only after lockdown. */
++	native_sandbox_register();
++
+ 	kernel_bootstrap_log("machine_lockdown");
+ 	machine_lockdown();
+ 
+@@ -787,6 +1093,10 @@
+ 	 *	Start the user bootstrap.
+ 	 */
+ #ifdef  MACH_BSD
++	native_aes_shim_publish();
++	native_sdhci_publish();
++	native_keystore_publish();
++	procmon_start();
+ 	bsd_init();
+ #endif
+ 

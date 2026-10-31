@@ -1,0 +1,68 @@
+--- a/bsd/vfs/kpi_vfs.c
++++ b/bsd/vfs/kpi_vfs.c
+@@ -85,6 +85,7 @@
+ #include <sys/mount_internal.h>
+ #include <sys/time.h>
+ #include <sys/disk.h>
++#include <sys/fsctl.h>
+ #include <sys/vnode_internal.h>
+ #include <sys/stat.h>
+ #include <sys/namei.h>
+@@ -3940,6 +3941,20 @@
+ 		return 0;
+ 	}
+ 
++	/*
++	 * Unsealed root (boot-arg unsealed_root=1): the root is a plain HFS+ volume that no Image4
++	 * root hash describes, so the sealedness query bsd_init makes after the root mount cannot
++	 * succeed. Answer it for the root vnode only; every other ioctl reaches the file system.
++	 */
++	if (command == FSIOC_KERNEL_ROOTAUTH && vp == rootvnode) {
++		extern boolean_t PE_parse_boot_argn(const char *, void *, int);
++		uint32_t unsealed = 0;
++		if (PE_parse_boot_argn("unsealed_root", &unsealed, sizeof(unsealed)) && unsealed) {
++			printf("unsealed_root: accepting the unsealed root volume\n");
++			return 0;
++		}
++	}
++
+ 	a.a_desc = &vnop_ioctl_desc;
+ 	a.a_vp = vp;
+ 	a.a_command = command;
+@@ -4458,6 +4473,16 @@
+ 					fcnp->cn_flags |= CN_SECLUDE_RENAME;
+ 					_err = VNOP_RENAME(fdvp, *fvpp, fcnp, tdvp, *tvpp, tcnp, ctx);
+ 				}
++			}
++			/*
++			 * HFS has no RENAME_SWAP, which Foundation's atomic writes use ("Failed to
++			 * atomically swap writing file: Operation not supported"). Swapping two regular
++			 * files of one volume is what exchangedata does.
++			 */
++			if (_err == ENOTSUP && flags == VFS_RENAME_SWAP && *tvpp != NULLVP &&
++			    vnode_isreg(*fvpp) && vnode_isreg(*tvpp) &&
++			    vnode_mount(*fvpp) == vnode_mount(*tvpp)) {
++				_err = VNOP_EXCHANGE(*fvpp, *tvpp, 0, ctx);
+ 			}
+ 		} else {
+ 			_err = VNOP_RENAME(fdvp, *fvpp, fcnp, tdvp, *tvpp, tcnp, ctx);
+--- a/bsd/vfs/vfs_subr.c
++++ b/bsd/vfs/vfs_subr.c
+@@ -1257,6 +1257,17 @@
+ 
+ 		mp = vfs_rootmountalloc_internal(vfsp, "root_device");
+ 		mp->mnt_devvp = rootvp;
++		{
++			/*
++			 * boot-arg rootrw=1: a single-volume root (no Data volume, /private/var on the
++			 * root) is mounted read-write from the start.
++			 */
++			extern boolean_t PE_parse_boot_argn(const char *, void *, int);
++			uint32_t rootrw = 0;
++			if (PE_parse_boot_argn("rootrw", &rootrw, sizeof(rootrw)) && rootrw) {
++				mp->mnt_flag &= ~MNT_RDONLY;
++			}
++		}
+ 
+ 		if (vfsp->vfc_mountroot) {
+ 			error = (*vfsp->vfc_mountroot)(mp, rootvp, ctx);

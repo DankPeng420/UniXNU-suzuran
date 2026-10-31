@@ -170,6 +170,7 @@ enum : u8 {
     kCmd1SendOpCond        = 1,
     kCmd2AllSendCid        = 2,
     kCmd3SetRelativeAddr   = 3,
+    kCmd6Switch            = 6,
     kCmd7SelectCard        = 7,
     kCmd8SendExtCsd        = 8,
     kCmd9SendCsd           = 9,

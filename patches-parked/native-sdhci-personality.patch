@@ -1,0 +1,17 @@
+--- a/iokit/KernelConfigTables.cpp
++++ b/iokit/KernelConfigTables.cpp
+@@ -56,6 +56,14 @@
+     "     'IOProviderClass' = IOPlatformExpertDevice;"
+     "     'IOProbeScore'    = 0:32;"
+     "   }"
++#if defined(XNU_NATIVE_SDHCI) && XNU_NATIVE_SDHCI
++    "   ,{"
++    "     'IOClass'         = NativeSdhci;"
++    "     'IOProviderClass' = IOPlatformDevice;"
++    "     'IONameMatch'     = 'qcom,msm8994-sdhci';"
++    "     'IOProbeScore'    = 1000:32;"
++    "   }"
++#endif
+ #if defined(XNU_NATIVE_AES) && XNU_NATIVE_AES
+     "   ,{"
+     "     'IOClass'         = NativeAES;"

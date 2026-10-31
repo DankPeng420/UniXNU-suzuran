@@ -1,0 +1,18 @@
+--- a/osfmk/arm/cpu_common.c
++++ b/osfmk/arm/cpu_common.c
+@@ -730,7 +730,15 @@
+ 
+ 	percpu_base.size = percpu_section_size();
+ 	if (ml_get_cpu_count() == 1) {
++		/*
++		 * No secondary CPU: make the range empty for both iterator forms. The integer form
++		 * (it <= end) is already empty with end = 0, but the pointer form of
++		 * percpu_foreach_secondary() builds its end as base + (end - start), which wraps to
++		 * base + 0x400000001 and walks unmapped memory (mbuf_mtypes_sync from
++		 * vm_pageout_garbage_collect panicked on cpus=1). end = start - 1 is empty in both.
++		 */
+ 		percpu_base.start = VM_MAX_KERNEL_ADDRESS;
++		percpu_base.end   = VM_MAX_KERNEL_ADDRESS - 1;
+ 		return;
+ 	}
+ 

@@ -51,6 +51,9 @@ bool decodeExtCsd(const u8 *bytes, u32 length, ExtCsdInfo *out)
     info.sectorBytes = bytes[61] ? 4096 : 512;
     info.revision = bytes[192];
     info.partitionAccess = bytes[179] & 7;
+    info.busWidth = bytes[183];
+    info.hsTiming = bytes[185];
+    info.deviceType = bytes[196];
     info.commandQueueEnabled = (bytes[15] & 1) != 0;
     *out = info;
     return true;
@@ -117,6 +120,76 @@ u32 buildAdma2(const Adma2Chunk *chunks, u32 count, u64 *table, u32 tableEntries
 u64 maxValidLba(u64 capacityBytes)
 {
     return capacityBytes >= 512 ? capacityBytes / 512 - 1 : 0;
+}
+
+u32 crc32(const u8 *bytes, u32 length)
+{
+    u32 crc = 0xffffffffu;
+    for (u32 index = 0; index < length; ++index) {
+        crc ^= bytes[index];
+        for (u32 bit = 0; bit < 8; ++bit) crc = (crc >> 1) ^ (0xedb88320u & (0u - (crc & 1)));
+    }
+    return ~crc;
+}
+
+namespace {
+u32 le32(const u8 *at)
+{
+    return static_cast<u32>(at[0]) | (static_cast<u32>(at[1]) << 8) |
+           (static_cast<u32>(at[2]) << 16) | (static_cast<u32>(at[3]) << 24);
+}
+
+u64 le64(const u8 *at)
+{
+    return static_cast<u64>(le32(at)) | (static_cast<u64>(le32(at + 4)) << 32);
+}
+
+bool entryUsed(const u8 *entry)
+{
+    u8 used = 0;
+    for (u32 index = 0; index < 16; ++index) used |= entry[index];
+    return used != 0;
+}
+
+bool entryNamed(const u8 *entry, const char *name)
+{
+    u32 index = 0;
+    for (; name[index]; ++index) {
+        if (index >= 36 || entry[56 + 2 * index] != static_cast<u8>(name[index]) || entry[57 + 2 * index]) return false;
+    }
+    return index == 36 || (entry[56 + 2 * index] == 0 && entry[57 + 2 * index] == 0);
+}
+}
+
+bool findGptPartition(const u8 *header, const u8 *entries, u32 entriesBytes, u64 lastLba,
+                      const char *name, GptRange *out)
+{
+    if (!header || !entries || !name || !name[0] || !out) return false;
+    if (le64(header) != 0x5452415020494645ULL || le32(header + 8) != 0x00010000) return false;
+    const u32 headerBytes = le32(header + 12);
+    if (headerBytes < 92 || headerBytes > 512 || le32(header + 20) || le64(header + 24) != 1) return false;
+    u8 copy[512];
+    for (u32 index = 0; index < headerBytes; ++index) copy[index] = header[index];
+    for (u32 index = 16; index < 20; ++index) copy[index] = 0;
+    if (crc32(copy, headerBytes) != le32(header + 16)) return false;
+    const u64 firstUsable = le64(header + 40), lastUsable = le64(header + 48);
+    const u32 count = le32(header + 80), entryBytes = le32(header + 84);
+    if (entryBytes != 128 || !count || count > 256 || count * entryBytes > entriesBytes ||
+        le64(header + 72) < 2 || lastUsable < firstUsable || lastUsable > lastLba) return false;
+    if (crc32(entries, count * entryBytes) != le32(header + 88)) return false;
+    bool found = false;
+    GptRange range = {};
+    for (u32 index = 0; index < count; ++index) {
+        const u8 *entry = entries + index * entryBytes;
+        if (!entryUsed(entry) || !entryNamed(entry, name)) continue;
+        const u64 first = le64(entry + 32), last = le64(entry + 40);
+        if (found || first < firstUsable || last < first || last > lastUsable) return false;
+        range = {first, last};
+        found = true;
+    }
+    if (!found) return false;
+    *out = range;
+    return true;
 }
 
 } // namespace sdhci

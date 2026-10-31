@@ -1,0 +1,329 @@
+--- a/iokit/Kernel/IOStartIOKit.cpp
++++ b/iokit/Kernel/IOStartIOKit.cpp
+@@ -228,6 +228,326 @@
+ 		chosen->setProperty(kIOProgressColorThemeKey, theme, 32);
+ 
+ 		chosen->release();
++	}
++}
++/*
++ * aesshim=1: AppleImage4 waits forever for an IOAESAccelerator before it locks the nonce hashes and
++ * opens the gate the ignition-blob sysctl waits on, so launchd stalls in dyld's ignition on a board
++ * without Apple's AES engine. The prelinked IOCryptoAcceleratorFamily's IOAESAccelerator is a concrete
++ * class; this publishes a personality that instantiates it by name on IOResources, with no link-time
++ * binding to the family's ABI. It matches on IOBSD, as upstream's NativeAES does: IOAESAccelerator::start
++ * itself waits for the IOBSD resource, and run any earlier it blocks the IOResources matching that loads
++ * APFS (the root mount then fails with ENODEV).
++ */
++void
++native_aes_shim_publish(void)
++{
++	uint32_t enable = 0;
++	if (!PE_parse_boot_argn("aesshim", &enable, sizeof(enable)) || enable == 0) {
++		return;
++	}
++	OSDictionary *personality = OSDictionary::withCapacity(5);
++	OSArray *drivers = OSArray::withCapacity(1);
++	const OSSymbol *aes = OSSymbol::withCString("IOAESAccelerator");
++	const OSSymbol *resources = OSSymbol::withCString("IOResources");
++	OSString *resource = OSString::withCString("IOBSD");
++	OSString *category = OSString::withCString("NativeAESShim");
++	OSString *bundle = OSString::withCString("com.apple.iokit.IOCryptoAcceleratorFamily");
++	if (personality && drivers && aes && resources && resource && category && bundle) {
++		personality->setObject(gIOClassKey, aes);
++		personality->setObject(gIOProviderClassKey, resources);
++		personality->setObject(gIOResourceMatchKey, resource);
++		personality->setObject(gIOMatchCategoryKey, category);
++		personality->setObject(kCFBundleIdentifierKey, bundle);
++		drivers->setObject(personality);
++		IOLog("aesshim: IOAESAccelerator personality %s\n",
++		    gIOCatalogue->addDrivers(drivers, true) ? "published" : "REFUSED");
++	}
++	OSSafeReleaseNULL(personality);
++	OSSafeReleaseNULL(drivers);
++	OSSafeReleaseNULL(aes);
++	OSSafeReleaseNULL(resources);
++	OSSafeReleaseNULL(resource);
++	OSSafeReleaseNULL(category);
++	OSSafeReleaseNULL(bundle);
++}
++
++/*
++ * The eMMC driver (device NativeSdhci, bound to the 16.7.16 IOStorageFamily) has no entry in
++ * KernelConfigTables: a personality there overlaps other patches' context. When the class is linked,
++ * this adds it at runtime, matched to the ADT sdhci node by its compatible string.
++ */
++void
++native_sdhci_publish(void)
++{
++	const OSSymbol *name = OSSymbol::withCString("NativeSdhci");
++	if (name == NULL) {
++		return;
++	}
++	if (OSMetaClass::getMetaClassWithName(name) == NULL) {
++		name->release();
++		return;
++	}
++	OSDictionary *personality = OSDictionary::withCapacity(5);
++	OSArray *drivers = OSArray::withCapacity(1);
++	const OSSymbol *provider = OSSymbol::withCString("IOPlatformDevice");
++	OSString *compatible = OSString::withCString("qcom,msm8994-sdhci");
++	OSNumber *score = OSNumber::withNumber(1000ULL, 32);
++	if (personality && drivers && provider && compatible && score) {
++		personality->setObject(gIOClassKey, name);
++		personality->setObject(gIOProviderClassKey, provider);
++		personality->setObject(gIONameMatchKey, compatible);
++		personality->setObject(kIOProbeScoreKey, score);
++		drivers->setObject(personality);
++		IOLog("NativeSdhci: personality %s\n", gIOCatalogue->addDrivers(drivers, true) ? "published" : "REFUSED");
++	}
++	OSSafeReleaseNULL(personality);
++	OSSafeReleaseNULL(drivers);
++	OSSafeReleaseNULL(provider);
++	OSSafeReleaseNULL(compatible);
++	OSSafeReleaseNULL(score);
++	name->release();
++}
++
++/*
++ * AppleKeyStore stand-in: upstream's NativeKeyStoreEvents (force-loaded archive) answers the state
++ * queries of libaks/MobileKeyBag for a device with no SEP, no keybag and no passcode, so keybagd --init
++ * gets its system bag handle instead of rebooting into recovery. These are the hooks it calls; the
++ * service is enabled whenever it is linked (it protects nothing, see its source).
++ */
++#include <security/mac_policy.h>
++#include <sys/proc.h>
++
++static uint64_t native_aks_seen[4];
++
++void
++native_keyevents_open_refused(void)
++{
++	IOLog("NativeAKS: user client refused\n");
++}
++
++bool
++native_aks_state_enabled(void)
++{
++	return true;
++}
++
++uint32_t
++native_aks_lock_state(void)
++{
++	return 0;       /* sls: unlocked */
++}
++
++void
++native_aks_opened(void)
++{
++	static bool once;
++	if (!once) {
++		once = true;
++		IOLog("NativeAKS: first user client opened\n");
+ 	}
+ }
++
++/* One console line per selector the first time it is used: the next unsupported one names itself. */
++void
++native_aks_call(uint32_t selector, int32_t result)
++{
++	if (selector >= 256) {
++		IOLog("NativeAKS: sel %u -> 0x%x\n", selector, (uint32_t)result);
++		return;
++	}
++	const uint64_t bit = 1ULL << (selector % 64);
++	if (native_aks_seen[selector / 64] & bit) {
++		return;
++	}
++	native_aks_seen[selector / 64] |= bit;
++	IOLog("NativeAKS: sel %u -> 0x%x\n", selector, (uint32_t)result);
++}
++
++/* Personality on IOResources for a force-loaded stand-in class, if it is linked. */
++static void
++native_resource_publish(const char *className)
++{
++	const OSSymbol *name = OSSymbol::withCString(className);
++	if (name == NULL) {
++		return;
++	}
++	if (OSMetaClass::getMetaClassWithName(name) == NULL) {
++		name->release();
++		return;
++	}
++	OSDictionary *personality = OSDictionary::withCapacity(4);
++	OSArray *drivers = OSArray::withCapacity(1);
++	const OSSymbol *provider = OSSymbol::withCString("IOResources");
++	OSString *resource = OSString::withCString("IOKit");
++	if (personality && drivers && provider && resource) {
++		personality->setObject(gIOClassKey, name);
++		personality->setObject(gIOProviderClassKey, provider);
++		personality->setObject(gIOResourceMatchKey, resource);
++		personality->setObject(gIOMatchCategoryKey, name);
++		drivers->setObject(personality);
++		IOLog("native: %s personality %s\n", className,
++		    gIOCatalogue->addDrivers(drivers, true) ? "published" : "REFUSED");
++	}
++	OSSafeReleaseNULL(personality);
++	OSSafeReleaseNULL(drivers);
++	OSSafeReleaseNULL(provider);
++	OSSafeReleaseNULL(resource);
++	name->release();
++}
++
++/* Personality for a force-loaded class that matches an /arm-io nub by its compatible string. */
++static void
++native_device_publish(const char *className, const char *compatible)
++{
++	const OSSymbol *name = OSSymbol::withCString(className);
++	if (name == NULL) {
++		return;
++	}
++	if (OSMetaClass::getMetaClassWithName(name) == NULL) {
++		name->release();
++		return;
++	}
++	OSDictionary *personality = OSDictionary::withCapacity(4);
++	OSArray *drivers = OSArray::withCapacity(1);
++	const OSSymbol *provider = OSSymbol::withCString("IOPlatformDevice");
++	OSString *match = OSString::withCString(compatible);
++	if (personality && drivers && provider && match) {
++		personality->setObject(gIOClassKey, name);
++		personality->setObject(gIOProviderClassKey, provider);
++		personality->setObject(gIONameMatchKey, match);
++		drivers->setObject(personality);
++		IOLog("native: %s personality %s\n", className,
++		    gIOCatalogue->addDrivers(drivers, true) ? "published" : "REFUSED");
++	}
++	OSSafeReleaseNULL(personality);
++	OSSafeReleaseNULL(drivers);
++	OSSafeReleaseNULL(provider);
++	OSSafeReleaseNULL(match);
++	name->release();
++}
++
++/*
++ * Permissive "Sandbox" MAC policy: libsystem_sandbox calls __mac_syscall("Sandbox", op, arg), and with
++ * no policy of that name every call fails with ENOPOLICY, so launchd answers mach lookups with
++ * "error = 159: Sandbox restriction" (backboardd cannot reach mobilegestalt or iohideventsystem) and
++ * tccd exits "profile not found". This phone runs without a sandbox (Apple's Sandbox kext is not
++ * loaded): operations succeed, and the few that must return data (container paths, extension
++ * tokens) fail with ENOENT. Behaviour established on hardware by ios-sweet (patch 0050). The first
++ * use of each operation is logged.
++ */
++static uint64_t native_sandbox_seen[2];
++static struct mac_policy_ops native_sandbox_ops;
++static struct mac_policy_conf native_sandbox_conf;
++static mac_policy_handle_t native_sandbox_handle;
++
++static int
++native_sandbox_syscall(struct proc *, int call, user_addr_t)
++{
++	if (call >= 0 && call < 128 && !(native_sandbox_seen[call / 64] & (1ULL << (call % 64)))) {
++		native_sandbox_seen[call / 64] |= 1ULL << (call % 64);
++		char name[32];
++		proc_selfname(name, sizeof(name));
++		IOLog("NativeSandbox: %s op %d\n", name, call);
++	}
++	switch (call) {
++	case 4:         /* container path (audit token / pid) */
++	case 5:         /* extension issue */
++	case 6:         /* extension consume */
++	case 0x43:      /* container expected */
++		return ENOENT;
++	default:
++		return 0;
++	}
++}
++
++/*
++ * Called from kernel_bootstrap_thread before machine_lockdown: mac_policy_list is read-only late,
++ * so a policy registered after lockdown faults ("Unexpected fault in kernel static region").
++ */
++void
++native_sandbox_register(void)
++{
++	native_sandbox_ops.mpo_policy_syscall = native_sandbox_syscall;
++	native_sandbox_conf.mpc_name = "Sandbox";
++	native_sandbox_conf.mpc_fullname = "Lumia permissive sandbox stand-in";
++	native_sandbox_conf.mpc_ops = &native_sandbox_ops;
++	int error = mac_policy_register(&native_sandbox_conf, &native_sandbox_handle, NULL);
++	IOLog("NativeSandbox: permissive policy %s (%d)\n", error ? "NOT registered" : "registered", error);
++}
++
++/*
++ * AppleKeyStore (NativeKeyStoreEvents), IOWatchdog (NativeWatchdog), touch and side keys (NativeTouch), the CPU clock
++ * readout (NativeCpuClock), the battery (NativeBattery) and the display (NativeDisplay):
++ * IOSurface's IOCoreSurfaceRoot on IOResources, AppleCLCD on the /arm-io/disp0 nub.
++ */
++void
++native_keystore_publish(void)
++{
++	native_resource_publish("AppleKeyStore");
++	native_resource_publish("IOWatchdog");
++	native_resource_publish("IOCoreSurfaceRoot");
++	native_resource_publish("NativeTouch");
++	native_resource_publish("NativeHIDTouch");
++	native_resource_publish("NativeHIDButtons");
++	native_resource_publish("NativeCpuClock");
++	native_resource_publish("NativeBattery");
++	native_device_publish("AppleCLCD", "lumia950,display");
++}
++
++/*
++ * procmon companion: one line per IOMedia (whole disks with their size, partitions by BSD name and
++ * content hint) plus the IONVRAM resource, so storage bring-up survives the console scroll.
++ */
++extern volatile uint64_t native_sdhci_bytes __attribute__((weak));
++extern volatile uint64_t native_sdhci_reads __attribute__((weak));
++extern volatile uint64_t native_sdhci_writes __attribute__((weak));
++extern volatile uint64_t cs_native4k_bytes __attribute__((weak));
++extern volatile uint64_t cs_native4k_ready_blobs __attribute__((weak));
++extern volatile uint64_t cs_native4k_read_ticks __attribute__((weak));
++extern volatile uint64_t cs_native4k_hash_ticks __attribute__((weak));
++
++void
++native_media_report(void)
++{
++	OSObject *nvram = IOService::getResourceService()->getProperty("IONVRAM");
++	IOLog("procmon: IONVRAM resource %s\n", nvram ? "published" : "missing");
++	/* Storage progress: eMMC bytes moved, read requests and write bursts, and the 4K code signature
++	 * cache (bytes of 16K-signed files hashed, blobs ready, and the time in reads and in hashing,
++	 * 19.2 MHz timebase), which is what a silent boot spends minutes on while it verifies the shared
++	 * cache. */
++	IOLog("procmon: emmc %llu bytes, %llu reads, %llu writes; cs4k %llu bytes, %llu blobs, %llu ms reading, %llu ms hashing\n",
++	    &native_sdhci_bytes ? (unsigned long long)native_sdhci_bytes : 0ULL,
++	    &native_sdhci_reads ? (unsigned long long)native_sdhci_reads : 0ULL,
++	    &native_sdhci_writes ? (unsigned long long)native_sdhci_writes : 0ULL,
++	    &cs_native4k_bytes ? (unsigned long long)cs_native4k_bytes : 0ULL,
++	    &cs_native4k_ready_blobs ? (unsigned long long)cs_native4k_ready_blobs : 0ULL,
++	    &cs_native4k_read_ticks ? (unsigned long long)(cs_native4k_read_ticks / 19200) : 0ULL,
++	    &cs_native4k_hash_ticks ? (unsigned long long)(cs_native4k_hash_ticks / 19200) : 0ULL);
++	OSIterator *iterator = IOService::getMatchingServices(IOService::serviceMatching("IOMedia"));
++	if (iterator == NULL) {
++		IOLog("procmon: no IOMedia\n");
++		return;
++	}
++	unsigned count = 0;
++	while (OSObject *object = iterator->getNextObject()) {
++		IOService *media = OSDynamicCast(IOService, object);
++		if (media == NULL) {
++			continue;
++		}
++		OSString *bsd = OSDynamicCast(OSString, media->getProperty("BSD Name"));
++		OSString *hint = OSDynamicCast(OSString, media->getProperty("Content Hint"));
++		OSNumber *size = OSDynamicCast(OSNumber, media->getProperty("Size"));
++		OSBoolean *whole = OSDynamicCast(OSBoolean, media->getProperty("Whole"));
++		/* 55 partitions would flood the panel: whole disks, the iOS partition and the last one. */
++		if (whole == kOSBooleanTrue || (hint && strncmp(hint->getCStringNoCopy(), "48465300", 8) == 0)) {
++			IOLog("procmon: media %s %llu bytes%s%s%s\n", bsd ? bsd->getCStringNoCopy() : "?",
++			    size ? size->unsigned64BitValue() : 0ULL, whole == kOSBooleanTrue ? " whole" : "",
++			    hint ? " " : "", hint ? hint->getCStringNoCopy() : "");
++		}
++		count++;
++	}
++	iterator->release();
++	IOLog("procmon: %u IOMedia\n", count);
++}
+ }; /* extern "C" */
