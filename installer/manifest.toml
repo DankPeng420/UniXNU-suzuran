@@ -1,0 +1,72 @@
+# Everything the installer downloads, pinned by SHA-256. Nothing is used until its hash matches.
+# `python3 installer/fetch.py list <zip url>` lists a remote zip's members when a pin changes.
+
+# iPhone X (iPhone10,3 / iPhone10,6) iOS 16.7.16, from Apple. Only these members are read out of
+# the 6 GB IPSW, with HTTP Range requests; nothing from it is redistributed.
+[ipsw]
+build = "20H392"
+url = "https://updates.cdn-apple.com/2025FallFCS/fullrestores/122-77006/1158E502-D76D-4226-AA06-ED5E30CD1111/iPhone10,3,iPhone10,6_16.7.16_20H392_Restore.ipsw"
+
+[[ipsw.member]]
+role = "OS"
+member = "087-86698-044.dmg"
+sha256 = "80f426d5b8fca8552f95be427434f1911dbb4c2c6d28aad94f2426ddd0c92483"
+
+[[ipsw.member]]
+role = "SystemOS"
+member = "087-86593-047.dmg"
+sha256 = "9cd738f3b0169055549df84ad6d8d13e50a2da39af618ce0522ca4e06df86849"
+
+[[ipsw.member]]
+role = "AppOS"
+member = "087-86715-047.dmg"
+sha256 = "391f2df322c3172b021b2874f6da5c3e78b70b3df8f502e1a4af2b1d715c4608"
+
+[[ipsw.member]]
+role = "OS trust cache"
+member = "Firmware/087-86698-044.dmg.trustcache"
+sha256 = "63e01c03b31e1532a5581a24865490673f0b5c297b0199fe0095637c6100ef4b"
+
+[[ipsw.member]]
+role = "SystemOS trust cache"
+member = "Firmware/087-86593-047.dmg.trustcache"
+sha256 = "9cc478fe3525e2683b5b9ea1eea0851eaebebdab21d206556233400e59d2e361"
+
+[[ipsw.member]]
+role = "AppOS trust cache"
+member = "Firmware/087-86715-047.dmg.trustcache"
+sha256 = "4e5fc21a171e7fc0e05698c83b9c080307e7cf57a3e88b09cfe0b4e135674067"
+
+[[ipsw.member]]
+role = "device tree"
+member = "Firmware/all_flash/DeviceTree.d221ap.im4p"
+sha256 = "889e838319619c10f5f7f6ef25f9ff2a3a652a3c078803038ba678efa1201b79"
+# The ADT generator reads the decompressed payload (board.toml [payload.adt] iphone_identity).
+payload_sha256 = "8e1faf71def6d4e1dbef4df9da4e2b6c975a9fa7b68831a4be50e0609bdaf407"
+
+# Lumia950XLPkg 2.24b, the UEFI that BootShim loads from \UEFI.elf on EFIESP.
+[uefi]
+url = "https://github.com/WOA-Project/Lumia950XLPkg/releases/download/2.24b/MSM8994.UEFI.Lumia.950.XL.zip"
+sha256 = "b92c3434ae5bd1d826b8127eae8fed604a8f83d2ba104e3672c8d9e0e4617275"
+member = "MSM8994 UEFI (Lumia 950 XL)/ELF/UEFI.elf"
+member_sha256 = "3a8b7a2a68213f83ec735319d82b304b66fc1909956840a9e6092becc1122eea"
+
+# LumiaWOA's Boot Shim, Azure DevOps build 174 (kept forever). The 2018 GitHub release of
+# imbushuo/boot-shim predates UEFI 2.x and only shows "Preloader needs upgrade". Azure builds the
+# zip on request, so only the member is pinned.
+[bootshim]
+url = "https://dev.azure.com/LumiaWoA/328eea29-7d2f-4cdf-b928-d58c53d8f29d/_apis/build/builds/174/artifacts?artifactName=UEFI%20Loader%20for%208992%20and%208994&api-version=6.0&%24format=zip"
+member = "UEFI Loader for 8992 and 8994/ARM/Debug/BootShim.efi"
+member_sha256 = "3b3c7a7f676c297b6035d63b2e3630e012d6223ab9ebb3ab36b76e9884531a3d"
+
+# EfiFs's ext2 driver: DarwinBoot reads the 56 MB kernel from /cache (ext4) through it.
+[efifs]
+url = "https://github.com/pbatard/EfiFs/releases/download/v1.13/ext2_aa64.efi"
+sha256 = "5d952d9ec7045c7e4369e108938cf6145381ed23817f983aad26f3c3990a1abc"
+
+# The prebuilt kernel and boot menu (installer/make-release.py). --release-zip uses a local build
+# instead.
+[release]
+tag = "2026.11.01"
+url = "https://github.com/shrimpapplepro/UniXNU-lumia950xl/releases/download/2026.11.01/unixnu-lumia950xl-2026.11.01.zip"
+sha256 = "f991b80e1cf95e8eb48a57540e630ca465c933eb52243e0c8e87f2fb8e5adf63"

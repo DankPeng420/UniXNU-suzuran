@@ -1,8 +1,47 @@
-# Installing iOS 16.7.16 on a Lumia 950 XL (advanced, manual)
+# Installing iOS 16.7.16 on a Lumia 950 XL
 
-This is the procedure used on our phone, written so someone else can repeat it. It is long, every step
-is manual, and two steps (repartitioning and the boot configuration) can leave the phone needing a
-re-flash if they go wrong. Read it all first. You are responsible for your device.
+Two ways: the **installer** (`installer/install.py`, below), which runs the whole procedure from a Mac
+with checks at every step, or the **manual procedure** (sections 0 to 9), which is what the installer
+automates and what to read when something goes wrong. Two steps (repartitioning and the boot
+configuration) can leave the phone needing a re-flash if they go wrong. You are responsible for your
+device.
+
+## The installer
+
+Needs: a Mac with ~35 GB free and Python 3.11+ (`brew install python android-platform-tools`), and the
+phone in LineageOS with USB debugging and **Rooted debugging** on, TWRP as its recovery, on a USB cable
+(not Wi-Fi: the root image is 17.5 GB). No Windows PC, no Xcode: the installer edits the BCD itself
+(`installer/bcd.py`, checked against bcdedit's own output) and downloads a prebuilt kernel.
+
+```sh
+git clone -b lumia950xl https://github.com/shrimpapplepro/UniXNU-lumia950xl && cd UniXNU-lumia950xl
+python3 installer/install.py install --dry-run    # see what it would do; changes nothing on the phone
+python3 installer/install.py install              # ~1.5 h, mostly downloading and writing
+python3 installer/install.py boot                 # start iOS once; the next boot is Android again
+```
+
+`install` runs these stages and records each one in `~/UniXNU-lumia950xl-install/state.json`, so an
+interrupted run continues where it stopped (run one stage again with `install.py <stage>`):
+
+| Stage | What it does |
+| --- | --- |
+| `preflight` | checks the Mac's tools and space, the phone's model (`ro.boot.hardware` = `cityman`), adb root, sgdisk, EFIESP, /cache and the BCD |
+| `backup` | copies EFIESP, the BCD, the GPT and Android's `/data` to the Mac |
+| `partition` | plans the split, asks you to type `SPLIT`, shrinks `userdata` in TWRP, adds `ios` (default 18 GiB, `--ios-size`) |
+| `fetch` | downloads the 7 IPSW members it needs from Apple (5.8 GB of the 6.2 GB IPSW, resumable), UEFI 2.24b, BootShim, EfiFs and the kernel release, each pinned by SHA-256 in `installer/manifest.toml` |
+| `root` | builds the HFS+ root image (`scripts/mkiosroot-root.sh`, asks for your Mac password) |
+| `write` | asks you to type `WRITE`, streams the image to `ios`, verifies it by SHA-256 |
+| `stage` | kernel + ADT (with a per-phone seed) + trust cache + menu (`scripts/stage-kernel.py`) |
+| `esp` | UEFI, BootShim and the menu onto EFIESP; an "iOS (UEFI)" entry in the BCD |
+| `kernel` | the kernel onto /cache, the menu configuration onto EFIESP |
+
+Other commands: `status`, `update` (a newer kernel release: fetch, stage, push), `restore-bcd` (the BCD
+from the first backup). If EFIESP already has a UniXNU install from elsewhere, `esp` stops and lists
+the files it would replace; `--force` replaces them.
+
+## The manual procedure
+
+This is the procedure used on our phone, written so someone else can repeat it. Read it all first.
 
 > **What gets changed on the phone:** a new GPT partition (`ios`) carved out of Android's `userdata`,
 > files added to EFIESP (UEFI, the UniXNU menu), the Windows boot configuration (BCD) and files in
@@ -49,8 +88,9 @@ Also copy the BCD itself: `\EFI\Microsoft\BOOT\BCD` from EFIESP.
 
 ## 2. Make the `ios` partition
 
-Partition numbers and sectors below are from our phone: **check yours with `sgdisk -p /dev/block/mmcblk0`
-and recompute.** `userdata` was p54, the last partition.
+Partition numbers and sectors below are from our phone: **check yours with `sgdisk --print /dev/block/mmcblk0`
+and recompute.** `userdata` was p54, the last partition. Android's `sgdisk` (AOSP's build) only takes
+long options with `=`: `-p` and `-i 54` fail with "invalid option".
 
 1. In **TWRP** (it mounts `userdata` at `/sdcard`, unmount it first):
    ```sh
@@ -60,9 +100,10 @@ and recompute.** `userdata` was p54, the last partition.
 2. Reboot to **Android**, then recreate p54 smaller with the **same** start sector, type, unique GUID and
    name, and add p55 for iOS (type AF00, Apple HFS+, name `ios`):
    ```sh
-   sgdisk -i 54 /dev/block/mmcblk0                  # note the type and unique GUIDs and first sector
-   sgdisk -d 54 -n 54:8323072:25100287 -t 54:<type GUID> -u 54:<unique GUID> -c 54:userdata \
-          -n 55:25100288:61069311 -t 55:AF00 -c 55:ios /dev/block/mmcblk0
+   sgdisk --info=54 /dev/block/mmcblk0              # note the type and unique GUIDs and first sector
+   sgdisk --delete=54 --new=54:8323072:25100287 --typecode=54:<type GUID> \
+          --partition-guid=54:<unique GUID> --change-name=54:userdata \
+          --new=55:25100288:61069311 --typecode=55:AF00 --change-name=55:ios /dev/block/mmcblk0
    ```
 3. Reboot, check that Android's data is intact and that `/dev/block/by-name/ios` exists.
 
@@ -152,8 +193,8 @@ python3 /path/to/this/repo/scripts/stage-kernel.py --kernel out/lumia950/kernel/
 - `rd=disk0s55`: the `ios` partition's BSD name in iOS. It is the partition's GPT index on our phone
   (55); change it if yours differs.
 - `--unique-chip-id` is a 64-bit seed for the device tree's identity; keep the same value across builds.
-- `--ntfs-driver` takes any UEFI filesystem driver: here EfiFs's ext2 driver, staged as `Drivers/ext2.efi`.
-  In `boot/EFI/UniXNU/unixnu.toml`, change `Drivers/ntfs.efi` to `Drivers/ext2.efi`.
+- `--ntfs-driver` takes any UEFI filesystem driver: here EfiFs's ext2 driver. It is staged as
+  `Drivers/ntfs.efi` and the generated `unixnu.toml` loads it under that name.
 
 Copy the `boot/EFI/BOOT` and `boot/EFI/UniXNU` trees onto EFIESP once (mount it from Android:
 `mount -t vfat /dev/block/mmcblk0p35 /data/local/tmp/esp`). From then on, for every new kernel:

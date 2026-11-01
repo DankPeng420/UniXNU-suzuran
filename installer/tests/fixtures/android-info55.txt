@@ -1,0 +1,7 @@
+Partition GUID code: 48465300-0000-11AA-AA11-00306543ECAC (Apple HFS/HFS+)
+Partition unique GUID: 1C0A2B3D-0000-4000-8000-000000000055
+First sector: 25100288 (at 12.0 GiB)
+Last sector: 61069311 (at 29.1 GiB)
+Partition size: 35969024 sectors (17.2 GiB)
+Attribute flags: 0000000000000000
+Partition name: 'ios'

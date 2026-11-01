@@ -12,10 +12,12 @@ This repository is a fork of [TwisstedToast/UniXNU-lumia950](https://github.com/
 the UniXNU board for the smaller Lumia 950 (MSM8992). The `lumia950xl` branch adds the 950 XL work on
 top of commit `06d490c` of that repository. `main` still tracks upstream.
 
-> **No Apple software is included or distributed here.** The kernel is built from Apple's open-source
-> XNU, and the iOS userland comes from Apple's own iPhone X firmware image, which the tools download
-> from Apple and convert on your machine. Use this only on hardware you own, at your own risk:
-> it repartitions the phone's internal storage.
+> **What comes from Apple.** The source tree here contains no Apple binaries. The kernel is built
+> from Apple's open-source XNU, but the **prebuilt kernel in the GitHub releases also contains Apple's
+> own kernel extensions**, prelinked from the iOS 16.7.16 kernelcache (as every UniXNU kernel is).
+> The iOS userland is never distributed: the installer downloads Apple's iPhone X firmware image from
+> Apple and converts it on your machine. Use this only on hardware you own, at your own risk: it
+> repartitions the phone's internal storage.
 
 ## What works
 
@@ -40,13 +42,20 @@ Hardware facts measured on the phone (clocks, rails, fuses, PMIC, touch): [docs/
 
 ## Trying it
 
-[docs/lumia950xl/INSTALL.md](docs/lumia950xl/INSTALL.md) has the full procedure. In short, you need:
+You need a Lumia 950 XL that already runs Android (LineageOS) through the usual Lumia boot route,
+with root `adb`, TWRP, and the Windows boot manager still on EFIESP, plus a Mac with ~35 GB free.
+The installer does the rest (no Windows PC or Xcode needed):
 
-- a Lumia 950 XL that already runs Android (LineageOS) through the usual Lumia boot route, with
-  root `adb`, TWRP, and the Windows boot manager still on EFIESP;
-- a Mac with Xcode (the kernel build needs the iPhoneOS SDK) and ~60 GB free;
-- a Windows PC (or VM) for `bcdedit`;
-- patience: the first iOS boot takes several minutes, and every step is manual.
+```sh
+python3 installer/install.py install --dry-run   # what it would do, changing nothing
+python3 installer/install.py install             # backup, partition, download, build, write, stage
+python3 installer/install.py boot                # start iOS once
+```
+
+It backs up EFIESP, the BCD, the GPT and `/data` first, asks you to type a confirmation before it
+repartitions or writes, and downloads a prebuilt kernel from this repository's releases. The iOS root
+is built from Apple's IPSW on your Mac. [docs/lumia950xl/INSTALL.md](docs/lumia950xl/INSTALL.md)
+describes each stage and the same procedure by hand (which needs a kernel build: Xcode, ~60 GB).
 
 The phone keeps Android: iOS lives in its own GPT partition, and each iOS boot is a one-shot entry
 in the Windows boot manager, so the next restart goes back to Android.
@@ -60,6 +69,7 @@ in the Windows boot manager, so the next restart goes back to Android.
 | `scripts/` | device tree (`make-lumia950-adt.py`), staging (`stage-kernel.py`), iOS root image (`mkiosroot-root.sh`, `stage-ios-root.py`), log readers |
 | `ci/` | patches the board applies to UniXNU and DarwinBoot |
 | `unixnu-overlay/` | our extra XNU overlay patches for UniXNU (`patches/xnu-8796/`) |
+| `installer/` | `install.py` (the Mac installer), a BCD editor (`bcd.py`, `regf.py`), pinned downloads (`manifest.toml`), `make-release.py`, tests |
 | `tools/phone/` | `adb` helpers: push a kernel, arm a one-shot iOS boot, write the iOS root, pull logs |
 | `docs/lumia950xl/` | status, journal, hardware notes, install guide |
 

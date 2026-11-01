@@ -1,0 +1,65 @@
+Disk /dev/block/mmcblk0: 61071360 sectors, 29.1 GiB
+Sector size (logical): 512 bytes
+Disk identifier (GUID): 1C0A2B3D-0000-4000-8000-0000000000D1
+Partition table holds up to 128 entries
+Main partition table begins at sector 2 and ends at sector 33
+First usable sector is 34, last usable sector is 61071326
+Partitions will be aligned on 64-sector boundaries
+Total free space is 85980 sectors (42.0 MiB)
+
+Number  Start (sector)    End (sector)  Size       Code  Name
+   1            4096           20479   8.0 MiB     0700  DPP
+   2           20480           23551   1.5 MiB     A02A  MODEM_FSG
+   3           24576           27647   1.5 MiB     A027  MODEM_FS1
+   4           28672           31743   1.5 MiB     A028  MODEM_FS2
+   5           32768           32799   16.0 KiB    A029  MODEM_FSC
+   6           36864           38911   1024.0 KiB  A01A  DDR
+   7           40960           41215   128.0 KiB   A01D  SEC
+   8           45056           45567   256.0 KiB   A022  APDP
+   9           49152           49663   256.0 KiB   A023  MSADP
+  10           53248           53279   16.0 KiB    A024  DPO
+  11           57344           90111   16.0 MiB    FFFF  LogFS
+  12           90112           90143   16.0 KiB    A02C  SSD
+  13           94208           94719   256.0 KiB   FFFF  BACKUP_BS_NV
+  14           98304           98815   256.0 KiB   FFFF  UEFI_RT_NV
+  15          102400          102431   16.0 KiB    A040  LIMITS
+  16          106496          108543   1024.0 KiB  A012  SBL1
+  17          110592          111615   512.0 KiB   A01E  PMIC
+  18          114688          114783   48.0 KiB    A019  DBI
+  19          118784          122879   2.0 MiB     A015  UEFI
+  20          122880          123879   500.0 KiB   A018  RPM
+  21          126976          129023   1024.0 KiB  A016  TZ
+  22          131072          132071   500.0 KiB   A017  HYP
+  23          135168          136191   512.0 KiB   FFFF  WINSECAPP
+  24          139264          172031   16.0 MiB    FFFF  TZAPPS
+  25          172032          174079   1024.0 KiB  FFFF  BACKUP_SBL1
+  26          176128          177151   512.0 KiB   FFFF  BACKUP_PMIC
+  27          180224          180319   48.0 KiB    FFFF  BACKUP_DBI
+  28          184320          188415   2.0 MiB     FFFF  BACKUP_UEFI
+  29          188416          189415   500.0 KiB   FFFF  BACKUP_RPM
+  30          192512          194559   1024.0 KiB  FFFF  BACKUP_TZ
+  31          196608          197607   500.0 KiB   FFFF  BACKUP_HYP
+  32          200704          201727   512.0 KiB   FFFF  BACKUP_WINSECAPP
+  33          204800          237567   16.0 MiB    FFFF  BACKUP_TZAPPS
+  34          237568          253951   8.0 MiB     FFFF  PLAT
+  35          253952          319487   32.0 MiB    0700  EFIESP
+  36          319488          321535   1024.0 KiB  8300  aboot
+  37          321536          391167   34.0 MiB    8300  boot
+  38          391168          460799   34.0 MiB    8300  recovery
+  39           94720           95231   256.0 KiB   FFFF  UEFI_BS_NV
+  40              64              64   512 bytes   FFFF  IS_UNLOCKED
+  41          460800          493567   16.0 MiB    8300  misc
+  42          493568          636927   70.0 MiB    8300  modem
+  43          636928          944127   150.0 MiB   8300  cache
+  44          944128         1083391   68.0 MiB    8300  persist
+  45         1083392         1222655   68.0 MiB    8300  persistent
+  46         1222656         1224703   1024.0 KiB  8300  fsc
+  47         1224704         1228799   2.0 MiB     8300  fsg
+  48         1228800         1232895   2.0 MiB     8300  metadata
+  49         1232896         1236991   2.0 MiB     8300  ssd
+  50         1236992         1241087   2.0 MiB     8300  modemst1
+  51         1241088         1245183   2.0 MiB     8300  modemst2
+  52         1245184         2031615   384.0 MiB   8300  vendor
+  53         2031616         8323071   3.0 GiB     8300  system
+  54         8323072        25100287   8.0 GiB     8300  userdata
+  55        25100288        61069311   17.2 GiB    AF00  ios
