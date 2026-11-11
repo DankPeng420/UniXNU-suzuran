@@ -624,6 +624,14 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
+      - name: Build the user-space test programs
+        # Ours only (no Apple code): published on the ci-results branch with their code-directory hashes.
+        if: always()
+        run: |
+          rm -rf "$RUNNER_TEMP/userland"
+          OUT="$RUNNER_TEMP/userland" bash userland/build.sh > userland.log 2>&1 || echo "userland build FAILED" >> userland.log
+          cat userland.log
+
       - name: Publish the text results to the ci-results branch
         # Logs, error summary and hashes only: the kernel image itself contains Apple's
         # kexts and stays an Actions artifact.
@@ -631,7 +639,8 @@ jobs:
         run: |
           set +e
           R="$RUNNER_TEMP/ci-results"; mkdir -p "$R/run"
-          cp kernel.log "$R/run/" 2>/dev/null
+          cp kernel.log userland.log "$R/run/" 2>/dev/null
+          [ -d "$RUNNER_TEMP/userland" ] && cp -r "$RUNNER_TEMP/userland" "$R/run/userland"
           for f in "$UNIXNU_OUT"/*/logs/*.log; do [ -f "$f" ] && cp "$f" "$R/run/"; done
           { echo "run ${{ github.run_id }} attempt ${{ github.run_attempt }} sha ${{ github.sha }} status ${{ job.status }}"
             date -u

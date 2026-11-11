@@ -21,6 +21,7 @@
 // Boot-arg nativegpu=0 skips everything.
 #include <IOKit/IOService.h>
 #include <IOKit/IOUserClient.h>
+#include <IOKit/IOKitKeys.h>
 #include <IOKit/IOLib.h>
 #include <IOKit/IOLocks.h>
 #include <IOKit/IOMemoryDescriptor.h>
