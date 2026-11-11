@@ -487,6 +487,16 @@ jobs:
           else
             git -C unixnu apply "$GITHUB_WORKSPACE/ci/unixnu-16x.patch"
           fi
+          # The board's own overlay (docs/lumia950xl/INSTALL.md step 5): the XNU patches that
+          # define the symbols the drivers link against (native_aks_*, native_console_muted, ...)
+          # and the build-script change for NativeSdhci.
+          mkdir -p unixnu/patches/xnu-8796
+          cp unixnu-overlay/patches/xnu-8796/*.patch unixnu/patches/xnu-8796/
+          if patch -p1 -d unixnu --dry-run -R -s -f < unixnu-overlay/build-xnu-4k-baseline-native-sdhci.patch >/dev/null 2>&1; then
+            echo "build-script overlay already present"
+          else
+            patch -p1 -d unixnu < unixnu-overlay/build-xnu-4k-baseline-native-sdhci.patch
+          fi
 
       - name: Report the runner toolchain
         run: |
