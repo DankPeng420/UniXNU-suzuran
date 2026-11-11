@@ -1,0 +1,85 @@
+== submodules /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/unixnu
+== tree /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree
+== kernel: XNU
+== kernel: bootstrap pass for the compile records
++ bash /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-xnu-4k-baseline.sh
+ 1612 |         uint32_t maxlen = kcdata_iter_size(iter) - offset;
+      |                  ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/libsa/lastkerneldataconst.c:29:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/mach/vm_param.h:607:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  607 |         vm_offset_t ptr = params.vmpp_base +
+      |                     ^
+2 warnings generated.
+             CC version.o
+clang: warning: no such include directory: '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libsa' [-Wmissing-include-dirs]
+             LD mach.development.bcm2837.unstripped
+ld: warning: directory not found for option '-L/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/fakeroot/usr/local/lib/kernel/platform'
+ld: warning: directory not found for option '-L/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/fakeroot/usr/local/lib/kernel/platform'
+Undefined symbols for architecture arm64:
+  "_native_legacy_display_probe", referenced from:
+      _bsd_init in bsd_init.o
+  "_native_panic_flush", referenced from:
+      _handle_debugger_trap in debug.o
+  "_native_sdhci_bytes", referenced from:
+      _native_media_report in IOStartIOKit.cpo
+  "_native_sdhci_reads", referenced from:
+      _native_media_report in IOStartIOKit.cpo
+  "_native_sdhci_writes", referenced from:
+      _native_media_report in IOStartIOKit.cpo
+ld: symbol(s) not found for architecture arm64
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)
+make[3]: *** [/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837//mach.development.bcm2837.unstripped] Error 1
+make[2]: *** [build_all] Error 2
+make[1]: *** [build_all_bootstrap_DEVELOPMENT^ARM64^BCM2837] Error 2
+make: *** [build] Error 2
+build-xnu-4k-baseline.sh: line 857: make -C .cache/xnu-work "${XNU_BUILD_TARGET:-build}" SDKROOT="${XNU_SDKROOT:-iphoneos}" ARCH_CONFIGS=ARM64 MACHINE_CONFIGS=BCM2837 KERNEL_CONFIGS=DEVELOPMENT ARCH_STRING_FOR_CURRENT_MACHINE_CONFIG=arm64 LARGE_MEMORY_DEFINE=-UARM_LARGE_MEMORY ARM64_LINK_ADDR=0xfffffff007004000 ARM64_PLKSEG_ADDR=0xfffffff004004000 DEPLOYMENT_TARGET_FLAGS="-miphoneos-version-min=17.0 -DXNU_TARGET_OS_IOS" DEPLOYMENT_LINKER_FLAGS="-Wl,-ios_version_min,17.0" RC_DARWIN_KERNEL_VERSION="$XNU_DARWIN" RC_ProjectSourceVersion="$XNU_VERSION" BUILD_LTO=0 BOUND_CHECKS=0 BUILD_WERROR="${XNU_BUILD_WERROR:-0}" MAKEJOBS=-j"${JOBS:-4}" CFLAGS_EXTRA="$EXTRA_CFLAGS" "${EXTRA_MAKE_ARGS[@]}" OBJROOT="$ROOT/build/xnu/ios-obj" SYMROOT="$ROOT/build/xnu/ios-sym" DSTROOT="$ROOT/build/xnu/ios-dst" failed
+== kernel: prepare storage headers
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/prepare-storage-headers.py
+== kernel: archive 1/18: build-corecrypto-14.py
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-corecrypto-14.py
+== kernel: archive 2/18: build-corecrypto-14.py --namespace
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-corecrypto-14.py --namespace
+== kernel: archive 3/18: build-arm-driver.py ArmDTPlatform
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py ArmDTPlatform
+== kernel: archive 4/18: build-arm-driver.py ArmCpu
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py ArmCpu
+== kernel: archive 5/18: build-native-sdhci16.py
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-native-sdhci16.py
+== kernel: archive 6/18: build-arm-driver.py NativeAdreno418
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeAdreno418
+== kernel: archive 7/18: build-arm-driver.py NativeMdss
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeMdss
+== kernel: archive 8/18: build-arm-driver.py NativeLegacyDisplay
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeLegacyDisplay
+== kernel: archive 9/18: build-native-aes16.py
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-native-aes16.py
+== kernel: archive 10/18: build-arm-driver.py NativeKeyStoreEvents
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeKeyStoreEvents
+== kernel: archive 11/18: build-arm-driver.py NativeWatchdog
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeWatchdog
+== kernel: archive 12/18: build-arm-driver.py NativeDisplay
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeDisplay
+== kernel: archive 13/18: build-arm-driver.py NativeTouch
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeTouch
+== kernel: archive 14/18: build-arm-driver.py NativeCpuClock
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeCpuClock
+== kernel: archive 15/18: build-arm-driver.py NativeBattery
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeBattery
+== kernel: archive 16/18: build-arm-driver.py NativeAdreno430
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeAdreno430
+== kernel: archive 17/18: build-arm-driver.py NativeAddon
++ python3 /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py NativeAddon
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeAddon/NativeAddon.cpp:47:10: error: use of undeclared identifier 'vnode_size'
+   47 |     if (!vnode_size(vp, &existing, ctx) && static_cast<uint64_t>(existing) == size) {
+      |          ^
+1 error generated.
+Traceback (most recent call last):
+  File "/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py", line 245, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/scripts/build-arm-driver.py", line 232, in main
+    subprocess.run(command, cwd=record["directory"], check=True)
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang', '-xc++', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeAddon/NativeAddon.cpp', '-o', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-addon/NativeAddon.o', '--driver-mode=g++', '-c', '-std=gnu++1z', '-fsized-deallocation', '-fapple-kext', '-g', '-nostdinc', '-ferror-limit=10000', '-fno-builtin', '-fno-common', '-ftrivial-auto-var-init=zero', '-fsigned-bitfields', '-fmerge-all-constants', '-fno-c++-static-destructors', '-fsanitize-minimal-runtime', '-fsanitize-ignorelist=/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/san/kasan-blacklist-arm64', '-fsanitize=signed-integer-overflow', '-D', 'ARM64_BOARD_CONFIG_BCM2837', '-arch', 'arm64', '-D', 'arm64', '-D', 'ARM64', '-D', '__ARM64__', '-D', 'LP64', '-D', 'PAGE_SIZE_FIXED', '-D', 'VM_KERNEL_LINK_ADDRESS=0xfffffff007004000', '-U', 'ARM_LARGE_MEMORY', '-momit-leaf-frame-pointer', '-fno-strict-aliasing', '-D', '__API__=v4', '-mkernel', '-D', 'IOASSERT=1', '-O2', '-mios-version-min=17.0', '-D', 'XNU_TARGET_OS_IOS', '-D', 'XNU_PLATFORM_iPhoneOS', '-D', 'APPLE', '-D', 'KERNEL', '-D', 'KERNEL_PRIVATE', '-D', 'XNU_KERNEL_PRIVATE', '-D', 'PRIVATE', '-D', '__MACHO__=1', '-D', 'volatile=__volatile', '-D', 'XNU_KERN_EVENT_DATA_IS_VLA', '-D', 'CURRENT_MACHINE_CONFIG_LC=bcm2837', '-D', 'INET', '-D', 'MACH', '-D', 'IF_FAKE', '-D', 'IF_HEADLESS', '-D', 'AH_ALL_CRYPTO', '-D', 'PF', '-D', 'DUMMYNET', '-D', 'TRAFFIC_MGT', '-D', 'MULTICAST', '-D', 'MULTIPATH', '-D', 'MPTCP', '-D', 'PSYNCH', '-D', 'FLOW_DIVERT', '-D', 'NECP', '-D', 'CONTENT_FILTER', '-D', 'PACKET_MANGLER', '-D', 'SKYWALK', '-D', 'CONFIG_NEXUS_USER_PIPE', '-D', 'CONFIG_NEXUS_KERNEL_PIPE', '-D', 'CONFIG_NEXUS_MONITOR', '-D', 'CONFIG_NEXUS_FLOWSWITCH', '-D', 'CONFIG_NEXUS_NETIF', '-D', 'SOCKETS', '-D', 'CONFIG_FSE', '-D', 'CONFIG_IMAGEBOOT', '-D', 'FIFO', '-D', 'FDESC', '-D', 'DEVFS', '-D', 'ROUTEFS', '-D', 'BINDFS', '-D', 'FS_COMPRESSION', '-D', 'NAMEDSTREAMS', '-D', 'CONFIG_MNT_ROOTSNAP', '-D', 'CONFIG_UNION_MOUNTS', '-D', 'NFSSERVER', '-D', 'CONFIG_NETBOOT', '-D', 'IPSEC', '-D', 'IPSEC_ESP', '-D', 'CRYPTO_SHA2', '-D', 'ZLIB', '-D', 'IF_BRIDGE', '-D', 'CONFIG_KN_HASHSIZE=48', '-D', 'CONFIG_NC_HASH=2048', '-D', 'CONFIG_VFS_NAMES=3072', '-D', 'CONFIG_MAX_CLUSTERS=4', '-D', 'CONFIG_MIN_NBUF=80', '-D', 'CONFIG_MIN_NIOBUF=64', '-D', 'CONFIG_NMBCLUSTERS=((1024 * 256) / MCLBYTES)', '-D', 'CONFIG_TCBHASHSIZE=128', '-D', 'CONFIG_AIO_MAX=20', '-D', 'CONFIG_AIO_PROCESS_MAX=8', '-D', 'CONFIG_AIO_THREAD_COUNT=2', '-D', 'CONFIG_MAXVIFS=16', '-D', 'CONFIG_MFCTBLSIZ=128', '-D', 'CONFIG_MSG_BSIZE_REL=16384', '-D', 'CONFIG_MSG_BSIZE_DEV=131072', '-D', 'CONFIG_MSG_BSIZE=CONFIG_MSG_BSIZE_DEV', '-D', 'CONFIG_IPC_TABLE_ENTRIES_SIZE_MAX=3145728', '-D', 'CONFIG_IPC_TABLE_REQUEST_SIZE_MAX=1048576', '-D', 'CONFIG_IPC_KERNEL_MAP_SIZE=32', '-D', 'CONFIG_EMBEDDED', '-D', 'CONFIG_PMAP_PPL', '-D', 'NOS_ARM_ASM', '-D', 'NOS_ARM_PMAP', '-D', 'CONFIG_DYNAMIC_CODE_SIGNING', '-D', 'CONFIG_ENFORCE_LIBRARY_VALIDATION', '-D', 'CONFIG_CODE_DECRYPTION', '-D', 'CONFIG_PROTECT', '-D', 'CONFIG_MEMORYSTATUS', '-D', 'CONFIG_JETSAM', '-D', 'CONFIG_FREEZE', '-D', 'CHECK_CS_VALIDATION_BITMAP', '-D', 'CONFIG_PHANTOM_CACHE', '-D', 'VM_PRESSURE_EVENTS', '-D', 'CONFIG_SECLUDED_MEMORY', '-D', 'CONFIG_IOSCHED', '-D', 'CONFIG_IO_ACCOUNTING', '-D', 'IMPORTANCE_INHERITANCE', '-D', 'IMPORTANCE_TRACE', '-D', 'CONFIG_TELEMETRY', '-D', 'CONFIG_PROC_UUID_POLICY', '-D', 'CONFIG_ECC_LOGGING', '-D', 'CONFIG_COREDUMP', '-D', 'CONFIG_VNGUARD', '-D', 'IOKITSTATS', '-D', 'IOTRACKING', '-D', 'CONFIG_SLEEP', '-D', 'CONFIG_MAX_THREADS=500', '-D', 'NO_KEXTD', '-D', 'NO_KERNEL_HID', '-D', 'LIBKERNCPP', '-D', 'CONFIG_BLOCKS', '-D', 'CONFIG_KEC_FIPS', '-D', 'CONFIG_PERSONAS', '-D', 'CONFIG_MACF', '-D', 'CONFIG_MACF_SOCKET_SUBSET', '-D', 'CONFIG_SETUID', '-D', 'CONFIG_SECURE_BSD_ROOT', '-D', 'CONFIG_KAS_INFO', '-D', 'CONFIG_ZLEAKS', '-D', 'KPERF', '-D', 'KPC', '-D', 'CONFIG_IOTRACE', '-D', 'PGO', '-D', 'DEVELOPMENT', '-D', 'MACH_BSD', '-D', 'IOKIT', '-D', 'CONFIG_THREAD_MAX=1536', '-D', 'CONFIG_TASK_MAX=512', '-D', 'CONFIG_ZONE_MAP_MIN=120586240', '-D', 'CONFIG_VC_PROGRESS_WHITE', '-D', 'CONFIG_SCHED_TRADITIONAL', '-D', 'CONFIG_SCHED_MULTIQ', '-D', 'CONFIG_SCHED_TIMESHARE_CORE', '-D', 'CONFIG_CLUTCH', '-D', 'CONFIG_PROB_GZALLOC', '-D', 'CONFIG_SCHED_DEFERRED_AST', '-D', 'MACH_KDP', '-D', 'CONFIG_SERIAL_KDP', '-D', 'CONFIG_KDP_INTERACTIVE_DEBUGGING', '-D', 'CONFIG_TASKWATCH', '-D', 'CONFIG_XNUPOST', '-D', 'PROC_REF_DEBUG', '-D', 'CONFIG_ATM', '-D', 'CONFIG_COALITIONS', '-D', 'CONFIG_SYSDIAGNOSE', '-D', 'SERIAL_CONSOLE', '-D', 'VIDEO_CONSOLE', '-D', 'CONFIG_REQUIRES_U32_MUNGING', '-D', 'CONFIG_MACH_BRIDGE_RECV_TIME', '-D', 'CONFIG_QUIESCE_COUNTER', '-D', 'CONFIG_SERVICE_PORT_INFO', '-D', 'SCHED_HYGIENE_DEBUG', '-D', 'ALTERNATE_DEBUGGER', '-D', 'CONFIG_VNODES=1024', '-D', 'CONFIG_FREEZE_SUSPENDED_MIN=4', '-D', 'CONFIG_MACH_APPROXIMATE_TIME', '-D', 'CONFIG_KERNEL_INTEGRITY', '-D', 'CONFIG_UBSAN_MINIMAL', '-D', 'XNU_NATIVE_PAN=0', '-D', 'XNU_SOURCE_CORECRYPTO14=1', '-D', 'XNU_BOOT_PROGRESS=0', '-include', 'meta_features.h', '-D', 'DRIVER_PRIVATE', '-D', 'IOKIT_KERNEL_PRIVATE', '-D', 'DRIVERKIT_PRIVATE=1', '-D', 'IOMATCHDEBUG=1', '-D', 'IOALLOCDEBUG=1', '-D', 'PRIVATE_WIFI_ONLY=1', '-I', '.', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/iokit', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/iokit', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/bsd', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/pexpert', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libsa', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/security', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/san', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/EXTERNAL_HEADERS', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/fakeroot/usr/local/include/kernel', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/fakeroot/usr/local/include', '-I', '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/fakeroot//System/Library/Frameworks/Kernel.framework/Versions/A/PrivateHeaders/platform', '-Xclang', '-clang-vendor-feature=+disableNonDependentMemberExprInCurrentInstantiation', '-Xclang', '-fno-odr-hash-protocols', '-Xclang', '-clang-vendor-feature=+enableAggressiveVLAFolding', '-Xclang', '-clang-vendor-feature=+revert09abecef7bbf', '-Xclang', '-clang-vendor-feature=+thisNoAlignAttr', '-Xclang', '-clang-vendor-feature=+thisNoNullAttr', '-Xclang', '-clang-vendor-feature=+disableAtImportPrivateFrameworkInImplementationError', '-mlinker-version=1167.5', '--target=arm64-apple-ios17.0.0', '-Wall', '-Wextra', '-Werror', '-Wno-unknown-warning-option', '-Wno-unused-parameter', '-Wno-c99-designator', '-Wno-reorder-init-list', '-Wno-deprecated-enum-enum-conversion', '-Wno-unnecessary-virtual-specifier']' returned non-zero exit status 1.
+unixnu: python3 failed (1); full log: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/logs/archive-17-build-arm-driver.log
