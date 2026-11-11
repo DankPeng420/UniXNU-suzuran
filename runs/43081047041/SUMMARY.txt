@@ -1,0 +1,8 @@
+run 43081047041 attempt 1 sha c105f5812cffd5b10518fc091614e2c1a5703dac status failure
+Wed Nov 11 18:59:16 UTC 2026
+6063: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6069: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7507: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+153795: 1386 |                 NETEM_LOG(LOG_ERR, "| error: invalid scheduler model %d",
+153806: 1392 |                 NETEM_LOG(LOG_ERR, "| error: corruption_p %d > %d",
+93511:clang++: error: linker command failed with exit code 1 (use -v to see invocation)
