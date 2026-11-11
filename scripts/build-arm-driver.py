@@ -191,7 +191,7 @@ def build_command(record, source, destination, include_dirs):
         index += 1
 
     command.extend([
-        "-Wall", "-Wextra", "-Werror", "-Wno-unused-parameter",
+        "-Wall", "-Wextra", "-Werror", "-Wno-unknown-warning-option", "-Wno-unused-parameter",
         "-Wno-c99-designator", "-Wno-reorder-init-list",
         "-Wno-deprecated-enum-enum-conversion", "-Wno-unnecessary-virtual-specifier",
     ])
