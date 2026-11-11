@@ -11,7 +11,7 @@ name = "lumia950"
 soc = "MSM8992"
 description = "Microsoft Lumia 950 — P1 build research"
 kit = "lumia950"                   # package/ of this repository becomes kits/lumia950
-# example guard cleared in the CI scratch copy
+example = true
 
 [kernel]
 defconfig = "lumia950_defconfig"
