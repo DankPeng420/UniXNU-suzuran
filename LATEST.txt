@@ -1,0 +1,8 @@
+run 43049711823 attempt 1 sha b92c6352b7b63317c8d6afa46200ac83732ac58a status success
+Wed Nov 11 15:44:00 UTC 2026
+8948: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+8954: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+11742: 2454 |         STARTUP_ARG(ZAled with error: 0x%x\n", err);
+118855:_%      ls| o>        ^~~~~~~~~~~~~~~~~~~~~~~~~~~g_error:
+149483: 1049 |         os_log_error:i(necp_dagned int, debta_trace_log_handle,9: note: expanded from macro 'IOFreeType'
+9e2cd15e9ac411a5041678ef41fb61c1fe03e025abfd0a1c145a2ce71355939d  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho
