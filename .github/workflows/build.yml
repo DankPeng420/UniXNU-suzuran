@@ -455,9 +455,8 @@ jobs:
     # suzuran: a push to the suzuran branch builds the kernel too (this fork's session can push
     # but cannot dispatch workflows); the text log is published to the ci-results branch.
     if: (github.event_name == 'workflow_dispatch' && (inputs.target == 'kernel' || inputs.target == 'both')) || (github.event_name == 'push' && github.ref == 'refs/heads/suzuran')
-    # suzuran: Intel runner by default (arm64 macOS runners were often not acquired at all); the repository
-    # variable MACOS_RUNNER (e.g. macos-latest) overrides it. The kernel is cross-built for arm64 either way.
-    runs-on: ${{ vars.MACOS_RUNNER || 'macos-15-intel' }}
+    # suzuran: the repository variable MACOS_RUNNER (e.g. macos-15-intel) overrides the runner.
+    runs-on: ${{ vars.MACOS_RUNNER || 'macos-latest' }}
     timeout-minutes: 360
     permissions:
       contents: write

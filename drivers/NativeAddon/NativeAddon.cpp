@@ -5,8 +5,8 @@
 // The phone has no shell and no way to copy files into the iOS root from outside (its HFS+ is journaled and
 // written by iOS itself). So the loader (v17) carries an archive in its payload, places it in the kernel window
 // and announces it as /chosen/memory-map "NativeAddon" (physical address, size). Once the root file system is
-// up, this driver writes each file whose content differs from what is there -- to "<path>.addon-new", then
-// renamed over the path, so a reader never sees half a file -- with the archive's mode and owner. Its own
+// up and launchd has read its job list (30 s later), this driver writes each file whose content differs from what
+// is there (unlink, then create: a program running from the old file keeps it) with the archive's mode and owner. Its own
 // property "AddonDone" (files written, files already current) tells a waiting program that it is finished.
 //
 // Archive (little endian): "SZADDON1", u32 count, u32 version (1); then per file:
@@ -26,7 +26,8 @@
 #include <sys/mount.h>
 
 extern "C" vm_offset_t ml_static_ptovirt(vm_offset_t);
-extern "C" errno_t vnode_rename(const char *from, const char *to, int flags, vfs_context_t ctx);
+// bsd/vfs/vfs_syscalls.c (not KPI, but this driver is linked into the kernel)
+extern "C" int unlink1(vfs_context_t ctx, vnode_t start_dvp, user_addr_t path, enum uio_seg segflg, int flags);
 
 namespace {
 
@@ -64,12 +65,13 @@ int differs(const char *path, const uint8_t *data, uint64_t size, vfs_context_t 
     return result;
 }
 
+// The old file is unlinked first (a program running from it keeps its pages) and the new one created in its place.
 int writeFile(const char *path, const Entry &e, const uint8_t *data, vfs_context_t ctx)
 {
-    char temp[1100];
-    snprintf(temp, sizeof temp, "%s.addon-new", path);
+    int error = unlink1(ctx, NULLVP, CAST_USER_ADDR_T(path), UIO_SYSSPACE, 0);
+    if (error && error != ENOENT) return error;
     vnode_t vp = nullptr;
-    int error = vnode_open(temp, FWRITE | O_CREAT | O_TRUNC, static_cast<int>(e.mode & 07777), 0, &vp, ctx);
+    error = vnode_open(path, FWRITE | O_CREAT | O_EXCL, static_cast<int>(e.mode & 07777), 0, &vp, ctx);
     if (error) return error;
     constexpr uint32_t kChunk = 1024 * 1024;
     for (uint64_t off = 0; !error && off < e.size; off += kChunk) {
@@ -91,7 +93,6 @@ int writeFile(const char *path, const Entry &e, const uint8_t *data, vfs_context
     }
     if (!error) error = VNOP_FSYNC(vp, MNT_WAIT, ctx);
     vnode_close(vp, FWRITE, ctx);
-    if (!error) error = vnode_rename(temp, path, 0, ctx);
     return error;
 }
 
@@ -137,6 +138,9 @@ void NativeAddon::run(void *self, wait_result_t)
         memcpy(&count, archive + 8, 4);
         IOLog("NativeAddon: archive of %u files (%llu bytes) at 0x%llx, root ready after %d ms\n", count, range[1],
               range[0], waited * 100);
+        // launchd reads its job list (one of the files this may replace) right after the root is mounted, and a file
+        // here is replaced by unlink + create, not atomically: wait until boot is well past that.
+        IOSleep(30000);
         uint64_t pos = 16;
         for (uint32_t i = 0; i < count; ++i) {
             Entry e;

@@ -107,7 +107,7 @@ static int submit_wait(struct bo *cmd, uint32_t dwords, struct bo *target, uint3
 int main(int argc, char **argv)
 {
     (void)argc;
-    io_service_t addon = wait_service("NativeAddon", "AddonDone", 120);
+    io_service_t addon = wait_service("NativeAddon", "AddonDone", 300);
     if (addon) IOObjectRelease(addon);
     if (!getenv("GPUTEST_AGAIN")) {   // this boot's addon may have replaced this program: run the one on disk
         setenv("GPUTEST_AGAIN", "1", 1);
