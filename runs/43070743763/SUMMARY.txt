@@ -1,0 +1,7 @@
+run 43070743763 attempt 1 sha 21bd9fb8987b7526df9c928e0c7af8733e4d4df5 status failure
+Wed Nov 11 17:46:22 UTC 2026
+8795: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+8801: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+10674: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+203575: 1386 |                 NETEM_LOG(LOG_ERR, "| error: invalid scheduler model %d",
+203586: 1392 |                 NETEM_LOG(LOG_ERR, "| error: corruption_p %d > %d",
