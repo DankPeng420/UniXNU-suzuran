@@ -42,9 +42,11 @@ int differs(const char *path, const uint8_t *data, uint64_t size, vfs_context_t 
 {
     vnode_t vp = nullptr;
     if (vnode_open(path, FREAD, 0, 0, &vp, ctx)) return 1;
-    off_t existing = -1;
+    struct vnode_attr va;
+    VATTR_INIT(&va);
+    VATTR_WANTED(&va, va_data_size);
     int result = 1;
-    if (!vnode_size(vp, &existing, ctx) && static_cast<uint64_t>(existing) == size) {
+    if (!vnode_getattr(vp, &va, ctx) && VATTR_IS_SUPPORTED(&va, va_data_size) && va.va_data_size == size) {
         constexpr uint32_t kChunk = 64 * 1024;
         uint8_t *buffer = static_cast<uint8_t *>(IOMalloc(kChunk));
         result = buffer ? 0 : 1;
