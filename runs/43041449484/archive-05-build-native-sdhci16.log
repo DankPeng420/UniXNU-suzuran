@@ -1,0 +1,7 @@
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeSdhci/NativeSdhci.cpp:603:40: warning: operand of ? changes signedness: 'char' to 'uint8_t' (aka 'unsigned char') [-Wsign-conversion]
+  603 |             logBuffer[i] = at < head ? native_console_ring[at & (ringBytes - 1)] : 0;
+      |                          ~             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+NativeSdhci: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-sdhci/libNativeSdhci.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-sdhci/libNativeSdhci.a
+NativeSdhci: 14 IOBlockStorageDevice imports bound
