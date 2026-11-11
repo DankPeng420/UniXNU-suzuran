@@ -1,0 +1,1506 @@
+skip zzz-boot-progress: the 8796 console has no vc_progress hook and no sleh.c; the boot screen is a 10063 feature
+skip zzy-staged-system-apps: builds on the owner Data mount this line does not have
+skip zzy-native-gpu-addon-mount: builds on the owner Data mount this line does not have
+skip offline-owner-systemos-mount: the owner chain, cryptex policy and its kern_exec hooks are 10063 only
+skip pgz-aligned-validation: XNU 8796 has no page-guard zones; zone_id_require_aligned does not exist
+skip public-entitlements-header: the 8796 necp client includes CodeSignature/Entitlements.h, not CoreEntitlements
+skip published-freezer-condition: the 8796 freezer has no FREEZE_ENABLED_DEFAULT flag to repair
+skip zzy-native-gpu-addon-mount: builds on the owner Data mount this line does not have
+skip zzy-staged-system-apps: builds on the owner Data mount this line does not have
+skip zzz-boot-progress: the 8796 console has no vc_progress hook and no sleh.c; the boot screen is a 10063 feature
+skip xnu-10063.141.1-security-init.patch: other source line
+skip xnu-10063.141.1-sparse-index.patch: other source line
+Restored 0 omitted public headers from Apple; blob hashes verified
+            C++ KernelConfigTables.cpo
+clang++: warning: no such include directory: '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libsa' [-Wmissing-include-dirs]
+     LDFILELIST iokit
+             CC startup.o
+             CC prng_random.o
+clang: warning: no such include directory: '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libsa' [-Wmissing-include-dirs]
+clang: warning: no such include directory: '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libsa' [-Wmissing-include-dirs]
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:29:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/locks.h:36:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/locks.h:34:
+In file included from In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:74:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/mach/thread_act.h:10:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/notify.h:68:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/message.h:813:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/debug.h:32:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kcdata.h:1612:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/locks.h:38:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/lock_types.h:31:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kern_types.h:36:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/mach_types.h: 1612 |         uint32_t maxlen = kcdata_iter_80:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/host_info.h:66size(iter) - offset;
+      |                  ^:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/message.h:813:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/debug.h:32:
+
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kcdata.h:1612:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 1612 |         uint32_t maxlen = kcdata_iter_size(iter) - offset;
+      |                  ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:74:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/mach/thread_act.h:11:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/mach_types.h:115:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/vm_param.h:607:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  607 |         vm_offset_t ptr = params.vmpp_base +
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:29:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/locks.h:36:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/locks.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/locks.h:38:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/lock_types.h:31:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kern_types.h:36:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/mach_types.h:115:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/mach/vm_param.h:607:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  607 |         vm_offset_t ptr = params.vmpp_base +
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:40:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.hIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:86:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.h:82:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched.h:77:
+:82:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched.h:77:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:225:7/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:225:7: warning: : warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  225 |           225 |         uuint int nnbitsbits__fillfilleed = d = ii * 6 * 644;
+      | ;
+      |              ^             ^
+
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:257:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:257:  257 |         uin7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]t nbi
+ts_fi  257 |         ulled = iint n * 64bits_;
+      |              ^fille
+d = i * 64;
+      |              ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:270:21/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:270:21: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]  270 |         return (bitmap
+_t *)kalloc  270 |         r_dataeturn(BITMAP_ (bitmapSIZE(_t *)nbitskallo), Z_c_datWAITOa(BITMAPK_ZERO);_SIZE(nb
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+its), Z_WAI/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:512:2TOK_Z: note: expanded from macro 'kalloc_data'
+E  512 |         kheaRO);
+      |                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~p_all
+o/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:512:2: note: expanded from macro 'kalloc_data'
+c(KHEAP_DATA_B  512 |         kUFFERheap_S, siallocze, f(KHEAlags)P_DATA_B
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+UFFERS/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:503:44, size, : note: expanded from macro 'kheap_alloc'
+flags)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  503 |         khea/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:503:44: note: p_alloc_tag(kallexpanded from macro 'kheap_alloc'
+oc_heap, size, fl  503 |         kags, VM_heap_alloc_tag(kALLOCalloc_SITE_heap_TAG(, size, ))
+      | flags        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/zalloc.h:2454:2: note: expanded from macro 'VM_ALLOC_SITE_TAG'
+ VM_ALLOC_S 2454 |         SITE_TTARTUAG())P_ARG
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+(ZALL/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/zalloc.h:2454:2OC, S: note: expanded from macro 'VM_ALLOC_SITE_TAG'
+TARTUP_RA 2454 |         SNK_LATARTUP_AST, __zoRG(ZALLOne_siC, STte_reARTUPgiste_RANKr, &s_LAST, __zone_siite);te_re   \
+giste      |         ^
+note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+r, /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: &siteexpanded from macro '__STARTUP1'
+);   \
+      |         ^
+  729 |             note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.hrank,:729:12: __ST note: expanded from macro '__STARTUP1'
+  729 | ARTUP            _FUNCrank,_CAST __ST(funcARTUP, a), b,_FUNC \
+      |                   ^
+_CAST/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6(func, a: note: expanded from macro '__STARTUP_FUNC_CAST'
+), b,   720 |          \
+      |                   ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:   (t6: note: expanded from macro '__STARTUP_FUNC_CAST'ypeof(func
+  720 | (a))(            *)(const(typeof( voidfunc( *))func
+      |             ^
+a))/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:501:63(*)(c: note: expanded from macro 'kheap_alloc_tag'
+o  501 |         __khnst veap_aoid *lloc())func
+      kallo|             ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.hc_hea:501:63:p, si note: expanded from macro 'kheap_alloc_tag'
+ze, __zo  501 |         _ne_fl_kheaags_mp_allix_taoc(kag(flalloc_gs, iheap,tag), size NULL)
+      , __zone|                                                                      ^~~~
+_flags_mix_tag(flags, itag), NULL)
+      |                                                                      ^~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:86:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.h:82:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched.h:77:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:267:1: warning: function bitmap_alloc might be an allocator wrapper [-Wallocator-wrappers]
+  267 | bitmap_alloc(uint nIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:bits)
+      | 34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:^
+35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:40:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.h:82:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched.h:/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:270:2: note: value obtained from allocator call is returned here
+77:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:267:1: warning:   270 |         returnfunction bitmap_alloc might be an allocator wrapper [-Wallocator-wrappers]
+ (b  267 | bitmaitmap_t *)kalloc_data(BIp_allTMAP_oc(uiSIZE(nt nbnbitsits)
+), Z_      | ^
+WAITOK_Z/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:270:2: note: ERO);value obtained from allocator call is returned here
+  270
+      |         ^
+ |         return (bitmap_t *)kalloc_data(BITMAP_SIZE(nbits), Z_WAITOK_ZERO);
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:335:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:335:7: warning:   335 |         umixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  335int n |         uinbits_t nbicomplts_coete =mplet i * e = i64;
+       * 64|              ^
+;
+      |              ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:431:10: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  431 |         int/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:431:1064_t i = bitmap: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+_index  431 |         i(prevnt64 - 1);
+_t i       |                 ^
+= bitmap_index(prev - 1);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:454:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  454 |         uint64_t i = bitm/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/bits.h:454:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ap_index(prev + 1);  454 |         u
+      |                  ^
+int64_t i = bitmap_index(prev + 1);
+      |                  ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:86:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.h:643:15: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  643 |                 pset_node_t node = pset->node;
+      |                             ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.h:610:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  610 |         uint old_state = processor->state;
+      |              ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:40:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.h:643:15: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  643 |                 pset_node_t node = pset->node;
+      |                             ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/processor.h:610:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  610 |         uint old_state = processor->state;
+      |              ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:45:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/thread.h:84:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread_kernel_state.h:31:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/vm/vm_kern.h:841:29: warning: bitwise operation between different enumeration types ('kmr_flags_t' and 'kmem_flags_t') [-Wenum-enum-conversion]
+  841 | __attribute__((diagnose_if(!KMEM_REALLOC_FLAGS_VALID(flags),
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/vm/vm_kern.h:793:27: note: expanded from macro 'KMEM_REALLOC_FLAGS_VALID'
+  793 |         (((flags) & (KMR_KOBJECT | KMEM_GUARD_LAST | KMEM_KASAN_GUARD)) == 0 || ((flags) & KMR_FREEOLD))
+      |                      ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:98:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/vm/vm_kern.h:841:29: warning: bitwise operation between different enumeration types ('kmr_flags_t' and 'kmem_flags_t') [-Wenum-enum-conversion]
+  841 | __attribute__((diagnose_if(!KMEM_REALLOC_FLAGS_VALID(flags),
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/vm/vm_kern.h:793:27: note: expanded from macro 'KMEM_REALLOC_FLAGS_VALID'
+  793 |         (((flags) & (KMR_KOBJECT | KMEM_GUARD_LAST | KMEM_KASAN_GUARD)) == 0 || ((flags) & KMR_FREEOLD))
+      |                      ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:117:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:85:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/waitq.h:49:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/mpsc_queue.h:218:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  218 |         return os_atomic_xchg(&q->mpqh_tail, elm, release);
+      |                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:637:37: note: expanded from macro 'os_atomic_xchg'
+  637 | #define os_atomic_xchg(p, v, m)     _os_atomic_c11_op_orig(p, v, m, exchange)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:86:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/turnstile.h:53:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/waitq.h:49:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/mpsc_queue.h:218:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  218 |         return os_atomic_xchg(&q->mpqh_tail, elm, release);
+      |                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:637:37: note: expanded from macro 'os_atomic_xchg'
+  637 | #define os_atomic_xchg(p, v, m)     _os_atomic_c11_op_orig(p, v, m, exchange)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:92:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_entry.h:127:1: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  127 | KALLOC_ARRAY_TYPE_DECL(ipc_entry_table, struct ipc_entry);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOC_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417:2: note: expanded from macro 'KALLOC_DISPATCH'
+ 1417 |         KALLOC_DISPATCH1(base, KALLOC_COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40: note: expanded from macro 'KALLOC_DISPATCH1'
+ 1415 | #define KALLOC_DISPATCH1(base, N, ...) __CONCAT(base, N)(__VA_ARGS__)
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:92:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_entry.h:127:1: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  127 | KALLOC_ARRAY_TYPE_DECL(ipc_entry_table, struct ipc_entry);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOCIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417:2: note: expanded from macro 'KALLOC_DISPATCH'
+ 1417 |         KALLOC_DISPATCH1(base, KALLOC_COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40: note: expanded from macro 'KALLOC_DISPATCH1'
+ 1415 | #define KALLOC_DISPATCH1(base, N, ...) __CONCAT(base, N)(__VA_ARGS__)
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:92:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_entry.h:127:1: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  127 | KALLOC_ARRAY_TYPIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:E_DECL(ipc_ent34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:92:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_entry.h:162:19: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  162 |         ipc_entry_bits_t newgen = IE_BITS_GEN_MASK + IE_BITS_GEN_ONE;
+      |                          ^
+ry_table, struct ipc_entry);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOC_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417:2: note: expanded from macro 'KALLOC_DISPATCH'
+ 1417 |         KALLOCIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:149:10: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  149 |         return (os_atomic_or_orig(&is->is_bits, bit, relaxed) & bit) == 0;
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:550:37: note: expanded from macro 'os_atomic_or_orig'
+  550 | #define os_atomic_or_orig(p, v, m)  _os_atomic_c11_op_orig(p, v, m, fet_DISPATCH1(base, KALLOC_ch_or)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:COUNT_ARGS(__VA_ARGS_46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:155:10: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  155 |         return (os_atomic_andnot_orig(&is->is_bits, bit, relaxed) & bit) != 0;
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:528:40: note: expanded from macro 'os_atomic_andnot_orig'
+  528 | #define os_atomic_andnot_orig(p, v, m) _os_atomic_c11_op_orig(p, (typeof(v))~(v), m, fetch_and)
+      |                                        ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+_), ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40: note: expanded from macro 'KALLOC_DISPATCH1'
+ 1415 | #define KALLOC_DISPATCH1(base, N, ...) __CONCAT(base, N)(__VA_ARGS__)
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:92:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_entry.h:127:1: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  127 | KALLOC_ARRAY_TYPE_DECL(ipc_entry_table, struct ipc_entry);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOC_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417:2: note: expanded from macro 'KALLOC_DISPATCH'
+ 1417 |         KALLOC_DISPATCH1(base, KALLOC_COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40: note: expanded from macro 'KALLOC_DISPATCH1'
+ 1415 | #define KALLOC_DISPATCH1(base, N, ...) __CONCAT(base, N)(__VA_ARGS__)
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsysteIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+m, rank,In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+ funcIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:, arg, arg)
+      224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:|         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12:116:1:: note: expanded from macro '__STARTUP1'
+ warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  729 |             r  116 | KAank, __SLLOC_TARTUARRAYP_FUN_TYPEC_CAS_DECLT(func, a), b, \(ipc_
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+port_r/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: equesexpanded from macro '__STARTUP_FUNC_CAST'
+t_table,  720 |           stru   (typect ipof(fuc_pornc(a)t_req)(*)(const void uest)*))fu;
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~nc
+      | 
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOC_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417:2: note: expanded from macro 'KALLOC_DISPATCH'
+ 1417 |         KALLOC_DISPATCH1(base, KALLOC_COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:
+127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:92/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_entry.h:162:: note: expanded from macro 'KALLOC_DISPATCH1'
+19: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 1415 | #define KAL  162 |         iLOC_Dpc_enISPATtry_bCH1(bits_t newgen = Iase, E_BITN, ...) __S_GEN_MASK + CONCAIE_BITS_T(basGEN_Oe, N)NE;
+      |                          ^
+(__VA_ARGS__)
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:const vo88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from id *)/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from )func/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h:149:10: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  149 |         return (os_atomic_or_orig(&is->is_bits, bit, relaxed) & bit) == 0;
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:550:37: note: expanded from macro 'os_atomic_or_orig'
+  550 | #defiIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+ne osIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+_atomIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+ic_orIn file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+_orig(p,In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h: v, m)  122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:116:1: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]_os_atom
+ic_c11_op  116 | KA_origLLOC_ARRAY(p, v_TYPE, m, fetch_or)
+      _DECL|                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:(ipc_14: note: expanded from macro '_os_atomic_c11_op_orig'port_
+  222 |         __auto_requetype st_ta_r = ble, os_atomic_std(atstrucomic_##ot ipc##_ex_portplici_requt)(\
+      |                     ^est);
+
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOC_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:91:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_space.h::2: note: 155:10: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+expanded from macro 'KALLOC_DISPATCH'  155 |         retu
+rn (os_a 1417 |         KtomicALLOC_andnot__DISPorig(ATCH1&is->(baseis_bi, KALts, bit,LOC_C relaOUNT_xed) ARGS(& bit__VA_) != ARGS_0;
+      |                 ^
+_), #/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:528:40#__VA: note: expanded from macro 'os_atomic_andnot_orig'
+_  528 | #defiARGS__)
+ne os      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+_at/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40omic_andnot_ori: note: expanded from macro 'KALLOC_DISPATCH1'
+ 1415 | #define KALLOC_DISPATCH1(base, N, ...) __CONCAT(bg(p, v,ase,  m) _N)(__VA_os_atomiARGS_c_c11_)
+      | _op_orig                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+(p,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2 (typ: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+eof(v))~(v), m, fetch_and)
+      |                                        ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:116:1: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  116 | KALLOC_ARRAY_TYPE_DECL(ipc_port_request_table, struct ipc_port_request);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOC_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417:2: note: expanded from macro 'KALLOC_DISPATCH'
+ 1417 |         KALLOC_DISPATCH1(base, KALLOC_COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40: note: expanded from macro 'KALLOC_DISPATCH1'
+ 1415 | #define KALLOC_DISPATCH1(base, N, ...) __CONCAT(base, N)(__VA_ARGS__)
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:122:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/task.h:127:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/ipc/ipc_port.h:116:1: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  116 | KALLOC_ARRAY_TYPE_DECL(ipc_port_request_table, struct ipc_port_request);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:951:2: note: expanded from macro 'KALLOC_ARRAY_TYPE_DECL'
+  951 |         KALLOC_DISPATCH(KALLOC_ARRAY_TYPE_DECL, ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1417:2: note: expanded from macro 'KALLOC_DISPATCH'
+ 1417 |         KALLOC_DISPATCH1(base, KALLOC_COUNT_ARGS(__VA_ARGS__), ##__VA_ARGS__)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/kalloc.h:1415:40: note: expanded from macro 'KALLOC_DISPATCH1'
+ 1415 | #define KALLOC_DISPATCH1(base, N, ...) __CONCAT(base, N)(__VA_ARGS__)
+      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 6 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:33:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/machine/machine_cpu.h:34:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/machine_cpu.h:35:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/cpu_data_internal.h:46:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap.h:43:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/arm/pmap/pmap.h:224:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:1265:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 1265 |         return os_atomic_or_orig(&thread->thread_tag, tag, relaxed);
+      |                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:550:37: note: expanded from macro 'os_atomic_or_orig'
+  550 | #define os_atomic_or_orig(p, v, m)  _os_atomic_c11_op_orig(p, v, m, fetch_or)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:274:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  274 |         uint64_t nonce = ml_get_timebase();
+      |                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:380:6: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  380 |         int i, t;
+      |             ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:88:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/sched_prim.h:76:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/thread.h:1265:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 1265 |         return os_atomic_or_orig(&thread->thread_tag, tag, relaxed);
+      |                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:550:37: note: expanded from macro 'os_atomic_or_orig'
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/prng/prng_random.c:417:16: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  417 |                 unsigned int bit = buffer[index] & 1;
+      |                              ^
+  550 | #define os_atomic_or_orig(p, v, m)  _os_atomic_c11_op_orig(p, v, m, fetch_or)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:111:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/vm/vm_map.h:92:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/vm/vm_object.h:90:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/vm/vm_page.h:503:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  503 |         vm_offset_t packed = VM_PACK_POINTER(p, VM_PAGE_PACKED_PTR);
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:219:1: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_startup_debug)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  219 | TUNABLE(startup_debug_t, startup_debug, "startup_debug", 0);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:227:2: note: expanded from macro 'TUNABLE'
+  227 |         __TUNABLE(type_t, var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:683:2: note: expanded from macro '__TUNABLE'
+  683 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  684 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:310:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  310 |         bool found_in_chosen = false;
+      |              ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:406:8: warning: format specifies type 'int' but the argument has underlying type 'uint32_t' (aka 'unsigned int') [-Wformat]
+  405 |                         kprintf("%s[%d, rank %d]: %p(%p)\n", __func__,
+      |                                     ~~
+      |                                     %u
+  406 |                             cur->subsystem, cur->rank, cur->func, cur->arg);
+      |                             ^~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:406:24: warning: format specifies type 'int' but the argument has underlying type 'uint32_t' (aka 'unsigned int') [-Wformat]
+  405 |                         kprintf("%s[%d, rank %d]: %p(%p)\n", __func__,
+      |                                              ~~
+      |                                              %u
+  406 |                            24 warnings generated.
+ cur->subsystem, cur->rank, cur->func, cur->arg);
+      |                                             ^~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:417:47: warning: format specifies type 'int' but the argument has underlying type 'uint32_t' (aka 'unsigned int') [-Wformat]
+  417 |                 kprintf("%s: reached phase %d\n", __func__, upto);
+      |                                            ~~               ^~~~
+      |                                            %u
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:564:32: warning: cast from 'void (*)(void)' to 'thread_continue_t' (aka 'void (*)(void *, int)') converts to incompatible function type [-Wcast-function-type-strict]
+  564 |         result = kernel_thread_create((thread_continue_t)kernel_bootstrap_thread, NULL, MAXPRI_KERNEL, &thread);
+      |                                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:567:44: warning: format specifies type 'unsigned int' but the argument has type 'kern_return_t' (aka 'int') [-Wformat]
+  567 |                 panic("kernel_bootstrap: result = %08X", result);
+      |                                                   ~~~~   ^~~~~~
+      |                                                   %08X
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/debug.h:589:27: note: expanded from macro 'panic'
+  589 |         (panic)(ex " @%s:%d", ## __VA_ARGS__, __FILE_NAME__, __LINE__); \
+      |                 ~~               ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:637:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  637 |         task_t task = current_task();
+      |                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:690:20: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  690 |                 const uintptr_t *frame = (const uintptr_t *)fp;
+      |                                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:681:18: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  681 |         const uintptr_t low = thread->kernel_stack;
+      |                         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:777:56: warning: format specifies type 'unsigned int' but the argument has type 'int' [-Wformat]
+  776 |         printf("SMP %s[%d] slide 0x%llx mh 0x%llx threads %u\n", name, pid, slide,
+      |                                                           ~~
+      |                                                           %d
+  777 |             (unsigned long long)task->mach_header_vm_address, task->thread_count);
+      |                                                               ^~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:789:7: warning: format specifies type 'unsigned int' but the argument has type 'int' [-Wformat]
+  788 |                 int n = snprintf(line, sizeof(line), "SMP %s t%d state 0x%x x16 %lld pc 0x%llx lr 0x%llx bt", name, index++,
+      |                                                                          ~~
+      |                                                                          %x
+  789 |                     thread->state, (long long)get_saved_state_reg(user, 16),
+      |                     ^~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:786:8: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  786 |                 char line[400];
+      |                      ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:778:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  778 |         vm_map_t map = get_task_map(task);
+      |                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:846:87: warning: format specifies type 'unsigned int' but the argument has type 'int' [-Wformat]
+  846 |                         printf("procmon: pid %d %s threads %u\n", pid, bsd ? proc_name_address(bsd) : "?", task->thread_count);
+      |                                                            ~~                                              ^~~~~~~~~~~~~~~~~~
+      |                                                            %d
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:851:28: warning: format specifies type 'unsigned int' but the argument has type 'int' [-Wformat]
+  850 |                                 printf("procmon:  tid %llu state 0x%x wait 0x%llx pc 0x%llx lr 0x%llx x16 %lld x0 0x%llx x1 0x%llx\n",
+      |                                                                    ~~
+      |                                                                    %x
+  851 |                                     thread->thread_id, thread->state, (unsigned long long)thread->wait_event,
+      |                                                        ^~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:827:30: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  827 |                         struct recount_times_mach times = recount_task_times(task);
+      |                                                   ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:814:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  814 |                 struct {
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:808:1: warning: function 'procmon_thread' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  808 | {
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:1072:62: warning: format specifies type 'unsigned int' but the argument has type 'kern_return_t' (aka 'int') [-Wformat]
+ 1072 |                 panic("kernel_do_post: Tests failed with result = 0x%08x", result);
+      |                                                                     ~~~~   ^~~~~~
+      |                                                                     %08x
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/debug.h:589:27: note: expanded from macro 'panic'
+  589 |         (panic)(ex " @%s:%d", ## __VA_ARGS__, __FILE_NAME__, __LINE__); \
+      |                 ~~               ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:1069:16: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 1069 |         kern_return_t result = kernel_list_tests();
+      |                       ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.c:1252:22: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 1252 |         struct recount_snap snap = { 0 };
+      |                             ^
+44 warnings generated.
+             CC ubc_subr.o
+clang: warning: no such include directory: '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libsa' [-Wmissing-include-dirs]
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:40:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/param.h:116:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/ucred.h:82:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/queue.h:63:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/debug.h:32:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kcdata.h:1612:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 1612 |         uint32_t maxlen = kcdata_iter_size(iter) - offset;
+      |                  ^
+     LDFILELIST osfmk
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:41:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/systm.h:105:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/malloc.h:80:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kalloc.h:65:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:72:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kern_types.h:36:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/mach/mach_types.h:115:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/mach/vm_param.h:607:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  607 |         vm_offset_t ptr = params.vmpp_base +
+      |                     ^
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:41:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/systm.h:108:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/vm.h:136:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/thread.h:98:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/vm/vm_kern.h:841:29: warning: bitwise operation between different enumeration types ('kmr_flags_t' and 'kmem_flags_t') [-Wenum-enum-conversion]
+  841 | __attribute__((diagnose_if(!KMEM_REALLOC_FLAGS_VALID(flags),
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/vm/vm_kern.h:793:27: note: expanded from macro 'KMEM_REALLOC_FLAGS_VALID'
+  793 |         (((flags) & (KMR_KOBJECT | KMEM_GUARD_LAST | KMEM_KASAN_GUARD)) == 0 || ((flags) & KMR_FREEOLD))
+      |                      ~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:44:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/mount_internal.h:85:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/vfs_context.h:9:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/user.h:89:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/eventvar.h:71:
+In file included from /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/pthread/workqueue_internal.h:70:
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/mpsc_queue.h:218:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  218 |         return os_atomic_xchg(&q->mpqh_tail, elm, release);
+      |                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:637:37: note: expanded from macro 'os_atomic_xchg'
+  637 | #define os_atomic_xchg(p, v, m)     _os_atomic_c11_op_orig(p, v, m, exchange)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:116:1: warning: cast from 'void (*)(struct zone_create_startup_spec *)' to 'typeof (zone_create_startup(&__startup_zone_spec_ubc_info_zone)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  116 | ZONE_DEFINE_TYPE(ubc_info_zone, "ubc_info zone", struct ubc_info,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  117 |     ZC_ZFREE_CLEARMEM);
+      |     ~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:1739:2: note: expanded from macro 'ZONE_DEFINE_TYPE'
+ 1739 |         ZONE_DEFINE(var, name, sizeof(type_t), flags); \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:1723:2: note: expanded from macro 'ZONE_DEFINE'
+ 1723 |         STARTUP_ARG(ZALLOC, STARTUP_RANK_FOURTH, zone_create_startup, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1724 |             &__startup_zone_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:204:2: note: expanded from macro 'STARTUP_ARG'
+  204 |         __STARTUP_ARG(func, __LINE__, subsystem, rank, func, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:125:1: warning: cast from 'void (*)(struct zone_create_startup_spec *)' to 'typeof (zone_create_startup(&__startup_zone_spec_126)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  125 | ZONE_DEFINE_ID(ZONE_ID_CS_BLOB, "cs_blob zone", struct cs_blob,
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  126 |     ZC_READONLY | ZC_ZFREE_CLEARMEM);
+      |     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:1756:2: note: expanded from macro 'ZONE_DEFINE_ID'
+ 1756 |         ZONE_INIT(NULL, name, sizeof(type_t), flags, zid, NULL)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:1774:2: note: expanded from macro 'ZONE_INIT'
+ 1774 |         __ZONE_INIT(__LINE__, var, name, size, flags, desired_zid, extra_setup)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:2423:2: note: expanded from macro '__ZONE_INIT'
+ 2423 |         __ZONE_INIT1(ns, var, name, size, flags, zid, setup) \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:176:13: warning: cast from 'void (*)(SHA1_CTX *)' (aka 'void (*)(struct sha1_ctxt *)') to 'cs_md_init' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  176 |         .cs_init = (cs_md_init)SHA1Init,
+      |                    ^~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:177:15: warning: cast from 'void (*)(SHA1_CTX *, const void *, size_t)' (aka 'void (*)(struct sha1_ctxt *, const void *, unsigned long)') to 'cs_md_update' (aka 'void (*)(void *, const void *, unsigned long)') converts to incompatible function type [-Wcast-function-type-strict]
+  177 |         .cs_update = (cs_md_update)SHA1Update,
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:178:14: warning: cast from 'void (*)(void *, SHA1_CTX *)' (aka 'void (*)(void *, struct sha1_ctxt *)') to 'cs_md_final' (aka 'void (*)(void *, void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  178 |         .cs_final = (cs_md_final)SHA1Final,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:185:13: warning: cast from 'void (*)(SHA256_CTX *)' to 'cs_md_init' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  185 |         .cs_init = (cs_md_init)SHA256_Init,
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:186:15: warning: cast from 'void (*)(SHA256_CTX *, const void *, size_t)' (aka 'void (*)(SHA256_CTX *, const void *, unsigned long)') to 'cs_md_update' (aka 'void (*)(void *, const void *, unsigned long)') converts to incompatible function type [-Wcast-function-type-strict]
+  186 |         .cs_update = (cs_md_update)SHA256_Update,
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:187:14: warning: cast from 'void (*)(void *, SHA256_CTX *)' to 'cs_md_final' (aka 'void (*)(void *, void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  187 |         .cs_final = (cs_md_final)SHA256_Final,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:193:13: warning: cast from 'void (*)(SHA256_CTX *)' to 'cs_md_init' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  193 |         .cs_init = (cs_md_init)SHA256_Init,
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:194:15: warning: cast from 'void (*)(SHA256_CTX *, const void *, size_t)' (aka 'void (*)(SHA256_CTX *, const void *, unsigned long)') to 'cs_md_update' (aka 'void (*)(void *, const void *, unsigned long)') converts to incompatible function type [-Wcast-function-type-strict]
+  194 |         .cs_update = (cs_md_update)SHA256_Update,
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:195:14: warning: cast from 'void (*)(void *, SHA256_CTX *)' to 'cs_md_final' (aka 'void (*)(void *, void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  195 |         .cs_final = (cs_md_final)SHA256_Final,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:201:13: warning: cast from 'void (*)(SHA384_CTX *)' (aka 'void (*)(struct SHA512_CTX *)') to 'cs_md_init' (aka 'void (*)(void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  201 |         .cs_init = (cs_md_init)SHA384_Init,
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:202:15: warning: cast from 'void (*)(SHA384_CTX *, const void *, size_t)' (aka 'void (*)(struct SHA512_CTX *, const void *, unsigned long)') to 'cs_md_update' (aka 'void (*)(void *, const void *, unsigned long)') converts to incompatible function type [-Wcast-function-type-strict]
+  202 |         .cs_update = (cs_md_update)SHA384_Update,
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:203:14: warning: cast from 'void (*)(void *, SHA384_CTX *)' (aka 'void (*)(void *, struct SHA512_CTX *)') to 'cs_md_final' (aka 'void (*)(void *, void *)') converts to incompatible function type [-Wcast-function-type-strict]
+  203 |         .cs_final = (cs_md_final)SHA384_Final,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:298:10: warning: format specifies type 'int' but the argument has type 'uint32_t' (aka 'unsigned int') [-Wformat]
+  297 |                                         printf("CODE SIGNING: unordered Scatter, prev base %d, cur base %d\n",
+      |                                                                                            ~~
+      |                                                                                            %u
+  298 |                                             sbase, new_base);
+      |                                             ^~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:298:17: warning: format specifies type 'int' but the argument has type 'uint32_t' (aka 'unsigned int') [-Wformat]
+  297 |                                         printf("CODE SIGNING: unordered Scatter, prev base %d, cur base %d\n",
+      |                                                                                                         ~~
+      |                                                                                                         %u
+  298 |                                             sbase, new_base);
+      |                                                    ^~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:288:13: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  288 |                         uint32_t new_base = ntohl(scatter->base);
+      |                                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:428:13: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  428 |                         uint32_t scount = ntohl(scatter->count);
+      |                                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:414:21: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  414 |                 const SC_Scatter *scatter = (const SC_Scatter *)
+      |                                   ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:466:18: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  466 |                 const uint8_t *ptr = (const uint8_t *)cd + ntohl(cd->teamOffset);
+      |                                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:592:102: warning: format specifies type 'unsigned int' but the argument has type 'int' [-Wformat]
+  592 |                                         printf("CodeDirectory type %d rank %d at slot 0x%x index %d\n", candidate->hashType, (int)rank, (int)type, (int)n);
+      |                                                                                         ~~                                              ^~~~~~~~~
+      |                                                                                         %x
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:599:81: warning: format specifies type 'int' but the argument has type 'unsigned int' [-Wformat]
+  599 |                                                 printf("using CodeDirectory type %d (rank %d)\n", (int)best_cd->hashType, best_rank);
+      |                                                                                           ~~                              ^~~~~~~~~
+      |                                                                                           %u
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:590:18: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  590 |                                 unsigned int rank = hash_rank(candidate);
+      |                                              ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:574:26: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  574 |                         const CS_GenericBlob *subBlob =
+      |                                               ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:746:13: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+  746 |                         uint32_t offset = ntohl(sb->index[n].offset);
+      |                                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:2102:19: warning: variable 'uip' set but not used [-Wunused-but-set-variable]
+ 2102 |         struct ubc_info *uip;
+      |                          ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3056:1: warning: cast from 'void (*)(struct sysctl_oid *)' to 'typeof (sysctl_register_oid_early(&sysctl__vm_cs_blob_count)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 3056 | SYSCTL_UINT(_vm, OID_AUTO, cs_blob_count, CTLFLAG_RD | CTLFLAG_LOCKED, &cs_blob_count, 0, "Current number of code signature blobs");
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:486:2: note: expanded from macro 'SYSCTL_UINT'
+  486 |         SYSCTL_OID(parent, nbr, name, CTLTYPE_INT|access, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  487 |             ptr, val, sysctl_handle_int, "IU", descr); \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:416:2: note: expanded from macro 'SYSCTL_OID'
+  416 |         __STARTUP_ARG(sysctl_##parent, _##name,                                 \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  417 |             SYSCTL, STARTUP_RANK_SECOND, sysctl_register_oid_early,             \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  418 |             &sysctl_##parent##_##name)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3057:1: warning: cast from 'void (*)(struct sysctl_oid *)' to 'typeof (sysctl_register_oid_early(&sysctl__vm_cs_blob_size)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 3057 | SYSCTL_ULONG(_vm, OID_AUTO, cs_blob_size, CTLFLAG_RD | CTLFLAG_LOCKED, &cs_blob_size, "Current size of all code signature blobs");
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:500:2: note: expanded from macro 'SYSCTL_ULONG'
+  500 |         SYSCTL_OID(parent, nbr, name, CTLTYPE_INT|access, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  501 |             ptr, 0, sysctl_handle_long, "LU", descr); \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:416:2: note: expanded from macro 'SYSCTL_OID'
+  416 |         __STARTUP_ARG(sysctl_##parent, _##name,                                 \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  417 |             SYSCTL, STARTUP_RANK_SECOND, sysctl_register_oid_early,             \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  418 |             &sysctl_##parent##_##name)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3058:1: warning: cast from 'void (*)(struct sysctl_oid *)' to 'typeof (sysctl_register_oid_early(&sysctl__vm_cs_blob_count_peak)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 3058 | SYSCTL_UINT(_vm, OID_AUTO, cs_blob_count_peak, CTLFLAG_RD | CTLFLAG_LOCKED, &cs_blob_count_peak, 0, "Peak number of code signature blobs");
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:486:2: note: expanded from macro 'SYSCTL_UINT'
+  486 |         SYSCTL_OID(parent, nbr, name, CTLTYPE_INT|access, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  487 |             ptr, val, sysctl_handle_int, "IU", descr); \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:416:2: note: expanded from macro 'SYSCTL_OID'
+  416 |         __STARTUP_ARG(sysctl_##parent, _##name,                                 \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  417 |             SYSCTL, STARTUP_RANK_SECOND, sysctl_register_oid_early,             \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  418 |             &sysctl_##parent##_##name)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3059:1: warning: cast from 'void (*)(struct sysctl_oid *)' to 'typeof (sysctl_register_oid_early(&sysctl__vm_cs_blob_size_peak)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 3059 | SYSCTL_ULONG(_vm, OID_AUTO, cs_blob_size_peak, CTLFLAG_RD | CTLFLAG_LOCKED, &cs_blob_size_peak, "Peak size of code signature blobs");
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:500:2: note: expanded from macro 'SYSCTL_ULONG'
+  500 |         SYSCTL_OID(parent, nbr, name, CTLTYPE_INT|access, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  501 |             ptr, 0, sysctl_handle_long, "LU", descr); \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:416:2: note: expanded from macro 'SYSCTL_OID'
+  416 |         __STARTUP_ARG(sysctl_##parent, _##name,                                 \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  417 |             SYSCTL, STARTUP_RANK_SECOND, sysctl_register_oid_early,             \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  418 |             &sysctl_##parent##_##name)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3060:1: warning: cast from 'void (*)(struct sysctl_oid *)' to 'typeof (sysctl_register_oid_early(&sysctl__vm_cs_blob_size_max)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 3060 | SYSCTL_ULONG(_vm, OID_AUTO, cs_blob_size_max, CTLFLAG_RD | CTLFLAG_LOCKED, &cs_blob_size_max, "Size of biggest code signature blob");
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:500:2: note: expanded from macro 'SYSCTL_ULONG'
+  500 |         SYSCTL_OID(parent, nbr, name, CTLTYPE_INT|access, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  501 |             ptr, 0, sysctl_handle_long, "LU", descr); \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/sys/sysctl.h:416:2: note: expanded from macro 'SYSCTL_OID'
+  416 |         __STARTUP_ARG(sysctl_##parent, _##name,                                 \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  417 |             SYSCTL, STARTUP_RANK_SECOND, sysctl_register_oid_early,             \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  418 |             &sysctl_##parent##_##name)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3089:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 3089 |         const char *name = ((const char *)cd) + ntohl(cd->teamOffset);
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3449:12: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 3449 |         vm_size_t new_blob_allocation_size = new_blob_size;
+      |                   ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3714:15: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 3714 |         vm_address_t new_superblob = 0;
+      |                      ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:3799:11: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 3799 |         uint32_t nCodeSlots = ntohl(new_cd->nCodeSlots);
+      |                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4142:35: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4142 |         unsigned int new_cs_blob_count = os_atomic_add(&cs_blob_count, 1, relaxed);
+      |                                          ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4143:26: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4143 |         if (new_cs_blob_count > os_atomic_load(&cs_blob_count_peak, relaxed)) {
+      |                                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:316:14: note: expanded from macro 'os_atomic_load'
+  316 |         __auto_type _r = os_atomic_std(atomic_load_explicit)( \
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4147:28: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4147 |         size_t new_cs_blob_size = os_atomic_add(&cs_blob_size, blob->csb_mem_size, relaxed);
+      |                                   ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4149:25: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4149 |         if (new_cs_blob_size > os_atomic_load(&cs_blob_size_peak, relaxed)) {
+      |                                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:316:14: note: expanded from macro 'os_atomic_load'
+  316 |         __auto_type _r = os_atomic_std(atomic_load_explicit)( \
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4152:27: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4152 |         if (blob->csb_mem_size > os_atomic_load(&cs_blob_size_max, relaxed)) {
+      |                                  ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:316:14: note: expanded from macro 'os_atomic_load'
+  316 |         __auto_type _r = os_atomic_std(atomic_load_explicit)( \
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4147:9: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4147 |         size_t new_cs_blob_size = os_atomic_add(&cs_blob_size, blob->csb_mem_size, relaxed);
+      |                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4567:10: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4567 |         errno_t err = ubc_cs_reconstitute_code_signature(
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5003:7: warning: format specifies type 'unsigned long long' but the argument has type 'off_t' (aka 'long long') [-Wformat]
+ 4999 |                     "range 0x%llx:0x%llx flags 0x%x\n",
+      |                              ~~~~
+      |                              %llx
+ 5000 |                     proc_getpid(p), p->p_comm,
+ 5001 |                     blob_ro->csb_cpu_type == -1 ? "detached" : "embedded",
+ 5002 |                     name,
+ 5003 |                     blob_ro->csb_base_offset + blob_ro->csb_start_offset,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5004:7: warning: format specifies type 'unsigned long long' but the argument has type 'off_t' (aka 'long long') [-Wformat]
+ 4999 |                     "range 0x%llx:0x%llx flags 0x%x\n",
+      |                                     ~~~~
+      |                                     %llx
+ 5000 |                     proc_getpid(p), p->p_comm,
+ 5001 |                     blob_ro->csb_cpu_type == -1 ? "detached" : "embedded",
+ 5002 |                     name,
+ 5003 |                     blob_ro->csb_base_offset + blob_ro->csb_start_offset,
+ 5004 |                     blob_ro->csb_base_offset + blob_ro->csb_end_offset,
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:4710:15: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 4710 |         unsigned int cs_flags = tmp_blob.csb_flags;
+      |                      ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5427:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5427 |                 os_atomic_add(&cs_blob_count, -1, relaxed);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5428:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5428 |                 os_atomic_add(&cs_blob_size, -blob->csb_mem_size, relaxed);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5451:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5451 |                 os_atomic_add(&cs_blob_count, -1, relaxed);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5452:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5452 |                 os_atomic_add(&cs_blob_size, -blob->csb_mem_size, relaxed);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5527:15: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5527 |         unsigned int cs_flags = (ntohl(cd->flags) & CS_ALLOWED_MACHO) | CS_VALID;
+      |                      ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5755:11: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 5755 |         buffer = kalloc_data(CS_NATIVE4K_CHUNK, Z_WAITOK);
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kalloc.h:512:2: note: expanded from macro 'kalloc_data'
+  512 |         kheap_alloc(KHEAP_DATA_BUFFERS, size, flags)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kalloc.h:503:44: note: expanded from macro 'kheap_alloc'
+  503 |         kheap_alloc_tag(kalloc_heap, size, flags, VM_ALLOC_SITE_TAG())
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:2454:2: note: expanded from macro 'VM_ALLOC_SITE_TAG'
+ 2454 |         STARTUP_ARG(ZALLOC, STARTUP_RANK_LAST, __zone_site_register, &site);   \
+      |         ^
+note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kalloc.h:501:63: note: expanded from macro 'kheap_alloc_tag'
+  501 |         __kheap_alloc(kalloc_heap, size, __zone_flags_mix_tag(flags, itag), NULL)
+      |                                                                      ^~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5775:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5775 |                 os_atomic_add(&cs_native4k_read_ticks, hash_start - read_start, relaxed);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5776:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5776 |                 os_atomic_add(&cs_native4k_bytes, (uint64_t)chunk_length, relaxed);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5799:5: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5799 |                                 os_atomic_inc(&cs_validate_page_bad_hash, relaxed);
+      |                                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:444:37: note: expanded from macro 'os_atomic_inc'
+  444 | #define os_atomic_inc(p, m)         _os_atomic_c11_op(p, 1, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5803:4: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5803 |                         os_atomic_inc(&cs_native4k_full_blocks, relaxed);
+      |                         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:444:37: note: expanded from macro 'os_atomic_inc'
+  444 | #define os_atomic_inc(p, m)         _os_atomic_c11_op(p, 1, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5813:3: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5813 |                 os_atomic_add(&cs_native4k_hash_ticks, mach_absolute_time() - hash_start, relaxed);
+      |                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:425:37: note: expanded from macro 'os_atomic_add'
+  425 | #define os_atomic_add(p, v, m)      _os_atomic_c11_op(p, v, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5770:18: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5770 |                 const uint64_t read_start = mach_absolute_time();
+      |                                ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5824:2: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5824 |         os_atomic_inc(&cs_native4k_ready_blobs, relaxed);
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:444:37: note: expanded from macro 'os_atomic_inc'
+  444 | #define os_atomic_inc(p, m)         _os_atomic_c11_op(p, 1, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5908:5: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5908 |                                 os_atomic_inc(&cs_native4k_page_checks, relaxed);
+      |                                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:444:37: note: expanded from macro 'os_atomic_inc'
+  444 | #define os_atomic_inc(p, m)         _os_atomic_c11_op(p, 1, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:5950:19: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 5950 |                 const uint32_t *asha1, *esha1;
+      |                                 ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6029:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg0)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6029 | static TUNABLE_STR(cs_text_fixup_arg0, 160, "text-fixup0", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6030:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg1)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6030 | static TUNABLE_STR(cs_text_fixup_arg1, 160, "text-fixup1", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6031:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg2)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6031 | static TUNABLE_STR(cs_text_fixup_arg2, 160, "text-fixup2", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6032:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg3)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6032 | static TUNABLE_STR(cs_text_fixup_arg3, 160, "text-fixup3", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6033:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg4)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6033 | static TUNABLE_STR(cs_text_fixup_arg4, 160, "text-fixup4", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6034:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg5)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6034 | static TUNABLE_STR(cs_text_fixup_arg5, 160, "text-fixup5", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6035:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg6)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6035 | static TUNABLE_STR(cs_text_fixup_arg6, 160, "text-fixup6", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6036:8: warning: cast from 'void (*)(const struct startup_tunable_spec *)' to 'typeof (kernel_startup_tunable_init(&__startup_TUNABLES_spec_cs_text_fixup_arg7)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6036 | static TUNABLE_STR(cs_text_fixup_arg7, 160, "text-fixup7", "");
+      |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:281:2: note: expanded from macro 'TUNABLE_STR'
+  281 |         __TUNABLE_STR(var, boot_arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:695:2: note: expanded from macro '__TUNABLE_STR'
+  695 |         __STARTUP_ARG(var, __LINE__, TUNABLES, STARTUP_RANK_FIRST, \
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  696 |             kernel_startup_tunable_init, &__startup_TUNABLES_spec_ ## var)
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:736:2: note: expanded from macro '__STARTUP_ARG'
+  736 |         __STARTUP1(name, line, subsystem, rank, func, arg, arg)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6083:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 6083 |         const char *s = comma + 1;
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6132:14: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 6132 |         const char *args[] = {
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6148:1: warning: cast from 'void (*)(void)' to 'typeof (cs_text_fixup_init()) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6148 | STARTUP(EARLY_BOOT, STARTUP_RANK_MIDDLE, cs_text_fixup_init);
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:195:2: note: expanded from macro 'STARTUP'
+  195 |         __STARTUP(func, __LINE__, subsystem, rank, func)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:733:2: note: expanded from macro '__STARTUP'
+  733 |         __STARTUP1(name, line, subsystem, rank, func, , NULL)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6172:7: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 6172 |                 if (os_atomic_inc(&cs_text_fixup_applied, relaxed) <= 16) {
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private.h:444:37: note: expanded from macro 'os_atomic_inc'
+  444 | #define os_atomic_inc(p, m)         _os_atomic_c11_op(p, 1, m, fetch_add, +)
+      |                                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:232:2: note: expanded from macro '_os_atomic_c11_op'
+  232 |         _os_atomic_c11_op_orig(p, _v, m, o) op _v; \
+      |         ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libkern/os/atomic_private_impl.h:222:14: note: expanded from macro '_os_atomic_c11_op_orig'
+  222 |         __auto_type _r = os_atomic_std(atomic_##o##_explicit)(\
+      |                     ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6166:12: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+ 6166 |                 uint8_t *at = (uint8_t *)kva + (f->offset - page_offset);
+      |                          ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/bsd/kern/ubc_subr.c:6438:28: warning: cast from 'void (*)(vm_allocation_site_t *)' (aka 'void (*)(struct vm_allocation_site *)') to 'typeof (__zone_site_register(&site)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+ 6438 |                         target_bitmap = (char*) kalloc_data((vm_size_t)bitmap_size, Z_WAITOK | Z_ZERO);
+      |                                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kalloc.h:512:2: note: expanded from macro 'kalloc_data'
+  512 |         kheap_alloc(KHEAP_DATA_BUFFERS, size, flags)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kalloc.h:503:44: note: expanded from macro 'kheap_alloc'
+  503 |         kheap_alloc_tag(kalloc_heap, size, flags, VM_ALLOC_SITE_TAG())
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/zalloc.h:2454:2: note: expanded from macro 'VM_ALLOC_SITE_TAG'
+ 2454 |         STARTUP_ARG(ZALLOC, STARTUP_RANK_LAST, __zone_site_register, &site);   \
+      |         ^
+note: (skipping 2 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:729:12: note: expanded from macro '__STARTUP1'
+  729 |             rank, __STARTUP_FUNC_CAST(func, a), b, \
+      |                   ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/startup.h:720:6: note: expanded from macro '__STARTUP_FUNC_CAST'
+  720 |             (typeof(func(a))(*)(const void *))func
+      |             ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/osfmk/kern/kalloc.h:501:63: note: expanded from macro 'kheap_alloc_tag'
+  501 |         __kheap_alloc(kalloc_heap, size, __zone_flags_mix_tag(flags, itag), NULL)
+      |                                                                      ^~~~
+78 warnings generated.
+     LDFILELIST bsd
+             CC version.o
+clang: warning: no such include directory: '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/EXPORT_HDRS/libsa' [-Wmissing-include-dirs]
+             LD mach.development.bcm2837.unstripped
+ld: warning: -new_linker is obsolete
+ld: warning: search path '/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/fakeroot/usr/local/lib/kernel/platform' not found
+ld: warning: -segment_order should list all segments, __PRELINK_TEXT is missing
+ld: warning: -segment_order should list all segments, __PRELINK_INFO is missing
+ld: warning: -segment_order should list all segments, __PLK_TEXT_EXEC is missing
+ld: warning: -segment_order should list all segments, __PRELINK_DATA is missing
+ld: warning: -segment_order should list all segments, __PLK_DATA_CONST is missing
+ld: warning: -segment_order should list all segments, __PLK_LLVM_COV is missing
+ld: warning: -segment_order should list all segments, __PLK_LINKEDIT is missing
+ld: warning: -segment_order should list all segments, __LINKINFO is missing
+ld: warning: -segment_order of __LINKEDIT is ignored, the segment must be ordered last
+       DSYMUTIL mach.development.bcm2837.dSYM
+        LIBTOOL mach.development.bcm2837.a
+libtool: warning: 'sched_amp.o' has no symbols
+libtool: warning: 'sched_amp_common.o' has no symbols
+libtool: warning: 'ptrauth_data_tests.o' has no symbols
+libtool: warning: 'pmap_cs.o' has no symbols
+libtool: warning: 'pmap_iommu.o' has no symbols
+libtool: warning: 'iofilter_asm.o' has no symbols
+libtool: warning: 'iofilter.o' has no symbols
+libtool: warning: 'gxf_exceptions.o' has no symbols
+libtool: warning: 'pinst.o' has no symbols
+libtool: warning: 'platform_tests_asm.o' has no symbols
+libtool: warning: 'net_stubs.o' has no symbols
+libtool: warning: 'classq_util.o' has no symbols
+libtool: warning: 'key_debug.o' has no symbols
+libtool: warning: 'ppl.o' has no symbols
+libtool: warning: 'sysv_shm.o' has no symbols
+libtool: warning: 'sysv_sem.o' has no symbols
+libtool: warning: 'sysv_msg.o' has no symbols
+libtool: warning: 'ptrauth_data_tests_sysctl.o' has no symbols
+libtool: warning: 'readonly_proc_tests_sysctl.o' has no symbols
+libtool: warning: 'skywalk_stubs.o' has no symbols
+libtool: warning: 'cpu_copy_in_cksum_gen.o' has no symbols
+libtool: warning: 'ctrr_test_sysctl.o' has no symbols
+libtool: warning: 'IOCommandQueue.cpo' has no symbols
+libtool: warning: 'TestIODeviceMemoryRosetta.cpo' has no symbols
+libtool: warning: 'AppleARMSMP.cpo' has no symbols
+warning: ignoring unknown option: --minimize
+          STRIP mach.development.bcm2837
+built kernel at /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/xnu/ios-obj/DEVELOPMENT_ARM64_BCM2837//mach.development.bcm2837
