@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [main]
+    branches: [main, suzuran]
   pull_request:
   workflow_dispatch:
     # Both manual jobs are long (edk2 and the macOS Xcode build) and are wanted
@@ -452,9 +452,13 @@ jobs:
   # The real compile. The kernel step needs macOS: Xcode and the iphoneos SDK.
   # Manual, because a first build takes a long time on a shared runner.
   kernel:
-    if: github.event_name == 'workflow_dispatch' && (inputs.target == 'kernel' || inputs.target == 'both')
+    # suzuran: a push to the suzuran branch builds the kernel too (this fork's session can push
+    # but cannot dispatch workflows); the text log is published to the ci-results branch.
+    if: (github.event_name == 'workflow_dispatch' && (inputs.target == 'kernel' || inputs.target == 'both')) || (github.event_name == 'push' && github.ref == 'refs/heads/suzuran')
     runs-on: macos-latest
     timeout-minutes: 360
+    permissions:
+      contents: write
     env:
       # prepare-xnu-source.py asks api.github.com for directory listings, and anonymous
       # calls are rate limited per IP; shared runner IPs are usually over the limit.
@@ -609,6 +613,28 @@ jobs:
             kernel.log
           if-no-files-found: warn
           retention-days: 7
+
+      - name: Publish the text results to the ci-results branch
+        # Logs, error summary and hashes only: the kernel image itself contains Apple's
+        # kexts and stays an Actions artifact.
+        if: always()
+        run: |
+          set +e
+          R="$RUNNER_TEMP/ci-results"; mkdir -p "$R/run"
+          cp kernel.log "$R/run/" 2>/dev/null
+          for f in "$UNIXNU_OUT"/*/logs/*.log; do [ -f "$f" ] && cp "$f" "$R/run/"; done
+          { echo "run ${{ github.run_id }} attempt ${{ github.run_attempt }} sha ${{ github.sha }} status ${{ job.status }}"
+            date -u
+            for f in "$UNIXNU_OUT"/*/logs/kernel*.log; do [ -f "$f" ] && grep -n -m 5 -E 'error:|fatal error' "$f"; done
+            find "$UNIXNU_OUT" -path '*/kernel/kernel.macho' -exec shasum -a 256 {} \;
+          } > "$R/run/SUMMARY.txt"
+          cd "$R"
+          git init -q && git checkout -q -b ci-results
+          mkdir -p "runs/${{ github.run_id }}" && mv run/* "runs/${{ github.run_id }}/" && rmdir run
+          cp "runs/${{ github.run_id }}/SUMMARY.txt" LATEST.txt
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "kernel run ${{ github.run_id }}: ${{ job.status }}"
+          git push -q "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" ci-results:ci-results-${{ github.run_id }}
 
       - name: Remove fetched sources
         if: always()
