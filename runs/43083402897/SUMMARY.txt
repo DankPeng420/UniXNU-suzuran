@@ -1,0 +1,8 @@
+run 43083402897 attempt 1 sha a6cdbec4655b855d057654684e837f07928514b3 status success
+Wed Nov 11 19:06:09 UTC 2026
+8772: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+8778: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+10681: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+209345: "| error: invalid scheduler mode 11347 |                           l %d",
+209430:%d Pro 1420 |                 to %d) Policy %d Result %d     "| error: relaxed);
+fb12941335ec710c1775132142aecb34c8fc58479040fd4065c79dba3974386b  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho
