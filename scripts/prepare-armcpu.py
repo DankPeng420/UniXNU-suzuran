@@ -12,7 +12,7 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_REVISION = "9066b53bbc82e92a98ec44a11dd50fd13eaf1a1b"
 SOURCE_SHA256 = "3c87b3bd617be5582a6a24ff797c359497ee9feaa702ee883ecee4270db21c9f"
-PATCHED_SHA256 = "9c3dd3bf727e6bfa20e85a8ede64f4d0b72de46f78650193c0a61e3b902de728"
+PATCHED_SHA256 = "a00844ff50266acb5ef7c7897efffb9dfd26b311231e05d411cc00cf06bec492"
 
 
 def digest(data):

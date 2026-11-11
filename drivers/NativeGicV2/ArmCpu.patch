@@ -278,6 +278,11 @@
  }
  
 -void ArmCpu::startThread (void *argument, wait_result_t)
+-{
+-  ArmCpu *self = static_cast<ArmCpu *> (argument);
+-  armcpu_smp_step[self->logicalId] = 3;
+-  // Blocks until the new core reaches the scheduler; a core that never arrives only stalls this helper thread.
+-  processor_start (self->machProcessor);
 +// Secondary cores are started one at a time, in logical order, each only after the previous one reached
 +// initCPU's end (step 7). On the Lumia (boot 9) seven concurrent CPU_ON calls all returned 0 but only the
 +// first core ever ran; the others stayed powered and silent, and the next cross-call that waited for them
@@ -288,11 +293,7 @@
 +volatile uint32_t armcpu_smp_stopped_at = 0;
 +
 +void ArmCpu::startThread (void *, wait_result_t)
- {
--  ArmCpu *self = static_cast<ArmCpu *> (argument);
--  armcpu_smp_step[self->logicalId] = 3;
--  // Blocks until the new core reaches the scheduler; a core that never arrives only stalls this helper thread.
--  processor_start (self->machProcessor);
++{
 +  const unsigned last = static_cast<unsigned> (ml_get_max_cpu_number ());
 +  for (unsigned id = 1; id <= last && id < ARMCPU_SMP_SLOTS; id++) {
 +    ArmCpu *self = nullptr;
@@ -470,16 +471,60 @@
    uint64_t value = 0;
    __asm__ volatile ("msr icc_igrpen1_el1, %0; dsb sy; isb" :: "r" (value) : "memory");
  }
-@@ -772,6 +969,8 @@
+@@ -757,6 +954,37 @@
+   __asm__ volatile ("dsb sy; isb" ::: "memory");
+ }
+ 
++// Spin table, for firmware without PSCI (the Xperia Z5 Compact's S1/kitakami TZ): the loader parks every secondary
++// core with the MMU off, polling the first u64 of a 64-byte slot (slot = aff1 * 4 + aff0) and jumping to it with x0 = 0
++// once it is non-zero. It announces the slots' physical base in /psci "spin-table-mailbox" (u64, 512-byte aligned).
++// Without that property startCPU issues PSCI CPU_ON as before.
++static uint64_t spinTableMailbox (void)
++{
++  IORegistryEntry *psci = IORegistryEntry::fromPath ("/psci", gIODTPlane);
++  if (psci == nullptr) { return 0; }
++  uint64_t mailbox = 0;
++  OSData *value = OSDynamicCast (OSData, psci->getProperty ("spin-table-mailbox"));
++  if (value != nullptr && value->getLength () == sizeof (mailbox)) { memcpy (&mailbox, value->getBytesNoCopy (), sizeof (mailbox)); }
++  psci->release ();
++  return (mailbox & 511) == 0 ? mailbox : 0;
++}
++
++static int64_t spinTableRelease (uint64_t mailbox, uint64_t mpidr, uint64_t entry)
++{
++  const uint64_t slot = ((mpidr >> 8) & 0xff) * 4 + (mpidr & 0xff);
++  if (slot >= ARMCPU_SMP_SLOTS) { return -2; }   // PSCI_INVALID_PARAMETERS
++  OSSharedPtr<IOMemoryDescriptor> memory (IOMemoryDescriptor::withPhysicalAddress (
++      mailbox & ~0xfffULL, 0x1000, kIODirectionInOut), OSNoRetain);
++  if (!memory) { return -9; }
++  OSSharedPtr<IOMemoryMap> map (memory->map (kIOMapAnywhere | kIOMapInhibitCache), OSNoRetain);
++  if (!map) { return -9; }
++  volatile uint64_t *release = reinterpret_cast<volatile uint64_t *> (
++      map->getVirtualAddress () + (mailbox & 0xfff) + slot * 64);
++  *release = entry;
++  __asm__ volatile ("dsb sy; sev" ::: "memory");
++  return 0;
++}
++
+ kern_return_t ArmCpu::startCPU (vm_offset_t, vm_offset_t)
+ {
+   if (!secondary) { return KERN_NOT_SUPPORTED; }
+@@ -770,8 +998,13 @@
+   cleanToMemory (ResetHandlerData, 0x1000);
+   cleanToMemory (const_boot_args, 0x1000);
    armcpu_smp_step[logicalId] = 4;
-   int64_t result = psciCall (hvc, 0xc4000003ULL, affinity & 0xff00ffffffULL, entry, 0);
+-  int64_t result = psciCall (hvc, 0xc4000003ULL, affinity & 0xff00ffffffULL, entry, 0);
++  const uint64_t mailbox = spinTableMailbox ();
++  int64_t result = mailbox != 0 ? spinTableRelease (mailbox, affinity, entry)
++                                : psciCall (hvc, 0xc4000003ULL, affinity & 0xff00ffffffULL, entry, 0);
    armcpu_smp_psci_rc[logicalId] = static_cast<int32_t> (result);
-+  IOLog ("ArmCpu: PSCI CPU_ON (%s) cpu %u mpidr 0x%llx entry 0x%llx -> %lld\n", hvc ? "hvc" : "smc", logicalId,
++  IOLog ("ArmCpu: %s cpu %u mpidr 0x%llx entry 0x%llx -> %lld\n",
++         mailbox != 0 ? "spin-table release" : (hvc ? "PSCI CPU_ON (hvc)" : "PSCI CPU_ON (smc)"), logicalId,
 +         affinity & 0xff00ffffffULL, entry, result);
    return result == 0 ? KERN_SUCCESS : KERN_FAILURE;
  }
  
-@@ -792,6 +991,21 @@
+@@ -792,6 +1025,21 @@
      if (gSpi[slot].id == intid) { return kIOReturnExclusiveAccess; }
    }
    if (used >= ARMCPU_SPI_SLOTS) { return kIOReturnNoResources; }

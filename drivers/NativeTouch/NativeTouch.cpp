@@ -25,6 +25,9 @@
 // PM8994 GPIO 3 and 4 (inputs pulled up, low = pressed). They are read-only, polled with the touch
 // controller every 12 ms and passed on after two equal reads: power, volume up/down, and the camera
 // button as Home (the iPhone X identity has no Home button, but SpringBoard still takes the event).
+#ifndef NATIVE_TARGET_SUZURAN
+#define NATIVE_TARGET_SUZURAN 1   // this fork targets the Xperia Z5 Compact; -DNATIVE_TARGET_SUZURAN=0 builds the Lumia values
+#endif
 #include <IOKit/IOService.h>
 #include <IOKit/IOLib.h>
 #include <IOKit/IOMemoryDescriptor.h>
@@ -34,20 +37,39 @@ namespace {
 
 constexpr uint64_t kGccPhys = 0xfc400000, kGccSize = 0x2000;
 constexpr uint64_t kTlmmPhys = 0xfd510000, kTlmmSize = 0x4000;
+// Xperia Z5 Compact (suzuran, NATIVE_TARGET_SUZURAN): the ClearPad sits at 0x2c on BLSP1 QUP6
+// (0xf9928000), SDA/SCL GPIO 27/28, interrupt GPIO 42, reset GPIO 109 ACTIVE HIGH (Sony kitakami
+// DTS: reset state output-high, running output-low). The loader powers it (L22, S4) and releases reset.
+#if NATIVE_TARGET_SUZURAN
+constexpr uint64_t kQupPhys = 0xf9928000, kQupSize = 0x1000;
+#else
 constexpr uint64_t kQupPhys = 0xf9923000, kQupSize = 0x1000;
+#endif
 constexpr uint64_t kSpmiPhys = 0xfc4c0000, kSpmiSize = 0x10000;
 
 // GCC (clock-gcc-8994.c)
 constexpr uint32_t kBranchVote = 0x1484, kBlsp1AhbVoteBit = 1u << 17;
+#if NATIVE_TARGET_SUZURAN
+// QUP6's branch and root (clock-gcc-8994.c); the k*Qup1* names are kept for the shared code below.
+constexpr uint32_t kBlsp1AhbCbcr = 0x05c4, kQup1I2cCbcr = 0x08c8;
+constexpr uint32_t kQup1I2cCmdRcgr = 0x08e0, kQup1I2cCfgRcgr = 0x08e4;
+#else
 constexpr uint32_t kBlsp1AhbCbcr = 0x05c4, kQup1I2cCbcr = 0x0648;
 constexpr uint32_t kQup1I2cCmdRcgr = 0x0660, kQup1I2cCfgRcgr = 0x0664;
+#endif
 constexpr uint32_t kCbcrOff = 1u << 31, kCbcrEnable = 1u << 0;
 constexpr uint32_t kRcgUpdate = 1u << 0, kRcgRootOff = 1u << 31;
 
 // TLMM (msm-tlmm-8974 layout): CFG pull[1:0] func[5:2] drive[8:6] oe[9]; IN_OUT in[0] out[1]
 constexpr uint32_t tlmmCfg(uint32_t gpio) { return 0x1000 + 0x10 * gpio; }
 constexpr uint32_t tlmmInOut(uint32_t gpio) { return 0x1004 + 0x10 * gpio; }
+#if NATIVE_TARGET_SUZURAN
+constexpr uint32_t kSda = 27, kScl = 28, kReset = 109, kIrq = 42, kQupFunc = 3;
+constexpr bool kResetActiveHigh = true;
+#else
 constexpr uint32_t kSda = 2, kScl = 3, kReset = 38, kIrq = 77, kQupFunc = 3;
+constexpr bool kResetActiveHigh = false;
+#endif
 
 // QUP (i2c-msm-v2.h)
 constexpr uint32_t kConfig = 0x0, kState = 0x4, kIoModes = 0x8, kSwReset = 0xc, kOperational = 0x18,
@@ -67,7 +89,11 @@ constexpr uint32_t kMaxOutputDone = 1u << 10;
 constexpr uint8_t kTagStart = 0x81, kTagWrite = 0x82, kTagWriteStop = 0x83, kTagReadStop = 0x87;
 constexpr uint32_t kMaxRead = 60;   // + 2 tag bytes in the 64-byte input FIFO (io modes 0xc0a5)
 
+#if NATIVE_TARGET_SUZURAN
+constexpr uint8_t kTouchAddress = 0x2c;
+#else
 constexpr uint8_t kTouchAddress = 0x4b;
+#endif
 
 struct Window {
     IOMemoryMap *map = nullptr;
@@ -205,12 +231,14 @@ void pinsForBus()
         const uint32_t cfg = tlmm.read(tlmmCfg(gpio));
         if (((cfg >> 2) & 15) != kQupFunc) tlmm.write(tlmmCfg(gpio), (cfg & ~0x3ffu) | (kQupFunc << 2));
     }
-    // Reset is active low. If the firmware drives it low, release the controller and give it the
-    // power-on delay the Linux driver uses (synaptics,pon-delay = 66 ms, rounded up).
+    // Reset is active low on the Lumia, active high on the Z5C. If the firmware holds the controller
+    // in reset, release it and give it the power-on delay the Linux driver uses (synaptics,pon-delay
+    // = 66 ms, rounded up).
     const uint32_t cfg = tlmm.read(tlmmCfg(kReset));
-    if ((cfg & (1u << 9)) && !((tlmm.read(tlmmInOut(kReset)) >> 1) & 1)) {
-        tlmm.write(tlmmInOut(kReset), 1u << 1);
-        IOLog("NativeTouch: released touch reset (gpio %u was driven low)\n", kReset);
+    const bool driven = (tlmm.read(tlmmInOut(kReset)) >> 1) & 1;
+    if ((cfg & (1u << 9)) && driven == kResetActiveHigh) {
+        tlmm.write(tlmmInOut(kReset), kResetActiveHigh ? 0 : 1u << 1);
+        IOLog("NativeTouch: released touch reset (gpio %u was driven %s)\n", kReset, driven ? "high" : "low");
         IOSleep(100);
     }
 }

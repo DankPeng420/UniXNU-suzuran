@@ -38,6 +38,9 @@
 // Charging under iOS (boot 14) is NativeBattery's.
 // One thread per core is started at once so the scheduler spreads them. Runs once, 60 s after
 // start, after a pause for the console log to reach the eMMC. Boot-arg nativecpuclock=0 skips it.
+#ifndef NATIVE_TARGET_SUZURAN
+#define NATIVE_TARGET_SUZURAN 1   // this fork targets the Xperia Z5 Compact; -DNATIVE_TARGET_SUZURAN=0 builds the Lumia values
+#endif
 #include <IOKit/IOService.h>
 #include <IOKit/IOLib.h>
 #include <IOKit/IOMemoryDescriptor.h>
@@ -235,7 +238,10 @@ void raiseA57()
           pll.read(kPllA + kPllMode));
     IOSleep(2500);
     const uint32_t before = mux.read(kMuxOffset);
-    if (((before >> 3) & 3) != 0 || ((before >> 1) & 3) != 2) {
+    // The Lumia firmware leaves the A57s on PLL0's main output (lf select 2); the Z5C's S1 boots them
+    // on the aux source (lf select 0). Either way PLL1 is unused and the switch is the same.
+    const uint32_t lf = (before >> 1) & 3;
+    if (((before >> 3) & 3) != 0 || (lf != 2 && !(NATIVE_TARGET_SUZURAN && lf == 0))) {
         IOLog("NativeCpuClock: a57 mux 0x%08x is not lf / pll0 main, clocks unchanged\n", before);
         return;
     }
