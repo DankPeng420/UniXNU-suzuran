@@ -128,6 +128,11 @@ COMPONENTS = {
         "out": "native-adreno430",
         "include": ["drivers/NativeAdreno430"],
     },
+    "NativeAddon": {
+        # Files carried by the boot payload (loader v17), written into the root by the kernel; personality in zzv.
+        "sources": ["drivers/NativeAddon/NativeAddon.cpp"],
+        "out": "native-addon",
+    },
     "NativeBattery": {
         # powerd's IOPMPowerSource: charge level and charger state from the PMI8994; personality in zzv.
         "sources": ["drivers/NativeBattery/NativeBattery.cpp"],

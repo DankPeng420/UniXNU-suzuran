@@ -1,6 +1,6 @@
 --- a/iokit/Kernel/IOStartIOKit.cpp
 +++ b/iokit/Kernel/IOStartIOKit.cpp
-@@ -228,6 +228,327 @@
+@@ -228,6 +228,328 @@
  		chosen->setProperty(kIOProgressColorThemeKey, theme, 32);
  
  		chosen->release();
@@ -269,6 +269,7 @@
 +	native_resource_publish("NativeCpuClock");
 +	native_resource_publish("NativeBattery");
 +	native_resource_publish("NativeAdreno430");
++	native_resource_publish("NativeAddon");
 +	native_device_publish("AppleCLCD", "lumia950,display");
 +}
 +

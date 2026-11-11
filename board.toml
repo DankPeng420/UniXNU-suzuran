@@ -57,6 +57,8 @@ archives = [
   "build-arm-driver.py NativeBattery",
   # Xperia Z5 Compact GPU bring-up: Adreno 430 microcode, ring and a CP_MEM_WRITE proof (drivers/NativeAdreno430).
   "build-arm-driver.py NativeAdreno430",
+  # Files carried by the boot payload, written into the root file system (drivers/NativeAddon).
+  "build-arm-driver.py NativeAddon",
   # backboardd's HID event services (touch screen, buttons), ported from ios-sweet (drivers/NativeHID).
   "build-arm-driver.py NativeHID",
   # "build-arm-driver.py NativeRamBlock",   # Data volume; also needs the virtio bindings builder

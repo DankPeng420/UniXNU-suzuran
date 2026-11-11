@@ -1,27 +1,40 @@
 // SPDX-License-Identifier: BSD-2-Clause-Patent
 //
-// NativeAdreno430: the Xperia Z5 Compact's GPU (MSM8994, Adreno 430, a4xx), bring-up step 2b.
+// NativeAdreno430: the Xperia Z5 Compact's GPU (MSM8994, Adreno 430, a4xx).
 //
-// The loader (v16) does what needs the RPM and TrustZone before XNU runs: the VDD_GFX corner and the
-// RPM-owned gfx3d clock source, the OxiLi CX/GX power domains and branch clocks, the secure page-table
-// pool and restore_sec_cfg(18) for the kgsl SMMU. This driver checks that state and, only if it is all
-// there, repeats what the bare-metal gputest4 proved on the handset (2026-11-11):
-//   1. A430 SP/TP out of collapse (RBBM_POWER_CNTL_IP), wait for RBBM_POWER_STATUS.SP_TP_PWR_ON,
-//   2. the A430 branch of mainline a4xx_hw_init, without clock gating and with interrupts masked,
-//   3. a 32 KiB ring in physically contiguous memory below 4 GiB (the SMMU context is left with
-//      translation off by TrustZone, so the GPU's addresses are physical),
-//   4. PM4 and PFP microcode, CP_ME_CNTL = 0, CP_ME_INIT,
-//   5. two CP_MEM_WRITE packets into a target page, read back.
-// It publishes no GPU service yet; the result is one log line. Boot-arg nativegpu=0 skips it.
-// The kgsl SMMU's global registers (0xfdb10000) are never read: CR0 hangs the bus (gputest3).
+// Bring-up (proven on the handset 2026-11-11, bare metal by gputest4 and here by the PASS line of boots 20/21):
+// the loader (v16) does what needs the RPM and TrustZone before XNU runs -- the VDD_GFX corner and the RPM-owned
+// gfx3d clock source, the OxiLi CX/GX power domains and branch clocks, the secure page-table pool and
+// restore_sec_cfg(18) for the kgsl SMMU. This driver checks that state and only then:
+//   1. takes the A430's SP/TP out of collapse (RBBM_POWER_CNTL_IP),
+//   2. runs the A430 branch of mainline a4xx_hw_init, without clock gating and with interrupts masked,
+//   3. gives the command processor a 32 KiB ring and the a420 PM4/PFP microcode, and CP_ME_INIT,
+//   4. checks with two CP_MEM_WRITE that the GPU executes commands.
+// The kgsl SMMU's context bank is left with translation off by TrustZone, so the GPU's addresses are physical:
+// buffers are physically contiguous and below 4 GiB, and a buffer's GPU address ("iova") is its physical address.
+// The SMMU's global registers (0xfdb10000) are never read: CR0 hangs the bus (gputest3).
+//
+// Then it publishes itself (registerService) for the user client, which is Linux's msm DRM interface as calls:
+// selector = the ioctl's number, structure in and out as it is, a buffer's memory = clientMemoryForType(handle)
+// (MsmUapi.h; HakiOS's hakios-drm shim makes freedreno's libdrm calls of these). Fences are the sequence numbers
+// the command processor writes with CACHE_FLUSH_TS after each submission; waits poll them (no interrupt yet).
+// Boot-arg nativegpu=0 skips everything.
 #include <IOKit/IOService.h>
+#include <IOKit/IOUserClient.h>
 #include <IOKit/IOLib.h>
+#include <IOKit/IOLocks.h>
 #include <IOKit/IOMemoryDescriptor.h>
 #include <IOKit/IOBufferMemoryDescriptor.h>
+#include <IOKit/system.h>
 #include <kern/thread.h>
+#include <kern/clock.h>
 #include <pexpert/pexpert.h>
+#include <sys/proc.h>
 
 #include "A420Firmware.h"
+#include "MsmUapi.h"
+
+extern "C" uint64_t mach_continuous_time(void);
 
 namespace {
 
@@ -29,22 +42,38 @@ constexpr uint64_t kMmssPhys = 0xfd8c0000, kMmssSize = 0x10000;
 constexpr uint64_t kGpuPhys = 0xfdb00000, kGpuSize = 0x40000;
 constexpr uint32_t kGdscGx = 0x4024, kGfx3dCbcr = 0x4028, kGdscCx = 0x4034, kAhbCbcr = 0x403c, kTimerCbcr = 0x40b0;
 
-// a4xx registers (freedreno a4xx.xml), dword indices
+// a4xx registers (freedreno a4xx.xml, adreno_common.xml), dword indices
 constexpr uint32_t RBBM_HW_VERSION = 0x0000, RBBM_CLOCK_CTL = 0x0020, RBBM_SP_HYST_CNT = 0x0021, RBBM_AHB_CTL0 = 0x0023,
     RBBM_AHB_CTL1 = 0x0024, RBBM_WAIT_IDLE_CLOCKS_CTL = 0x002b, RBBM_INTERFACE_HANG_INT_CTL = 0x002f,
     RBBM_INT_0_MASK = 0x0037, RBBM_RBBM_CTL = 0x003e, RBBM_CLOCK_CTL2 = 0x0042, RBBM_POWER_CNTL_IP = 0x0098,
-    RBBM_PERFCTR_CTL = 0x0170, RBBM_GPU_BUSY_MASKED = 0x017a, RBBM_INT_0_STATUS = 0x017d, RBBM_AHB_ERROR_STATUS = 0x018f,
-    RBBM_STATUS = 0x0191, RBBM_POWER_STATUS = 0x01b0, RBBM_WAIT_IDLE_CLOCKS_CTL2 = 0x01b8, CP_RB_BASE = 0x0200,
-    CP_RB_CNTL = 0x0201, CP_RB_RPTR = 0x0204, CP_RB_WPTR = 0x0205, CP_PFP_UCODE_ADDR = 0x0223, CP_PFP_UCODE_DATA = 0x0224,
-    CP_ME_RAM_WADDR = 0x0225, CP_ME_RAM_DATA = 0x0227, CP_ME_CNTL = 0x022d, CP_DEBUG = 0x022e, UCHE_TRAP_BASE_LO = 0x0e83,
-    UCHE_TRAP_BASE_HI = 0x0e84, UCHE_CACHE_WAYS_VFD = 0x0e8c, VBIF_GATE_OFF_WRREQ_EN = 0x302a, VBIF_IN_RD_LIM_CONF0 = 0x302c,
+    RBBM_PERFCTR_CP_0_LO = 0x009c, RBBM_PERFCTR_CP_0_HI = 0x009d, RBBM_PERFCTR_CTL = 0x0170,
+    RBBM_GPU_BUSY_MASKED = 0x017a, RBBM_INT_0_STATUS = 0x017d, RBBM_AHB_ERROR_STATUS = 0x018f, RBBM_STATUS = 0x0191,
+    RBBM_POWER_STATUS = 0x01b0, RBBM_WAIT_IDLE_CLOCKS_CTL2 = 0x01b8, CP_RB_BASE = 0x0200, CP_RB_CNTL = 0x0201,
+    CP_RB_RPTR = 0x0204, CP_RB_WPTR = 0x0205, CP_PFP_UCODE_ADDR = 0x0223, CP_PFP_UCODE_DATA = 0x0224,
+    CP_ME_RAM_WADDR = 0x0225, CP_ME_RAM_DATA = 0x0227, CP_ME_CNTL = 0x022d, CP_DEBUG = 0x022e,
+    CP_PERFCTR_CP_SEL_0 = 0x0500, CP_SCRATCH_REG2 = 0x057a, UCHE_TRAP_BASE_LO = 0x0e83, UCHE_TRAP_BASE_HI = 0x0e84,
+    UCHE_CACHE_WAYS_VFD = 0x0e8c, VBIF_GATE_OFF_WRREQ_EN = 0x302a, VBIF_IN_RD_LIM_CONF0 = 0x302c,
     VBIF_IN_RD_LIM_CONF1 = 0x302d, VBIF_IN_WR_LIM_CONF0 = 0x3030, VBIF_IN_WR_LIM_CONF1 = 0x3031,
     VBIF_ROUND_ROBIN_QOS_ARB = 0x3049;
 constexpr uint32_t kSpTpPwrOn = 1u << 20;
 constexpr uint32_t kRingBytes = 0x8000, kRingDwords = kRingBytes / 4;
 constexpr uint32_t kRbCntl = 0x0800020c;   // 32 KiB, 32-dword blocks, no RPTR shadow
-constexpr uint32_t CP_ME_INIT = 0x48, CP_MEM_WRITE = 0x3d;
+// pm4 opcodes and events (adreno_pm4.xml)
+constexpr uint32_t CP_WAIT_FOR_IDLE = 0x26, CP_MEM_WRITE = 0x3d, CP_INDIRECT_BUFFER_PFE = 0x3f, CP_EVENT_WRITE = 0x46,
+    CP_ME_INIT = 0x48;
+constexpr uint32_t CACHE_FLUSH_TS = 4, HLSQ_FLUSH = 7;
+constexpr uint32_t pkt0(uint32_t reg, uint32_t count) { return ((count - 1) << 16) | (reg & 0x7fff); }
 constexpr uint32_t pkt3(uint32_t opcode, uint32_t count) { return 0xc0000000u | ((count - 1) << 16) | (opcode << 8); }
+constexpr uint32_t kPkt2 = 0x80000000u;
+
+// What freedreno is told (MSM_PARAM_x). The A430 of the 8994 device tree is chip id 0x04030000 (qcom,chipid).
+// GMEM is OCMEM on this SoC, which nothing powers yet: freedreno must render to system memory (FD_MESA_DEBUG=sysmem).
+constexpr uint32_t kGpuId = 430, kChipId = 0x04030000, kGmemSize = 0x180000, kGmemBase = 0x100000;
+constexpr uint32_t kMaxFreq = 300000000;
+
+constexpr uint64_t kMaxBufferBytes = 64ull << 20, kMaxTotalBytes = 512ull << 20;
+constexpr uint32_t kMaxHandles = 4096, kMaxSubmitBos = 4096, kMaxSubmitCmds = 128;
+constexpr uint64_t kMaxWaitNs = 5000000000ull, kHangNs = 3000000000ull;
 
 struct Window {
     IOMemoryMap *map = nullptr;
@@ -70,17 +99,103 @@ Window mmss, gpu;
 uint32_t gr(uint32_t index) { return gpu.read(index << 2); }
 void gw(uint32_t index, uint32_t value) { gpu.write(index << 2, value); }
 
-// The GPU reads and writes RAM behind the CPU caches: push our writes out, drop stale lines before a read.
-void flushRange(void *start, size_t length)
+// --- the one command ring, its memory and the fences (all under gLock) ---
+IOLock *gLock;
+IOBufferMemoryDescriptor *gRingMemory;
+volatile uint32_t *gRing;          // kRingDwords
+volatile uint32_t *gStore;         // the page after the ring: [0] fence, [2..3] self-test
+uint32_t gRingPhys, gStorePhys;
+uint32_t gWptr;                    // dwords
+uint32_t gSubmitted;               // last fence handed out
+bool gReady, gHung;
+uint64_t gTotalBytes;
+uint64_t gSubmits;
+
+uint64_t nowNs()
 {
-    uint64_t ctr;
-    __asm__ volatile("mrs %0, ctr_el0" : "=r"(ctr));
-    const uintptr_t line = 4u << ((ctr >> 16) & 15);
-    uintptr_t address = reinterpret_cast<uintptr_t>(start) & ~(line - 1);
-    const uintptr_t end = reinterpret_cast<uintptr_t>(start) + length;
-    for (; address < end; address += line) __asm__ volatile("dc civac, %0" :: "r"(address) : "memory");
-    __asm__ volatile("dsb sy" ::: "memory");
+    uint64_t ns = 0;
+    absolutetime_to_nanoseconds(mach_continuous_time(), &ns);
+    return ns;
 }
+
+uint32_t completed() { return gStore ? gStore[0] : 0; }
+bool fenceDone(uint32_t fence) { return static_cast<int32_t>(completed() - fence) >= 0; }
+
+void logState(const char *why)
+{
+    IOLog("NativeAdreno430: %s: fence %u of %u, rptr 0x%x wptr 0x%x, status 0x%08x int 0x%08x ahb error 0x%08x "
+          "scratch2 %u\n", why, completed(), gSubmitted, gr(CP_RB_RPTR), gr(CP_RB_WPTR), gr(RBBM_STATUS),
+          gr(RBBM_INT_0_STATUS), gr(RBBM_AHB_ERROR_STATUS), gr(CP_SCRATCH_REG2));
+}
+
+// Wait (without gLock) until `fence` is done or the absolute CLOCK_MONOTONIC deadline passes. A GPU whose read
+// pointer and fence have not moved for kHangNs while work is outstanding is declared hung: later submissions fail
+// instead of freezing their callers.
+bool waitFence(uint32_t fence, uint64_t deadlineNs)
+{
+    uint64_t start = nowNs(), lastMove = start;
+    uint32_t lastRptr = gr(CP_RB_RPTR), lastDone = completed();
+    for (uint32_t spins = 0;; ++spins) {
+        if (fenceDone(fence)) return true;
+        if (gHung) return false;
+        const uint64_t now = nowNs();
+        if (now >= deadlineNs || now - start >= kMaxWaitNs) return false;
+        const uint32_t rptr = gr(CP_RB_RPTR), done = completed();
+        if (rptr != lastRptr || done != lastDone) {
+            lastRptr = rptr;
+            lastDone = done;
+            lastMove = now;
+        } else if (now - lastMove >= kHangNs) {
+            IOLockLock(gLock);
+            if (!gHung) {
+                gHung = true;
+                logState("GPU HUNG (no progress for 3 s); later submissions are refused");
+            }
+            IOLockUnlock(gLock);
+            return false;
+        }
+        if (spins < 50) {
+            IODelay(20);
+        } else {
+            IOSleep(1);
+        }
+    }
+}
+
+uint64_t deadlineOf(const msm::Timespec &t)
+{
+    if (t.sec < 0 || t.nsec < 0) return 0;
+    return static_cast<uint64_t>(t.sec) * 1000000000ull + static_cast<uint64_t>(t.nsec);
+}
+
+// Ring output (gLock held). Space is (rptr - wptr - 1) mod size; packets may straddle the end.
+bool ringReserve(uint32_t dwords)
+{
+    const uint64_t start = nowNs();
+    for (;;) {
+        const uint32_t rptr = gr(CP_RB_RPTR) % kRingDwords;
+        const uint32_t space = (rptr + kRingDwords - gWptr - 1) % kRingDwords;
+        if (space >= dwords) return true;
+        if (nowNs() - start > kHangNs) {
+            gHung = true;
+            logState("GPU HUNG (ring full for 3 s)");
+            return false;
+        }
+        IODelay(50);
+    }
+}
+void emit(uint32_t value)
+{
+    gRing[gWptr] = value;
+    gWptr = (gWptr + 1) % kRingDwords;
+}
+void kick()
+{
+    __asm__ volatile("dsb sy" ::: "memory");
+    gw(CP_RB_WPTR, gWptr);
+}
+
+// --- bring-up ---
 
 void checkpoint(const char *what)
 {
@@ -105,7 +220,6 @@ void hwInit()
     gw(VBIF_IN_WR_LIM_CONF0, 0x18181818);
     gw(VBIF_IN_WR_LIM_CONF1, 0x00000018);
     gw(VBIF_ROUND_ROBIN_QOS_ARB, 0x00000003);
-    IOLog("NativeAdreno430: after vbif: ahb error status 0x%08x\n", gr(RBBM_AHB_ERROR_STATUS));
     gw(RBBM_GPU_BUSY_MASKED, 0xffffffff);
     gw(RBBM_SP_HYST_CNT, 0x10);
     gw(RBBM_WAIT_IDLE_CLOCKS_CTL, 0x10);
@@ -115,135 +229,510 @@ void hwInit()
     gw(RBBM_RBBM_CTL, 0x00000030);
     gw(RBBM_INTERFACE_HANG_INT_CTL, (1u << 30) | 0xffff);
     gw(RBBM_PERFCTR_CTL, 0x01);
-    IOLog("NativeAdreno430: after rbbm: ahb error status 0x%08x\n", gr(RBBM_AHB_ERROR_STATUS));
+    gw(CP_PERFCTR_CP_SEL_0, 0);   // CP_ALWAYS_COUNT: MSM_PARAM_TIMESTAMP
     gw(UCHE_CACHE_WAYS_VFD, 0x07);
     gw(UCHE_TRAP_BASE_LO, 0xffff0000);
     gw(UCHE_TRAP_BASE_HI, 0xffff0000);
-    IOLog("NativeAdreno430: after uche: ahb error status 0x%08x\n", gr(RBBM_AHB_ERROR_STATUS));
     gw(CP_DEBUG, (1u << 25) | (1u << 14));
     gw(RBBM_CLOCK_CTL, 0);    // hardware clock gating off for bring-up
     gw(RBBM_CLOCK_CTL2, 0);
     gw(RBBM_INT_0_MASK, 0);   // polled
-    IOLog("NativeAdreno430: after cp/clock: ahb error status 0x%08x\n", gr(RBBM_AHB_ERROR_STATUS));
 }
 
-void bringUp()
+bool bringUp()
 {
     if (!mmss.open(kMmssPhys, kMmssSize)) {
         IOLog("NativeAdreno430: mmss window did not map\n");
-        return;
+        return false;
     }
     checkpoint("reading the oxili power domains");
     if (!poweredByLoader()) {
         IOLog("NativeAdreno430: the loader did not power the GPU (needs loader v16); nothing touched\n");
-        return;
+        return false;
     }
     if (!gpu.open(kGpuPhys, kGpuSize)) {
         IOLog("NativeAdreno430: kgsl window did not map\n");
-        return;
+        return false;
     }
     checkpoint("first read of the kgsl window");
-    IOLog("NativeAdreno430: hw version 0x%08x status 0x%08x power status 0x%08x me cntl 0x%08x ahb error 0x%08x\n",
-          gr(RBBM_HW_VERSION), gr(RBBM_STATUS), gr(RBBM_POWER_STATUS), gr(CP_ME_CNTL), gr(RBBM_AHB_ERROR_STATUS));
+    IOLog("NativeAdreno430: hw version 0x%08x status 0x%08x power status 0x%08x me cntl 0x%08x\n",
+          gr(RBBM_HW_VERSION), gr(RBBM_STATUS), gr(RBBM_POWER_STATUS), gr(CP_ME_CNTL));
     gw(RBBM_POWER_CNTL_IP, 0x778000);
     bool on = false;
     for (int i = 0; i < 20000 && !on; ++i) {
         on = (gr(RBBM_POWER_STATUS) & kSpTpPwrOn) != 0;
         if (!on) IODelay(5);
     }
-    IOLog("NativeAdreno430: sp/tp %s (power status 0x%08x)\n", on ? "on" : "NOT on", gr(RBBM_POWER_STATUS));
-    if (!on) return;
+    if (!on) {
+        IOLog("NativeAdreno430: sp/tp NOT on (power status 0x%08x)\n", gr(RBBM_POWER_STATUS));
+        return false;
+    }
 
-    // Ring and target: wired, contiguous, below 4 GiB (the GPU's addresses are 32-bit and physical).
-    IOBufferMemoryDescriptor *memory = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
-        kernel_task, kIODirectionInOut | kIOMemoryPhysicallyContiguous, kRingBytes + 0x1000, 0xfffff000ULL);
-    if (!memory) {
-        IOLog("NativeAdreno430: no contiguous memory for the ring\n");
-        return;
+    // Ring + store page: contiguous, below 4 GiB, write-combined (no CPU cache between us and the GPU).
+    gRingMemory = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task,
+        kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMapWriteCombineCache, kRingBytes + 0x1000,
+        0xfffff000ULL);
+    if (!gRingMemory) {
+        IOLog("NativeAdreno430: no memory for the ring\n");
+        return false;
     }
     IOByteCount length = 0;
-    const uint64_t phys = memory->getPhysicalSegment(0, &length, kIOMemoryMapperNone);
-    uint32_t *ring = static_cast<uint32_t *>(memory->getBytesNoCopy());
-    if (!ring || !phys || length < kRingBytes + 0x1000 || (phys >> 32)) {
+    const uint64_t phys = gRingMemory->getPhysicalSegment(0, &length, kIOMemoryMapperNone);
+    gRing = static_cast<volatile uint32_t *>(gRingMemory->getBytesNoCopy());
+    if (!gRing || !phys || length < kRingBytes + 0x1000 || (phys >> 32)) {
         IOLog("NativeAdreno430: ring memory unusable (phys 0x%llx, %llu contiguous bytes)\n", phys,
               static_cast<unsigned long long>(length));
-        memory->release();
-        return;
+        return false;
     }
-    volatile uint32_t *target = ring + kRingDwords;
-    const uint32_t targetPhys = static_cast<uint32_t>(phys) + kRingBytes;
-    bzero(ring, kRingBytes + 0x1000);
-    IOLog("NativeAdreno430: ring at phys 0x%08x, target 0x%08x\n", static_cast<uint32_t>(phys), targetPhys);
+    gStore = gRing + kRingDwords;
+    gRingPhys = static_cast<uint32_t>(phys);
+    gStorePhys = gRingPhys + kRingBytes;
+    for (uint32_t i = 0; i < kRingDwords + 1024; ++i) gRing[i] = 0;
 
     hwInit();
     gw(CP_RB_CNTL, kRbCntl);
-    gw(CP_RB_BASE, static_cast<uint32_t>(phys));
+    gw(CP_RB_BASE, gRingPhys);
     gw(CP_ME_RAM_WADDR, 0);
     for (uint32_t i = 1; i < sizeof kA420Pm4 / 4; ++i) gw(CP_ME_RAM_DATA, kA420Pm4[i]);
     gw(CP_PFP_UCODE_ADDR, 0);
     for (uint32_t i = 1; i < sizeof kA420Pfp / 4; ++i) gw(CP_PFP_UCODE_DATA, kA420Pfp[i]);
     gw(CP_ME_CNTL, 0);
-    IOLog("NativeAdreno430: microcode pm4 0x%08x pfp 0x%08x loaded, me cntl 0x%08x\n", kA420Pm4[1], kA420Pfp[5],
-          gr(CP_ME_CNTL));
 
     static const uint32_t meInit[17] = {0x000003f7, 0, 0, 0, 0x00000080, 0x00000100, 0x00000180, 0x00006600, 0x00000150,
                                         0x0000014e, 0x00000154, 0x00000001, 0, 0, 0, 0, 0};
-    uint32_t w = 0;
-    ring[w++] = pkt3(CP_ME_INIT, 17);
-    for (uint32_t value : meInit) ring[w++] = value;
-    ring[w++] = pkt3(CP_MEM_WRITE, 2);
-    ring[w++] = targetPhys;
-    ring[w++] = 0xcafe430a;
-    ring[w++] = pkt3(CP_MEM_WRITE, 2);
-    ring[w++] = targetPhys + 4;
-    ring[w++] = 0x12345678;
-    flushRange(ring, kRingBytes + 0x1000);
-    checkpoint("submitting CP_ME_INIT and two CP_MEM_WRITE");
-    gw(CP_RB_WPTR, w);
+    gWptr = 0;
+    emit(pkt3(CP_ME_INIT, 17));
+    for (uint32_t value : meInit) emit(value);
+    emit(pkt3(CP_MEM_WRITE, 2));
+    emit(gStorePhys + 8);
+    emit(0xcafe430a);
+    emit(pkt3(CP_MEM_WRITE, 2));
+    emit(gStorePhys + 12);
+    emit(0x12345678);
+    checkpoint("CP_ME_INIT and the CP_MEM_WRITE self-test");
+    kick();
     bool drained = false;
     for (int i = 0; i < 2000 && !drained; ++i) {
-        drained = gr(CP_RB_RPTR) == w;
+        drained = gr(CP_RB_RPTR) == gWptr && gStore[3] == 0x12345678;
         if (!drained) IOSleep(1);
     }
-    IOSleep(5);
-    flushRange(const_cast<uint32_t *>(target), 0x1000);
-    const uint32_t first = target[0], second = target[1];
-    const bool pass = drained && first == 0xcafe430a && second == 0x12345678;
-    IOLog("NativeAdreno430: rptr 0x%x wptr 0x%x target 0x%08x 0x%08x status 0x%08x int 0x%08x ahb error 0x%08x: %s\n",
-          gr(CP_RB_RPTR), gr(CP_RB_WPTR), first, second, gr(RBBM_STATUS), gr(RBBM_INT_0_STATUS),
-          gr(RBBM_AHB_ERROR_STATUS), pass ? "PASS, the GPU executes commands" : "FAIL");
-    // The ring stays allocated: the command processor keeps its base.
+    const bool pass = drained && gStore[2] == 0xcafe430a;
+    IOLog("NativeAdreno430: microcode pm4 0x%08x pfp 0x%08x, ring at 0x%08x: rptr 0x%x wptr 0x%x self-test "
+          "0x%08x 0x%08x status 0x%08x: %s\n", kA420Pm4[1], kA420Pfp[5], gRingPhys, gr(CP_RB_RPTR), gWptr, gStore[2],
+          gStore[3], gr(RBBM_STATUS), pass ? "PASS, the GPU executes commands" : "FAIL");
+    return pass;
 }
 
-void bringUpThread(void *, wait_result_t)
-{
-    IOSleep(90000);   // after NativeTouch and NativeCpuClock, with the home screen up
-    bringUp();
-    IOLog("NativeAdreno430: done\n");
-}
+} // namespace
 
-}
+// ============================================================================================================
+// The service
+// ============================================================================================================
 
 class NativeAdreno430 final : public IOService {
     OSDeclareDefaultStructors(NativeAdreno430)
+    static void bringUpThread(void *self, wait_result_t);
 public:
-    bool start(IOService *provider) override
-    {
-        if (!IOService::start(provider)) return false;
-        uint32_t enabled = 1;
-        PE_parse_boot_argn("nativegpu", &enabled, sizeof enabled);
-        if (!enabled) {
-            IOLog("NativeAdreno430: skipped (nativegpu=0)\n");
-            return true;
-        }
-        thread_t thread = nullptr;
-        if (kernel_thread_start(bringUpThread, nullptr, &thread) != KERN_SUCCESS) {
-            IOLog("NativeAdreno430: no bring-up thread\n");
-            return true;
-        }
-        thread_deallocate(thread);
-        IOLog("NativeAdreno430: bring-up in 90 s\n");
-        return true;
-    }
+    bool start(IOService *provider) override;
 };
 OSDefineMetaClassAndStructors(NativeAdreno430, IOService)
+
+void NativeAdreno430::bringUpThread(void *self, wait_result_t)
+{
+    NativeAdreno430 *service = static_cast<NativeAdreno430 *>(self);
+    IOSleep(10000);
+    if (bringUp()) {
+        gReady = true;
+        service->setProperty("GPU", "Adreno 430");
+        service->registerService();
+        IOLog("NativeAdreno430: ready for clients\n");
+    }
+    service->release();
+}
+
+bool NativeAdreno430::start(IOService *provider)
+{
+    if (!IOService::start(provider)) return false;
+    uint32_t enabled = 1;
+    PE_parse_boot_argn("nativegpu", &enabled, sizeof enabled);
+    if (!enabled) {
+        IOLog("NativeAdreno430: skipped (nativegpu=0)\n");
+        return true;
+    }
+    gLock = IOLockAlloc();
+    if (!gLock) return false;
+    setProperty(kIOUserClientClassKey, "NativeAdreno430UserClient");
+    retain();
+    thread_t thread = nullptr;
+    if (kernel_thread_start(bringUpThread, this, &thread) != KERN_SUCCESS) {
+        release();
+        IOLog("NativeAdreno430: no bring-up thread\n");
+        return true;
+    }
+    thread_deallocate(thread);
+    IOLog("NativeAdreno430: bring-up in 10 s\n");
+    return true;
+}
+
+// ============================================================================================================
+// The user client: msm DRM calls
+// ============================================================================================================
+
+namespace {
+struct Buffer {
+    IOBufferMemoryDescriptor *memory;
+    uint64_t size;
+    uint32_t phys, flags, lastFence;
+};
+}
+
+class NativeAdreno430UserClient final : public IOUserClient {
+    OSDeclareDefaultStructors(NativeAdreno430UserClient)
+    task_t fTask = nullptr;
+    Buffer **fBuffers = nullptr;   // index = handle - 1
+    uint32_t fCount = 0, fNextQueue = 0;
+    uint64_t fBytes = 0;
+
+    Buffer *buffer(uint32_t handle)
+    {
+        return handle >= 1 && handle <= kMaxHandles ? fBuffers[handle - 1] : nullptr;
+    }
+    void freeBuffer(uint32_t handle);
+    IOReturn gemNew(msm::GemNew &r);
+    IOReturn gemInfo(msm::GemInfo &r);
+    IOReturn submit(msm::Submit &r);
+    IOReturn param(msm::Param &r);
+
+public:
+    bool initWithTask(task_t owningTask, void *securityID, UInt32 type) override;
+    bool start(IOService *provider) override;
+    IOReturn clientClose() override;
+    void free() override;
+    IOReturn clientMemoryForType(UInt32 type, IOOptionBits *options, IOMemoryDescriptor **memory) override;
+    IOReturn externalMethod(uint32_t selector, IOExternalMethodArguments *args, IOExternalMethodDispatch *dispatch,
+                            OSObject *target, void *reference) override;
+};
+OSDefineMetaClassAndStructors(NativeAdreno430UserClient, IOUserClient)
+
+bool NativeAdreno430UserClient::initWithTask(task_t owningTask, void *securityID, UInt32 type)
+{
+    if (!IOUserClient::initWithTask(owningTask, securityID, type)) return false;
+    fTask = owningTask;
+    return true;
+}
+
+bool NativeAdreno430UserClient::start(IOService *provider)
+{
+    if (!gReady || !IOUserClient::start(provider)) return false;
+    fBuffers = IONewZero(Buffer *, kMaxHandles);
+    return fBuffers != nullptr;
+}
+
+void NativeAdreno430UserClient::freeBuffer(uint32_t handle)
+{
+    Buffer *b = buffer(handle);
+    if (!b) return;
+    fBuffers[handle - 1] = nullptr;
+    --fCount;
+    fBytes -= b->size;
+    // The GPU may still use it: wait for its last submission (outside the lock). A hung GPU keeps its memory.
+    if (!fenceDone(b->lastFence) && !waitFence(b->lastFence, nowNs() + 2000000000ull)) {
+        IOLog("NativeAdreno430: buffer at 0x%08x (%llu bytes) still in use by the GPU; not freed\n", b->phys,
+              static_cast<unsigned long long>(b->size));
+        IODelete(b, Buffer, 1);
+        return;
+    }
+    IOLockLock(gLock);
+    gTotalBytes -= b->size;
+    IOLockUnlock(gLock);
+    b->memory->release();
+    IODelete(b, Buffer, 1);
+}
+
+IOReturn NativeAdreno430UserClient::clientClose()
+{
+    if (fBuffers) {
+        for (uint32_t h = 1; h <= kMaxHandles; ++h) freeBuffer(h);
+    }
+    terminate();
+    return kIOReturnSuccess;
+}
+
+void NativeAdreno430UserClient::free()
+{
+    if (fBuffers) {
+        for (uint32_t h = 1; h <= kMaxHandles; ++h) freeBuffer(h);
+        IODelete(fBuffers, Buffer *, kMaxHandles);
+    }
+    IOUserClient::free();
+}
+
+IOReturn NativeAdreno430UserClient::gemNew(msm::GemNew &r)
+{
+    if (r.size == 0 || r.size > kMaxBufferBytes) return kIOReturnBadArgument;
+    const uint64_t size = (r.size + 0xfff) & ~0xfffull;
+    uint32_t slot = 0;
+    while (slot < kMaxHandles && fBuffers[slot]) ++slot;
+    if (slot == kMaxHandles) return kIOReturnNoResources;
+    IOLockLock(gLock);
+    const bool room = gTotalBytes + size <= kMaxTotalBytes;
+    if (room) gTotalBytes += size;
+    IOLockUnlock(gLock);
+    if (!room) {
+        IOLog("NativeAdreno430: refused a %llu-byte buffer: %llu MB of GPU memory in use\n",
+              static_cast<unsigned long long>(size), static_cast<unsigned long long>(gTotalBytes >> 20));
+        return kIOReturnNoMemory;
+    }
+    // Contiguous (the GPU's addresses are physical while the SMMU does not translate), below 4 GiB, write-combined
+    // like Linux's msm buffers; comes zeroed.
+    IOBufferMemoryDescriptor *memory = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task,
+        kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMemoryKernelUserShared | kIOMapWriteCombineCache,
+        size, 0xfffff000ULL);
+    IOByteCount length = 0;
+    const uint64_t phys = memory ? memory->getPhysicalSegment(0, &length, kIOMemoryMapperNone) : 0;
+    if (!memory || !phys || length < size || (phys >> 32)) {
+        IOLog("NativeAdreno430: no contiguous memory for a %llu-byte buffer\n", static_cast<unsigned long long>(size));
+        if (memory) memory->release();
+        IOLockLock(gLock);
+        gTotalBytes -= size;
+        IOLockUnlock(gLock);
+        return kIOReturnNoMemory;
+    }
+    Buffer *b = IONew(Buffer, 1);
+    if (!b) {
+        memory->release();
+        IOLockLock(gLock);
+        gTotalBytes -= size;
+        IOLockUnlock(gLock);
+        return kIOReturnNoMemory;
+    }
+    b->memory = memory;
+    b->size = size;
+    b->phys = static_cast<uint32_t>(phys);
+    b->flags = r.flags;
+    b->lastFence = completed();
+    fBuffers[slot] = b;
+    ++fCount;
+    fBytes += size;
+    r.handle = slot + 1;
+    return kIOReturnSuccess;
+}
+
+IOReturn NativeAdreno430UserClient::gemInfo(msm::GemInfo &r)
+{
+    Buffer *b = buffer(r.handle);
+    if (!b) return kIOReturnBadArgument;
+    switch (r.info) {
+    case msm::INFO_GET_OFFSET:
+        r.value = r.handle;   // the shim maps by handle (clientMemoryForType)
+        return kIOReturnSuccess;
+    case msm::INFO_GET_IOVA:
+        r.value = b->phys;
+        return kIOReturnSuccess;
+    case msm::INFO_GET_FLAGS:
+        r.value = b->flags;
+        return kIOReturnSuccess;
+    case msm::INFO_SET_NAME:
+        return kIOReturnSuccess;
+    case msm::INFO_GET_NAME:
+        r.len = 0;
+        return kIOReturnSuccess;
+    default:
+        return kIOReturnUnsupported;
+    }
+}
+
+IOReturn NativeAdreno430UserClient::param(msm::Param &r)
+{
+    switch (r.param) {
+    case msm::PARAM_GPU_ID: r.value = kGpuId; return kIOReturnSuccess;
+    case msm::PARAM_GMEM_SIZE: r.value = kGmemSize; return kIOReturnSuccess;
+    case msm::PARAM_CHIP_ID: r.value = kChipId; return kIOReturnSuccess;
+    case msm::PARAM_MAX_FREQ: r.value = kMaxFreq; return kIOReturnSuccess;
+    case msm::PARAM_GMEM_BASE: r.value = kGmemBase; return kIOReturnSuccess;
+    case msm::PARAM_PRIORITIES: r.value = 1; return kIOReturnSuccess;
+    case msm::PARAM_PP_PGTABLE: case msm::PARAM_FAULTS: case msm::PARAM_SUSPENDS: r.value = 0; return kIOReturnSuccess;
+    case msm::PARAM_TIMESTAMP: {
+        uint32_t hi, lo;
+        do {
+            hi = gr(RBBM_PERFCTR_CP_0_HI);
+            lo = gr(RBBM_PERFCTR_CP_0_LO);
+        } while (hi != gr(RBBM_PERFCTR_CP_0_HI));
+        r.value = (static_cast<uint64_t>(hi) << 32) | lo;
+        return kIOReturnSuccess;
+    }
+    default:
+        return kIOReturnBadArgument;   // EINVAL: what Linux answers for a parameter it does not have
+    }
+}
+
+IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
+{
+    if (r.nrBos > kMaxSubmitBos || r.nrCmds == 0 || r.nrCmds > kMaxSubmitCmds) return kIOReturnBadArgument;
+    if (r.flags & msm::SUBMIT_FENCE_SN_IN) return kIOReturnUnsupported;
+    msm::SubmitBo *bos = r.nrBos ? IONew(msm::SubmitBo, r.nrBos) : nullptr;
+    msm::SubmitCmd *cmds = IONew(msm::SubmitCmd, r.nrCmds);
+    Buffer **used = r.nrBos ? IONew(Buffer *, r.nrBos) : nullptr;
+    IOReturn ret = kIOReturnSuccess;
+    if ((r.nrBos && (!bos || !used)) || !cmds) {
+        ret = kIOReturnNoMemory;
+    } else if ((r.nrBos && copyin(static_cast<user_addr_t>(r.bos), bos, r.nrBos * sizeof *bos)) ||
+               copyin(static_cast<user_addr_t>(r.cmds), cmds, r.nrCmds * sizeof *cmds)) {
+        ret = kIOReturnBadArgument;
+    }
+    for (uint32_t i = 0; ret == kIOReturnSuccess && i < r.nrBos; ++i) {
+        used[i] = buffer(bos[i].handle);
+        if (!used[i]) ret = kIOReturnBadArgument;
+    }
+    for (uint32_t i = 0; ret == kIOReturnSuccess && i < r.nrCmds; ++i) {
+        const msm::SubmitCmd &c = cmds[i];
+        if (c.type < msm::SUBMIT_CMD_BUF || c.type > msm::SUBMIT_CMD_CTX_RESTORE_BUF || c.submitIdx >= r.nrBos ||
+            (c.size & 3) || (c.submitOffset & 3) || c.size == 0 ||
+            static_cast<uint64_t>(c.submitOffset) + c.size > used[c.submitIdx]->size) {
+            ret = kIOReturnBadArgument;
+        } else if (c.nrRelocs) {
+            IOLog("NativeAdreno430: a submission with relocations (this driver only does softpin)\n");
+            ret = kIOReturnUnsupported;
+        }
+    }
+    if (ret == kIOReturnSuccess) {
+        IOLockLock(gLock);
+        if (gHung) {
+            ret = kIOReturnNotReady;
+        } else if (!ringReserve(r.nrCmds * 4 + 12)) {
+            ret = kIOReturnTimeout;
+        } else {
+            for (uint32_t i = 0; i < r.nrCmds; ++i) {
+                const msm::SubmitCmd &c = cmds[i];
+                if (c.type == msm::SUBMIT_CMD_IB_TARGET_BUF) continue;
+                emit(pkt3(CP_INDIRECT_BUFFER_PFE, 2));
+                emit(used[c.submitIdx]->phys + c.submitOffset);
+                emit(c.size / 4);
+                emit(kPkt2);
+            }
+            const uint32_t fence = ++gSubmitted;
+            emit(pkt0(CP_SCRATCH_REG2, 1));
+            emit(fence);
+            emit(pkt3(CP_EVENT_WRITE, 1));    // flush HLSQ lazy updates before the timestamp
+            emit(HLSQ_FLUSH);
+            emit(pkt3(CP_WAIT_FOR_IDLE, 1));
+            emit(0);
+            emit(pkt3(CP_EVENT_WRITE, 3));
+            emit(CACHE_FLUSH_TS);
+            emit(gStorePhys);
+            emit(fence);
+            for (uint32_t i = 0; i < r.nrBos; ++i) used[i]->lastFence = fence;
+            kick();
+            ++gSubmits;
+            r.fence = fence;
+            r.fenceFd = -1;
+        }
+        IOLockUnlock(gLock);
+    }
+    if (bos) IODelete(bos, msm::SubmitBo, r.nrBos);
+    if (used) IODelete(used, Buffer *, r.nrBos);
+    if (cmds) IODelete(cmds, msm::SubmitCmd, r.nrCmds);
+    return ret;
+}
+
+IOReturn NativeAdreno430UserClient::clientMemoryForType(UInt32 type, IOOptionBits *options, IOMemoryDescriptor **memory)
+{
+    Buffer *b = buffer(type);
+    if (!b) return kIOReturnBadArgument;
+    b->memory->retain();
+    *memory = b->memory;
+    *options = 0;
+    return kIOReturnSuccess;
+}
+
+IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternalMethodArguments *args,
+                                                   IOExternalMethodDispatch *, OSObject *, void *)
+{
+    union {
+        msm::Param param;
+        msm::GemNew gemNew;
+        msm::GemInfo gemInfo;
+        msm::GemCpuPrep cpuPrep;
+        msm::Submit submit;
+        msm::WaitFence wait;
+        msm::GemMadvise madvise;
+        msm::SubmitQueue queue;
+        msm::SubmitQueueQuery query;
+        msm::GemClose close;
+        msm::Log log;
+    } r;
+    const uint32_t size = args->structureInputSize;
+    if (!args->structureInput || size > sizeof r || !fBuffers) return kIOReturnBadArgument;
+    if (!gReady) return kIOReturnNotReady;
+    bzero(&r, sizeof r);
+    memcpy(&r, args->structureInput, size);
+
+    IOReturn ret = kIOReturnSuccess;
+    switch (selector) {
+    case msm::kGetParam:
+        ret = param(r.param);
+        break;
+    case msm::kSetParam:
+    case msm::kGemCpuFini:
+    case msm::kSubmitQueueClose:
+        break;
+    case msm::kGemNew:
+        ret = gemNew(r.gemNew);
+        break;
+    case msm::kGemInfo:
+        ret = gemInfo(r.gemInfo);
+        break;
+    case msm::kGemCpuPrep: {
+        Buffer *b = buffer(r.cpuPrep.handle);
+        if (!b) {
+            ret = kIOReturnBadArgument;
+        } else if (!fenceDone(b->lastFence) &&
+                   ((r.cpuPrep.op & msm::PREP_NOSYNC) || !waitFence(b->lastFence, deadlineOf(r.cpuPrep.timeout)))) {
+            ret = kIOReturnBusy;
+        }
+        break;
+    }
+    case msm::kGemSubmit:
+        ret = submit(r.submit);
+        break;
+    case msm::kWaitFence:
+        if (static_cast<int32_t>(r.wait.fence - gSubmitted) > 0) {
+            ret = kIOReturnBadArgument;   // never issued: never done
+        } else if (!waitFence(r.wait.fence, deadlineOf(r.wait.timeout))) {
+            ret = kIOReturnTimeout;
+        }
+        break;
+    case msm::kGemMadvise:
+        r.madvise.retained = 1;
+        break;
+    case msm::kSubmitQueueNew:
+        r.queue.id = ++fNextQueue;
+        break;
+    case msm::kSubmitQueueQuery:
+        if (r.query.data && r.query.len) {
+            const uint64_t zero = 0;
+            copyout(&zero, static_cast<user_addr_t>(r.query.data), r.query.len < 8 ? r.query.len : 8);
+        }
+        break;
+    case msm::kGemClose:
+        if (!buffer(r.close.handle)) {
+            ret = kIOReturnBadArgument;
+        } else {
+            freeBuffer(r.close.handle);
+        }
+        break;
+    case msm::kLog:
+        r.log.text[sizeof r.log.text - 1] = 0;
+        IOLog("gpu client: %s\n", r.log.text);
+        break;
+    default:
+        IOLog("NativeAdreno430: call 0x%x (%u bytes) is not known here\n", selector, size);
+        ret = kIOReturnUnsupported;
+        break;
+    }
+    if (ret == kIOReturnSuccess && args->structureOutput) {
+        if (args->structureOutputSize > size) args->structureOutputSize = size;
+        memcpy(args->structureOutput, &r, args->structureOutputSize);
+    }
+    return ret;
+}
