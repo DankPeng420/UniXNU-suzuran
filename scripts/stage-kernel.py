@@ -156,7 +156,13 @@ def adt_command(spec: dict, adt: Path, args: argparse.Namespace) -> list[str]:
         command += ["--text-fixup", fixup]
     if values.get("iphone_identity"):
         # Relative to the device repository: the real device tree is an Apple artifact in build/.
-        command += ["--iphone-identity", str(ROOT / values["iphone_identity"])]
+        # CI (the validate job's staging check) has no Apple artifacts; build without the
+        # identity there instead of failing on a missing file.
+        identity = ROOT / values["iphone_identity"]
+        if identity.is_file():
+            command += ["--iphone-identity", str(identity)]
+        else:
+            print(f"warning: {identity} is missing; the ADT gets no iPhone identity", file=sys.stderr)
     return command
 
 
