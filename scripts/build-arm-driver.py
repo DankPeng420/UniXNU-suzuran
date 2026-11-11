@@ -122,6 +122,12 @@ COMPONENTS = {
         "sources": ["drivers/NativeCpuClock/NativeCpuClock.cpp"],
         "out": "native-cpu-clock",
     },
+    "NativeAdreno430": {
+        # Xperia Z5 Compact GPU, bring-up: microcode, ring and a CP_MEM_WRITE proof; personality in zzv.
+        "sources": ["drivers/NativeAdreno430/NativeAdreno430.cpp"],
+        "out": "native-adreno430",
+        "include": ["drivers/NativeAdreno430"],
+    },
     "NativeBattery": {
         # powerd's IOPMPowerSource: charge level and charger state from the PMI8994; personality in zzv.
         "sources": ["drivers/NativeBattery/NativeBattery.cpp"],

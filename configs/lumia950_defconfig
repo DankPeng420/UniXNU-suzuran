@@ -34,7 +34,7 @@ CONFIG_XNU_BUILD_ARCHIVES=y
 # XNU_EXTRA_LD_ARCHIVES hook is for exactly this: a stub for an unselected offline probe.
 # It also force-loads upstream's NativeKeyStoreEvents (the AppleKeyStore stand-in), whose
 # hooks and runtime personality are in the zzv overlay patch, NativeWatchdog (IOWatchdog), NativeDisplay (IOSurface + IOMobileFramebuffer), NativeTouch and NativeHID (touch screen and button HID services).
-CONFIG_XNU_EXTRA_LD_ARCHIVES="-Wl,-force_load,{tree}/build/native-legacy-display/libNativeLegacyDisplay.a -Wl,-force_load,{tree}/build/native-keystore/libNativeKeyStoreEvents.a -Wl,-force_load,{tree}/build/native-watchdog/libNativeWatchdog.a -Wl,-force_load,{tree}/build/native-display/libNativeDisplay.a -Wl,-force_load,{tree}/build/native-touch/libNativeTouch.a -Wl,-force_load,{tree}/build/native-cpu-clock/libNativeCpuClock.a -Wl,-force_load,{tree}/build/native-battery/libNativeBattery.a -Wl,-force_load,{tree}/build/native-hid/libNativeHID.a"
+CONFIG_XNU_EXTRA_LD_ARCHIVES="-Wl,-force_load,{tree}/build/native-legacy-display/libNativeLegacyDisplay.a -Wl,-force_load,{tree}/build/native-keystore/libNativeKeyStoreEvents.a -Wl,-force_load,{tree}/build/native-watchdog/libNativeWatchdog.a -Wl,-force_load,{tree}/build/native-display/libNativeDisplay.a -Wl,-force_load,{tree}/build/native-touch/libNativeTouch.a -Wl,-force_load,{tree}/build/native-cpu-clock/libNativeCpuClock.a -Wl,-force_load,{tree}/build/native-battery/libNativeBattery.a -Wl,-force_load,{tree}/build/native-hid/libNativeHID.a -Wl,-force_load,{tree}/build/native-adreno430/libNativeAdreno430.a"
 
 # The Data volume is a RAM block until the eMMC write path exists.
 # CONFIG_XNU_NATIVE_RAM_BLOCK is not set
