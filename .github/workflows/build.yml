@@ -456,7 +456,7 @@ jobs:
     # but cannot dispatch workflows); the text log is published to the ci-results branch.
     if: (github.event_name == 'workflow_dispatch' && (inputs.target == 'kernel' || inputs.target == 'both')) || (github.event_name == 'push' && github.ref == 'refs/heads/suzuran' && !contains(github.event.head_commit.message, '[userland]'))
     # suzuran: the repository variable MACOS_RUNNER (e.g. macos-15-intel) overrides the runner.
-    runs-on: ${{ vars.MACOS_RUNNER || 'macos-latest' }}
+    runs-on: ${{ vars.MACOS_RUNNER || 'macos-15-intel' }}
     timeout-minutes: 360
     permissions:
       contents: write
@@ -666,7 +666,7 @@ jobs:
   # branch with their cdhashes. A commit whose message contains [userland] builds only this.
   userland:
     if: github.event_name == 'push' && github.ref == 'refs/heads/suzuran'
-    runs-on: ${{ vars.MACOS_RUNNER || 'macos-latest' }}
+    runs-on: ${{ vars.MACOS_RUNNER || 'macos-15-intel' }}
     timeout-minutes: 60
     permissions:
       contents: write
