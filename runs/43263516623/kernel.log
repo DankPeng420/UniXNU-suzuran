@@ -1,0 +1,7 @@
+skip zzz-boot-progress: the 8796 console has no vc_progress hook and no sleh.c; the boot screen is a 10063 feature
+skip zzy-staged-system-apps: builds on the owner Data mount this line does not have
+skip zzy-native-gpu-addon-mount: builds on the owner Data mount this line does not have
+error: patch failed: bsd/sys/ubc_internal.h:158
+error: bsd/sys/ubc_internal.h: patch does not apply
+error: patch failed: bsd/kern/ubc_subr.c:69
+error: bsd/kern/ubc_subr.c: patch does not apply

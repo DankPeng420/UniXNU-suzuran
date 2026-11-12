@@ -1,0 +1,11 @@
+run 43263516623 attempt 1 sha fd890c4825330c56eb882d1342690c2b7912f5d6 status failure
+Thu Nov 12 17:13:06 UTC 2026
+6064: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6070: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7509: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+152758: 1386 |                 NETEM_LOG(LOG_ERR, "| error: invalid scheduler model %d",
+152769: 1392 |                 NETEM_LOG(LOG_ERR, "| error: corruption_p %d > %d",
+4:error: patch failed: bsd/sys/ubc_internal.h:158
+5:error: bsd/sys/ubc_internal.h: patch does not apply
+6:error: patch failed: bsd/kern/ubc_subr.c:69
+7:error: bsd/kern/ubc_subr.c: patch does not apply
