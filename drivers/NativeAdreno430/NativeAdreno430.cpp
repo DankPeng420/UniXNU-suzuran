@@ -36,6 +36,7 @@
 #include "MsmUapi.h"
 
 extern "C" uint64_t mach_continuous_time(void);
+extern "C" void delay_for_interval_with_leeway(uint32_t interval, uint32_t leeway, uint32_t scale_factor);
 
 namespace {
 
@@ -111,6 +112,8 @@ uint32_t gSubmitted;               // last fence handed out
 bool gReady, gHung;
 uint64_t gTotalBytes;
 uint64_t gSubmits;
+// wait statistics (all clients; logged when a client closes)
+uint64_t gWaits, gWaitNs, gWaitMaxNs;
 
 uint64_t nowNs()
 {
@@ -132,7 +135,22 @@ void logState(const char *why)
 // Wait (without gLock) until `fence` is done or the absolute CLOCK_MONOTONIC deadline passes. A GPU whose read
 // pointer and fence have not moved for kHangNs while work is outstanding is declared hung: later submissions fail
 // instead of freezing their callers.
+bool waitFenceLoop(uint32_t fence, uint64_t deadlineNs);
 bool waitFence(uint32_t fence, uint64_t deadlineNs)
+{
+    if (fenceDone(fence)) return true;
+    const uint64_t start = nowNs();
+    const bool done = waitFenceLoop(fence, deadlineNs);
+    const uint64_t took = nowNs() - start;
+    ++gWaits;
+    gWaitNs += took;
+    if (took > gWaitMaxNs) gWaitMaxNs = took;
+    return done;
+}
+
+// Fences are polled (no interrupt yet). IOSleep(1) lets the timer coalesce: under boot load a 1 ms sleep took
+// 16-25 ms (gputest, boots 23/24) and a GL frame 226 ms. So: spin 1 ms, then sleep 50 us at a time with no leeway.
+bool waitFenceLoop(uint32_t fence, uint64_t deadlineNs)
 {
     uint64_t start = nowNs(), lastMove = start;
     uint32_t lastRptr = gr(CP_RB_RPTR), lastDone = completed();
@@ -155,10 +173,10 @@ bool waitFence(uint32_t fence, uint64_t deadlineNs)
             IOLockUnlock(gLock);
             return false;
         }
-        if (spins < 50) {
-            IODelay(20);
+        if (spins < 200) {
+            IODelay(5);
         } else {
-            IOSleep(1);
+            delay_for_interval_with_leeway(50, 0, 1000 /* kMicrosecondScale */);
         }
     }
 }
@@ -452,6 +470,8 @@ void NativeAdreno430UserClient::freeBuffer(uint32_t handle)
 
 IOReturn NativeAdreno430UserClient::clientClose()
 {
+    IOLog("NativeAdreno430: client closes: %llu submissions, %llu waits so far, %llu ms waited, longest %llu us\n",
+          gSubmits, gWaits, gWaitNs / 1000000, gWaitMaxNs / 1000);
     if (fBuffers) {
         for (uint32_t h = 1; h <= kMaxHandles; ++h) freeBuffer(h);
     }

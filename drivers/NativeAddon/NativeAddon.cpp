@@ -5,8 +5,8 @@
 // The phone has no shell and no way to copy files into the iOS root from outside (its HFS+ is journaled and
 // written by iOS itself). So the loader (v17) carries an archive in its payload, places it in the kernel window
 // and announces it as /chosen/memory-map "NativeAddon" (physical address, size). Once the root file system is
-// up and launchd has read its job list (30 s later), this driver writes each file whose content differs from what
-// is there (unlink, then create: a program running from the old file keeps it) with the archive's mode and owner. Its own
+// up -- well before launchd reads its job list -- this driver writes each file whose content differs from what is
+// there (unlink, then create: a program running from the old file keeps it) with the archive's mode and owner. Its own
 // property "AddonDone" (files written, files already current) tells a waiting program that it is finished.
 //
 // Archive (little endian): "SZADDON1", u32 count, u32 version (1); then per file:
@@ -138,9 +138,8 @@ void NativeAddon::run(void *self, wait_result_t)
         memcpy(&count, archive + 8, 4);
         IOLog("NativeAddon: archive of %u files (%llu bytes) at 0x%llx, root ready after %d ms\n", count, range[1],
               range[0], waited * 100);
-        // launchd reads its job list (one of the files this may replace) right after the root is mounted, and a file
-        // here is replaced by unlink + create, not atomically: wait until boot is well past that.
-        IOSleep(30000);
+        // Right away: launchd reads its job list (one of the files this may replace) ~30 s after the root is up
+        // (measured, boot 22), and a file here is replaced by unlink + create, not atomically.
         uint64_t pos = 16;
         for (uint32_t i = 0; i < count; ++i) {
             Entry e;
