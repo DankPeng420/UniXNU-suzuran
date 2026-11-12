@@ -1,0 +1,8 @@
+run 43276574475 attempt 1 sha 2cad8a1a9083bb191699caa5af796297a0f1839e status success
+Thu Nov 12 18:24:59 UTC 2026
+6064: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6070: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7511: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+157430:, "| error: invalid scheduler modefal ssert(su%d",
+157488:const void *))fun _alloc(kalloc_heap, size, __zone_flags_mix_tag(flags, itag),1398 |                 NETEM_LOG(LOG_ERR, "| error: duplication_p %d > %d",
+71e4f091832738ffbb5e5dd6a35766a7b51fffdff8a8a64298076365afa93895  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho
