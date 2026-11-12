@@ -1,0 +1,22 @@
+[32m==>[0m [1mDownloading bottle manifests[0m
+✔︎ Bottle Manifest bison (3.8.2)
+[32m==>[0m [1mFetching downloads for: [32mbison[39m[0m
+✔︎ Bottle bison (3.8.2)
+[34m==>[0m [1mPouring bison--3.8.2.arm64_tahoe.bottle.tar.gz[0m
+🍺  /opt/homebrew/Cellar/bison/3.8.2: 100 files, 3.9MB
+
+[notice] A new release of pip is available: 26.2.2 -> 26.3
+[notice] To update, run: /Users/runner/work/_temp/mesa/venv/bin/python3.15 -m pip install --upgrade pip
+-rwxr-xr-x  1 runner  staff  14828560 Nov 12 12:30 /Users/runner/work/_temp/userland/libOSMesa.8.dylib
+Identifier=gputest-555549448c4305686c5c37a8bf1ca6b32618a40b
+Hash type=sha256 size=32
+CDHash=7efe576993b44b8593354074cd7552484170eca9
+Identifier=libOSMesa.8
+Hash type=sha256 size=32
+CDHash=14245f857dcf6b3db46ce293edc189cd973e9b7e
+Identifier=gltri-555549441dea3f601ad6362d8e19cb14231c651b
+Hash type=sha256 size=32
+CDHash=a248b56cc96619e87202ebfbc8d630c729e3a591
+35528f1af415fc9d127fcb080fda3686585d7f2bcc1be54eb56e269824c11590  gputest
+c8b727c7f47f8057bd478386ae6d90f74678e529577efdbe78ffc762759a9b6e  libOSMesa.8.dylib
+1b9bb55793cf031cbfbad96cfbf89abd515cfe75afc7e1d3dd9c980a7a7148a3  gltri
