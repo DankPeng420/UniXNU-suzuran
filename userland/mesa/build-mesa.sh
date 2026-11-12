@@ -1,5 +1,6 @@
 #!/bin/bash
-# Mesa 25.0.7 for the phone (iOS 16, arm64), on a macOS host with Xcode: Gallium freedreno (a4xx) behind OSMesa,
+# Mesa 25.0.7 for the phone (iOS 16, arm64), on a macOS host with Xcode: Gallium freedreno (a4xx) behind OSMesa
+# (softpipe too: OSMesa requires it, and OSMESA_SOFTWARE=1 selects it),
 # with HakiOS's hakios-drm as its libdrm (requests go to NativeAdreno430's user client). Output in $OUT:
 # libOSMesa.8.dylib (install name /usr/lib/libOSMesa.8.dylib, signed ad hoc). Build dir: $WORK (default build/mesa).
 set -euo pipefail
@@ -45,12 +46,14 @@ endian = 'little'
 [properties]
 needs_exe_wrapper = true
 INI
+# Mesa's GLSL parser wants bison newer than macOS's 2.3
+command -v brew >/dev/null && { brew list bison >/dev/null 2>&1 || brew install -q bison; export PATH="$(brew --prefix bison)/bin:$PATH"; }
 python3 -m venv venv
 venv/bin/pip -q install mako pyyaml packaging meson ninja
 export PATH=$WORK/venv/bin:$PATH
 meson setup build mesa-$VERSION --cross-file cross.ini --wrap-mode=nofallback \
   --prefix=/usr --libdir=lib --buildtype=release -Db_ndebug=true \
-  -Dplatforms= -Dgallium-drivers=freedreno -Dfreedreno-kmds=msm -Dvulkan-drivers= -Dglx=disabled -Degl=disabled \
+  -Dplatforms= -Dgallium-drivers=softpipe,freedreno -Dfreedreno-kmds=msm -Dvulkan-drivers= -Dglx=disabled -Degl=disabled \
   -Dgbm=disabled -Dosmesa=true -Dllvm=disabled -Dshared-glapi=enabled -Dgles1=disabled -Dgles2=enabled -Dopengl=true \
   -Dzstd=disabled -Dxmlconfig=disabled -Dexpat=disabled -Dshader-cache=disabled -Dvalgrind=disabled \
   -Dlibunwind=disabled -Dglvnd=disabled -Dvideo-codecs= -Dtools= -Dgallium-vdpau=disabled -Dgallium-va=disabled \
