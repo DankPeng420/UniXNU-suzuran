@@ -1,0 +1,25 @@
+mesa-25.0.7/src/freedreno/drm/freedreno_pipe.c: fd_pipe_wait_timeout asks the kernel even when its own fence has passed
+[32m==>[0m [1mDownloading bottle manifests[0m
+✔︎ Bottle Manifest bison (3.8.2)
+[34m==>[0m [1mWould install 1 formula:[0m
+bison
+[32m==>[0m [1mFetching downloads for: [32mbison[39m[0m
+✔︎ Bottle bison (3.8.2)
+[34m==>[0m [1mPouring bison--3.8.2.sonoma.bottle.tar.gz[0m
+🍺  /usr/local/Cellar/bison/3.8.2: 99 files, 3.9MB
+
+[notice] A new release of pip is available: 26.2.1 -> 26.3
+[notice] To update, run: /Users/runner/work/_temp/mesa/venv/bin/python3.14 -m pip install --upgrade pip
+-rwxr-xr-x  1 runner  staff  14828344 Nov 12 19:33 /Users/runner/work/_temp/userland/libOSMesa.8.dylib
+Identifier=gputest-555549442f4dee31df1633e897bafaeee88584f0
+Hash type=sha256 size=32
+CDHash=202a208c2d7df30e8562213891f3f1074ecbd833
+Identifier=libOSMesa.8
+Hash type=sha256 size=32
+CDHash=1a5b2605c046981a2dbfe3cbed1623006e480cdc
+Identifier=gltri-555549447b59e40a4c6e3b2d81cefa90addaf033
+Hash type=sha256 size=32
+CDHash=900db86bd4cf70f8252c5e1a5da663f33e1de172
+c74457ec33013f55cf481a9ed3cec54009fb7b76431aa1f2c2fcf74ed1ca94c0  gputest
+f513980101cb55abd3b24dd541e2ee89d0d34ad014c22958114a4271985a1874  libOSMesa.8.dylib
+c39a8f1412fe10b56ea820adf32d7fbe3065be7a46d07032a00a80cfb293cfee  gltri
