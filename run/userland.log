@@ -1,0 +1,63 @@
+
+[notice] A new release of pip is available: 26.2.2 -> 26.3
+[notice] To update, run: /Users/runner/work/_temp/mesa/venv/bin/python3.15 -m pip install --upgrade pip
+Run-time dependency lua5.3 found: NO  (tried pkg-config, framework and cmake)
+Pkg-config for machine host machine not found. Giving up.
+Finding framework path by running:  /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -arch arm64 -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -miphoneos-version-min=16.0 -I/Users/runner/work/_temp/mesa/inc -v -E - 
+
+Looking for framework lua-5.3 in /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk/System/Library/Frameworks
+Looking for framework lua-5.3 in /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk/System/Library/SubFrameworks
+CMake binary for host machine is cached as not found
+CMake binary for machine host machine not found. Giving up.
+Run-time dependency lua-5.3 found: NO  (tried pkg-config, framework and cmake)
+Pkg-config for machine host machine not found. Giving up.
+Finding framework path by running:  /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -arch arm64 -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -miphoneos-version-min=16.0 -I/Users/runner/work/_temp/mesa/inc -v -E - 
+
+Looking for framework lua in /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk/System/Library/Frameworks
+Looking for framework lua in /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk/System/Library/SubFrameworks
+CMake binary for host machine is cached as not found
+CMake binary for machine host machine not found. Giving up.
+Run-time dependency lua found: NO  (tried pkg-config, framework and cmake)
+Pkg-config for machine host machine not found. Giving up.
+Finding framework path by running:  /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ -arch arm64 -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -miphoneos-version-min=16.0 -I/Users/runner/work/_temp/mesa/inc -v -E - 
+
+Looking for framework libelf in /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk/System/Library/Frameworks
+Looking for framework libelf in /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk/System/Library/SubFrameworks
+CMake binary for host machine is cached as not found
+CMake binary for machine host machine not found. Giving up.
+Run-time dependency libelf found: NO  (tried pkg-config, framework and cmake)
+Running compile:
+Working directory:  /Users/runner/work/_temp/mesa/build/meson-private/tmpdysjy723
+Code:
+int main(void) { return 0; }
+
+-----------
+Command line: `/Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch arm64 -isysroot /Applications/Xcode_26.6.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -miphoneos-version-min=16.0 -I/Users/runner/work/_temp/mesa/inc /Users/runner/work/_temp/mesa/build/meson-private/tmpdysjy723/testfile.c -o /Users/runner/work/_temp/mesa/build/meson-private/tmpdysjy723/output.exe -O0 -U_FORTIFY_SOURCE -Werror=implicit-function-declaration -lelf -Wl,-undefined,dynamic_lookup` -> 1
+stderr:
+ld: warning: -undefined dynamic_lookup is deprecated on iOS
+ld: library 'elf' not found
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+-----------
+Library elf found: NO
+Dependency valgrind for host machine skipped: feature valgrind disabled
+Program bison found: YES (/usr/bin/bison)
+Running command: /usr/bin/bison --version
+--- stdout ---
+bison (GNU Bison) 2.3
+Written by Robert Corbett and Richard Stallman.
+
+Copyright (C) 2006 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+--- stderr ---
+
+
+Program bison found: NO found 2.3 but need: '> 2.3' (/usr/bin/bison)
+Program flex found: YES (/usr/bin/flex)
+Library System skipped: feature libunwind disabled
+
+mesa-25.0.7/meson.build:2050:4: ERROR: Problem encountered: OSMesa gallium requires gallium softpipe or llvmpipe.
+
+::endgroup::
+
