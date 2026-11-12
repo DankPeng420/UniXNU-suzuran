@@ -19,6 +19,7 @@ for p in "$HERE"/freedreno-darwin.patch "$HERE"/osmesa-es-profile.patch; do
   patch -s --no-backup-if-mismatch -d mesa-$VERSION -p1 < "$p"
 done
 cp -r "$HERE/hakios-drm" mesa-$VERSION/src/hakios-drm
+python3 "$HERE/kernel-fence-waits.py" mesa-$VERSION
 
 # The iPhoneOS SDK has IOKit.framework but not its headers: use the macOS SDK's (the same API).
 mkdir -p inc

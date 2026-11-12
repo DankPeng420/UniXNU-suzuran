@@ -602,6 +602,18 @@ IOReturn NativeAdreno430UserClient::param(msm::Param &r)
 // by their headers; anything unknown ends the walk, leaving the rest uncut.
 constexpr uint32_t kMaxCuts = 4;
 
+// Off by default: the cut hung the GPU on Mesa's first submission (boot 33). Boot-arg adrenocut=1 turns it on.
+static bool cutsWanted()
+{
+    static int wanted = -1;
+    if (wanted < 0) {
+        uint32_t value = 0;
+        PE_parse_boot_argn("adrenocut", &value, sizeof value);
+        wanted = value ? 1 : 0;
+    }
+    return wanted == 1;
+}
+
 static uint32_t findTimestampWrites(const uint32_t *ib, uint32_t dwords, uint32_t *at)
 {
     uint32_t found = 0, i = 0;
@@ -658,7 +670,7 @@ IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
         } else {
             uint32_t *mine = cuts + i * (kMaxCuts + 1);
             mine[0] = 0;
-            if (c.type == msm::SUBMIT_CMD_BUF) {
+            if (c.type == msm::SUBMIT_CMD_BUF && cutsWanted()) {
                 const uint8_t *base = static_cast<const uint8_t *>(used[c.submitIdx]->memory->getBytesNoCopy());
                 if (base) {
                     mine[0] = findTimestampWrites(reinterpret_cast<const uint32_t *>(base + c.submitOffset),
