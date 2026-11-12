@@ -17,10 +17,12 @@
 //   * ADMA2 writes
 //   * the eMMC cache (left off, so every write is on the medium when it completes)
 //   * HS200/HS400 (QSDCC vendor registers and tuning; see README.md, "Vendor registers")
+// Since 2026-11-12 (suzuran) the bus goes to DDR52 when a read/write test at probe proves it (setupDdr).
 #include <IOKit/IOLib.h>
 #include <IOKit/IOMemoryDescriptor.h>
 #include <IOKit/IODeviceTreeSupport.h>
 #include <kern/thread.h>
+#include <kern/clock.h>
 #include <libkern/c++/OSData.h>
 #include <libkern/c++/OSNumber.h>
 #include <libkern/libkern.h>
@@ -265,6 +267,7 @@ bool NativeSdhci::setBusClock(uint32_t hz)
         {   400000, 23 | (0u << 8) | (2u << 12), 1, ~3u, ~4u },   // XO / 12 * 1/4
         { 25000000, 23 | (1u << 8) | (2u << 12), 1, ~1u, ~2u },   // GPLL0 / 12 * 1/2
         { 50000000, 23 | (1u << 8),              0,  0u, ~0u },   // GPLL0 / 12, M/N bypassed
+        {100000000, 11 | (1u << 8),              0,  0u, ~0u },   // GPLL0 / 6: DDR52 (the host halves it)
     };
     const Rate *rate = nullptr;
     for (const Rate &candidate : rates) if (candidate.hz == hz) rate = &candidate;
@@ -274,7 +277,8 @@ bool NativeSdhci::setBusClock(uint32_t hz)
     // High-speed timing (output on the rising edge) above the 26 MHz legacy limit.
     const uint8_t host1 = readHc8(kRegHostControl1) & ~kHostHighSpeed;
     writeHc8(kRegHostControl1, hz > 26000000 ? host1 | kHostHighSpeed : host1);
-    writeHc16(kRegHostControl2, readHc16(kRegHostControl2) & ~7u);
+    // UHS mode: DDR50 (4) for DDR52, else 0 -- below 100 MHz the MSM host uses the feedback clock, DLL off.
+    writeHc16(kRegHostControl2, (readHc16(kRegHostControl2) & ~7u) | (ddr ? 4u : 0u));
 
     // VENDOR_SPEC: default MCLK, HC_SELECT_IN off, no clock power save while identifying.
     uint32_t vendor = readCore32(0x10c);
@@ -308,6 +312,123 @@ bool NativeSdhci::setBusClock(uint32_t hz)
           hz, readGcc32(rcg), readGcc32(rcg + 4), polls,
           readGcc32(lumia950::kGccSdcc1AppsCbcr), readHc16(kRegClockControl));
     return polls < 500 && branch < 500 && stable < 20000;
+}
+
+// DDR52 (JESD84 "HS_DDR"): from high-speed SDR at 50 MHz on the 8-bit bus, BUS_WIDTH = 6 (8-bit DDR) on the card,
+// then the host in UHS mode DDR50 with its clock at 100 MHz (sdhci-msm: "the SDHC requires internal clock frequency
+// to be double the actual clock ... for DDR mode"). Back: BUS_WIDTH = 2 and 50 MHz SDR.
+bool NativeSdhci::switchDdr(bool on)
+{
+    if (!card.setExtCsd(183, on ? 6 : 2)) return false;
+    ddr = on;
+    return setBusClock(on ? 100000000 : lumia950::kHighSpeedHz);
+}
+
+namespace {
+uint64_t nowNs()
+{
+    uint64_t ns = 0;
+    absolutetime_to_nanoseconds(mach_absolute_time(), &ns);
+    return ns;
+}
+uint64_t fnv64(const uint8_t *p, size_t n)
+{
+    uint64_t h = 0xcbf29ce484222325ull;
+    for (size_t i = 0; i < n; ++i) h = (h ^ p[i]) * 0x100000001b3ull;
+    return h;
+}
+}
+
+// chunks of kMaxDmaBlocks blocks from lba by ADMA2: a hash of each, and the time spent in the transfers.
+bool NativeSdhci::hashRange(uint64_t lba, uint32_t chunks, uint64_t *hashes, uint64_t *ns)
+{
+    *ns = 0;
+    for (uint32_t i = 0; i < chunks; ++i) {
+        const uint64_t t0 = nowNs();
+        if (!readBlocksDma(lba + static_cast<uint64_t>(i) * kMaxDmaBlocks, kMaxDmaBlocks)) return false;
+        *ns += nowNs() - t0;
+        hashes[i] = fnv64(static_cast<const uint8_t *>(dmaBuffer->getBytesNoCopy()),
+                          kMaxDmaBlocks * lumia950::kLogicalBlockBytes);
+    }
+    return true;
+}
+
+// DDR52 (boot-arg sdhciddr=0 keeps 50 MHz SDR), trusted only after it proves itself: 16 MiB of the 'ios' partition
+// read by ADMA2 in SDR and again in DDR must hash the same, single blocks by PIO must match, and when writes are
+// allowed, a block of the console-log ring (written in DDR, read back in DDR and in SDR) must come back as
+// written; its old content is put back. Anything else: back to SDR, and the boot goes on as before.
+void NativeSdhci::setupDdr()
+{
+    uint32_t enabled = 1;
+    PE_parse_boot_argn("sdhciddr", &enabled, sizeof enabled);
+    const uint8_t type = card.info().extCsd.deviceType;
+    if (!enabled || !dma || !windowFirst || card.info().busWidth != 8 || card.info().clockHz < 50000000 ||
+        !(type & 4)) {
+        IOLog("NativeSdhci: DDR52 not tried (sdhciddr %u, dma %u, bus %u-bit at %u Hz, device type 0x%02x)\n",
+              enabled, dma ? 1 : 0, card.info().busWidth, card.info().clockHz, type);
+        return;
+    }
+    constexpr uint32_t kChunks = 32;   // 32 x 512 KiB
+    uint64_t sdr[kChunks], dual[kChunks], sdrNs = 0, ddrNs = 0;
+    const uint64_t lba = windowFirst + 8192;
+    alignas(8) uint8_t pioSdr[lumia950::kLogicalBlockBytes], pioDdr[lumia950::kLogicalBlockBytes];
+    if (!hashRange(lba, kChunks, sdr, &sdrNs) || !readBlocksPio(lba + 12345, 1, pioSdr)) {
+        IOLog("NativeSdhci: DDR52 not tried: the SDR reference reads failed\n");
+        card.recover();
+        return;
+    }
+    const char *why = nullptr;
+    if (!switchDdr(true)) {
+        why = "the switch failed";
+    } else if (!hashRange(lba, kChunks, dual, &ddrNs)) {
+        why = "a DDR read failed";
+    } else if (memcmp(sdr, dual, sizeof sdr) != 0) {
+        why = "DDR reads differ from SDR reads";
+    } else if (!card.readBlocks(lba + 12345, 1, pioDdr) || memcmp(pioSdr, pioDdr, sizeof pioSdr) != 0) {
+        why = "a PIO read differs";
+    }
+    bool wrote = false;
+    if (!why && card.writable() && windowLast > windowFirst) {
+        alignas(8) uint8_t old[lumia950::kLogicalBlockBytes], pattern[lumia950::kLogicalBlockBytes],
+            back[lumia950::kLogicalBlockBytes];
+        for (uint32_t i = 0; i < sizeof pattern; ++i) pattern[i] = static_cast<uint8_t>(i * 7 + (i >> 8) * 13 + 0x5a);
+        const uint64_t test = windowLast;   // the ring's last block (startConsoleLog: the ring ends the partition)
+        if (!card.readBlocks(test, 1, old)) {
+            why = "reading the write-test block failed";
+        } else if (!card.writeBlocks(test, 1, pattern) || !card.readBlocks(test, 1, back) ||
+                   memcmp(back, pattern, sizeof back) != 0) {
+            why = "a DDR write did not read back";
+        } else {
+            wrote = true;
+        }
+        if (!why && (!switchDdr(false) || !card.readBlocks(test, 1, back) || memcmp(back, pattern, sizeof back) != 0)) {
+            why = "a DDR write read back differently in SDR";
+        }
+        if (!why && !switchDdr(true)) why = "the second switch failed";
+        if (wrote && !card.writeBlocks(test, 1, old)) IOLog("NativeSdhci: could not restore the write-test block\n");
+    }
+    if (why) {
+        IOLog("NativeSdhci: DDR52 off: %s (host error %u phase %u status 0x%08x); 50 MHz SDR as before\n", why,
+              static_cast<unsigned>(host.result().error), static_cast<unsigned>(host.result().phase),
+              readHc32(kRegInterruptStatus));
+        card.reattach();
+        card.recover();
+        card.setExtCsd(183, 2);
+        ddr = false;
+        setBusClock(lumia950::kHighSpeedHz);
+        card.recover();
+        uint64_t again[1], ns = 0;
+        if (!hashRange(lba, 1, again, &ns) || again[0] != sdr[0]) {
+            IOLog("NativeSdhci: SDR reads after the DDR52 attempt do not match; reads by PIO\n");
+            dma = false;
+            card.recover();
+        }
+        return;
+    }
+    const uint64_t bytes = static_cast<uint64_t>(kChunks) * kMaxDmaBlocks * lumia950::kLogicalBlockBytes;
+    IOLog("NativeSdhci: DDR52 on: 16 MiB at %llu KB/s (SDR %llu KB/s), reads match%s\n",
+          bytes * 1000000 / (ddrNs ? ddrNs : 1), bytes * 1000000 / (sdrNs ? sdrNs : 1),
+          wrote ? ", a write verified in both modes" : " (writes not tested)");
 }
 
 bool NativeSdhci::busClock(void *context, u32 hz)
@@ -734,6 +855,7 @@ bool NativeSdhci::probeCard()
     IOLog("NativeSdhci: GPT signature read successfully\n");
     findWritableWindow();
     setupDma();
+    setupDdr();
     return card.ready();
 }
 

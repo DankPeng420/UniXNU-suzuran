@@ -57,6 +57,9 @@ private:
     void logVendor();
     bool setBusClock(uint32_t hz);
     bool setBusWidth(uint32_t bits);
+    bool switchDdr(bool on);
+    void setupDdr();
+    bool hashRange(uint64_t lba, uint32_t chunks, uint64_t *hashes, uint64_t *ns);
     static bool busClock(void *context, sdhci::u32 hz);
     static bool busWidth(void *context, sdhci::u32 bits);
     bool identifyCold();
@@ -99,6 +102,7 @@ private:
     uint32_t           dmaBufferPhys = 0;
     uint32_t           dmaTablePhys = 0;
     bool               dma = false;
+    bool               ddr = false;   // DDR52: 8-bit dual data rate at 50 MHz (setupDdr)
 
     uint32_t baseClockHz = 0;
     uint16_t hostVersion = 0;

@@ -146,6 +146,10 @@ public:
     // offers it. Each step is proved by reading EXT_CSD back through the new bus mode. On false
     // the card is in an unknown bus mode and must be initialized again.
     bool upgrade(const BusControl &bus, u32 highSpeedHz);
+    // CMD6 write-byte of one EXT_CSD field, then wait for the transfer state (NativeSdhci's DDR52 switch).
+    bool setExtCsd(u8 index, u8 value) { return ready() && switchExtCsd(index, value); }
+    // After a failed transfer in a mode under test (DDR52): the card is still there, attach it again.
+    void reattach() { if (host) attached = true; }
     bool readBlocks(u64 lba, u32 count, u8 *destination);
     bool readBlock(u64 lba, u8 *destination) { return readBlocks(lba, 1, destination); }
     // ADMA2 read of count blocks through the descriptor table at tablePhys (see PollingHost::readBlocksDma).
