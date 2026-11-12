@@ -410,6 +410,10 @@ class NativeAdreno430UserClient final : public IOUserClient {
     task_t fTask = nullptr;
     Buffer **fBuffers = nullptr;   // index = handle - 1
     uint32_t fCount = 0, fNextQueue = 0;
+    // what this client asked to wait for: calls, and how many found the GPU still busy (the rest were done already)
+    uint64_t fSubmits = 0, fFenceWaits = 0, fFenceBusy = 0, fPreps = 0, fPrepBusy = 0, fPrepNoSync = 0;
+    char fName[32] = {};
+    int fPid = 0;
     uint64_t fBytes = 0;
 
     Buffer *buffer(uint32_t handle)
@@ -436,6 +440,8 @@ OSDefineMetaClassAndStructors(NativeAdreno430UserClient, IOUserClient)
 bool NativeAdreno430UserClient::initWithTask(task_t owningTask, void *securityID, UInt32 type)
 {
     if (!IOUserClient::initWithTask(owningTask, securityID, type)) return false;
+    fPid = proc_selfpid();
+    proc_selfname(fName, sizeof fName);
     fTask = owningTask;
     return true;
 }
@@ -470,8 +476,9 @@ void NativeAdreno430UserClient::freeBuffer(uint32_t handle)
 
 IOReturn NativeAdreno430UserClient::clientClose()
 {
-    IOLog("NativeAdreno430: client closes: %llu submissions, %llu waits so far, %llu ms waited, longest %llu us\n",
-          gSubmits, gWaits, gWaitNs / 1000000, gWaitMaxNs / 1000);
+    IOLog("NativeAdreno430: %s[%d] closes: %llu submissions; WAIT_FENCE %llu (%llu busy), CPU_PREP %llu (%llu busy, %llu "
+          "nosync); all clients: %llu submissions, %llu waits, %llu ms waited, longest %llu us\n", fName, fPid, fSubmits,
+          fFenceWaits, fFenceBusy, fPreps, fPrepBusy, fPrepNoSync, gSubmits, gWaits, gWaitNs / 1000000, gWaitMaxNs / 1000);
     if (fBuffers) {
         for (uint32_t h = 1; h <= kMaxHandles; ++h) freeBuffer(h);
     }
@@ -705,6 +712,11 @@ IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternal
         break;
     case msm::kGemCpuPrep: {
         Buffer *b = buffer(r.cpuPrep.handle);
+        ++fPreps;
+        if (b && !fenceDone(b->lastFence)) {
+            ++fPrepBusy;
+            if (r.cpuPrep.op & msm::PREP_NOSYNC) ++fPrepNoSync;
+        }
         if (!b) {
             ret = kIOReturnBadArgument;
         } else if (!fenceDone(b->lastFence) &&
@@ -715,8 +727,11 @@ IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternal
     }
     case msm::kGemSubmit:
         ret = submit(r.submit);
+        if (ret == kIOReturnSuccess) ++fSubmits;
         break;
     case msm::kWaitFence:
+        ++fFenceWaits;
+        if (!fenceDone(r.wait.fence)) ++fFenceBusy;
         if (static_cast<int32_t>(r.wait.fence - gSubmitted) > 0) {
             ret = kIOReturnBadArgument;   // never issued: never done
         } else if (!waitFence(r.wait.fence, deadlineOf(r.wait.timeout))) {

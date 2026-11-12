@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 extern "C" {
 #include "../iokit_min.h"
 }
@@ -113,6 +114,26 @@ int main(void)
     glUseProgram(program);
     glViewport(0, 0, W, H);
 
+    // A frame is right when the triangle's middle is red and the corners have the clear colour. Each check is made
+    // right after glFinish and, when it fails, again a while later: a frame that turns right by itself means the
+    // driver let glFinish return before the GPU was done (a sync bug); one that stays wrong was never drawn.
+    auto frame_ok = [&](uint32_t clear) {
+        return buffer[(H / 2) * W + W / 2] == 0xff0000ffu && buffer[(H / 4) * W + W / 2] == 0xff0000ffu &&
+            buffer[1 * W + 1] == clear && buffer[1 * W + W - 2] == clear && buffer[(H - 2) * W + 1] == clear &&
+            buffer[(H - 2) * W + W - 2] == clear;
+    };
+    auto picture = [&]() {
+        for (int y = H - 8; y >= 0; y -= 16) {   // a coarse picture of the buffer, top row first
+            char row[W / 8 + 1];
+            for (int x = 0; x < W / 8; x++) {
+                const uint32_t p = buffer[y * W + x * 8];
+                row[x] = p == 0xff0000ffu ? 'R' : p == 0xffff0000u ? 'b' : p == 0xffffff00u ? 'c' : p == 0 ? '.' : '?';
+            }
+            row[W / 8] = 0;
+            say("  %s", row);
+        }
+    };
+
     t0 = now_ns();
     glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -121,40 +142,49 @@ int main(void)
     const uint64_t first = now_ns() - t0;
     const GLenum error = glGetError();
     // inside: the triangle's middle; outside: the corners, which it does not reach
-    const uint32_t centre = buffer[(H / 2) * W + W / 2], low = buffer[(H / 4) * W + W / 2],
-        c0 = buffer[1 * W + 1], c1 = buffer[1 * W + W - 2], c2 = buffer[(H - 2) * W + 1], c3 = buffer[(H - 2) * W + W - 2];
+    const uint32_t centre = buffer[(H / 2) * W + W / 2], c0 = buffer[1 * W + 1], c1 = buffer[1 * W + W - 2],
+        c2 = buffer[(H - 2) * W + 1], c3 = buffer[(H - 2) * W + W - 2];
     int red = 0, blue = 0;
     for (int i = 0; i < W * H; i++) {
         red += buffer[i] == 0xff0000ffu;
         blue += buffer[i] == 0xffff0000u;
     }
-    const bool pass = !error && centre == 0xff0000ffu && low == 0xff0000ffu && c0 == 0xffff0000u &&
-        c1 == 0xffff0000u && c2 == 0xffff0000u && c3 == 0xffff0000u && red > 4000 && red + blue == W * H;
+    const bool pass = !error && frame_ok(0xffff0000u) && red > 4000 && red + blue == W * H;
     say("first frame %llu us, gl error 0x%x: centre %08x (%s), corners %08x %08x %08x %08x, %d red + %d blue of %d: %s",
         (unsigned long long)(first / 1000), error, centre, pixel_name(centre), c0, c1, c2, c3, red, blue, W * H,
         pass ? "PASS, the Adreno 430 draws" : "FAIL");
     if (!pass) {
-        for (int y = H - 8; y >= 0; y -= 16) {   // a coarse picture of the buffer, top row first
-            char row[W / 8 + 1];
-            for (int x = 0; x < W / 8; x++) {
-                const uint32_t p = buffer[y * W + x * 8];
-                row[x] = p == 0xff0000ffu ? 'R' : p == 0xffff0000u ? 'b' : p == 0 ? '.' : '?';
-            }
-            row[W / 8] = 0;
-            say("  %s", row);
-        }
-        return 1;
+        picture();
+        usleep(200000);
+        int later = 0;
+        for (int i = 0; i < W * H; i++) later += buffer[i] == 0xff0000ffu;
+        say("first frame 200 ms later (no GL calls in between): centre %08x, %d red: %s", buffer[(H / 2) * W + W / 2],
+            later, frame_ok(0xffff0000u) ? "now right: glFinish returned before the GPU was done (sync bug)"
+                                          : "still wrong: the triangle was not drawn");
+        if (!frame_ok(0xffff0000u)) picture();
     }
+    int wrong = 0, late = 0;
     t0 = now_ns();
     for (int frame = 0; frame < 100; frame++) {
+        const uint32_t clear = frame & 1 ? 0xffffff00u : 0xffff0000u;
         glClearColor(0.0f, frame & 1 ? 1.0f : 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         glFinish();
+        if (!frame_ok(clear)) {
+            ++wrong;
+            usleep(50000);
+            if (frame_ok(clear)) ++late;
+            if (wrong <= 3) {
+                say("frame %d wrong after glFinish (centre %08x, corner %08x)%s", frame, buffer[(H / 2) * W + W / 2],
+                    buffer[1 * W + 1], frame_ok(clear) ? ", right 50 ms later" : ", still wrong 50 ms later");
+            }
+        }
     }
     const uint64_t took = now_ns() - t0;
-    say("100 frames (clear + triangle + finish, %dx%d) in %llu ms: %llu fps", W, H,
-        (unsigned long long)(took / 1000000), (unsigned long long)(100ull * 1000000000ull / (took ? took : 1)));
+    say("100 frames (clear + triangle + finish, %dx%d) in %llu ms: %llu fps; %d wrong after glFinish, %d of them right "
+        "later: %s", W, H, (unsigned long long)(took / 1000000), (unsigned long long)(100ull * 1000000000ull / (took ? took : 1)),
+        wrong, late, !pass || wrong ? "FAIL" : "PASS");
     OSMesaDestroyContext(ctx);
-    return 0;
+    return !pass || wrong ? 1 : 0;
 }
