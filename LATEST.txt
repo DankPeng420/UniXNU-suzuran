@@ -1,0 +1,8 @@
+run 43227506054 attempt 1 sha 2124d2d04a01ef459f4096cc4e6d1992d42fb779 status success
+Thu Nov 12 13:46:14 UTC 2026
+8426: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+8432: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+10398: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+101592:/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/iokit/IOKit/IOLib.h:985 1049 |         os_log_error:2: (necp_data_tnote: previous initialization for field 'kt_flags' is hererace_log_handle
+119073:/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/iokit/Kernel/IONVRAM.cppog_error:79:68: note: expanded from macro 'DEBUG_INFO'(necp_da
+dea49875046e1c037c879582cd15f638ac9754a9b9d19b784e9370c0c164a12f  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho
