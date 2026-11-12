@@ -411,7 +411,7 @@ class NativeAdreno430UserClient final : public IOUserClient {
     Buffer **fBuffers = nullptr;   // index = handle - 1
     uint32_t fCount = 0, fNextQueue = 0;
     // what this client asked to wait for: calls, and how many found the GPU still busy (the rest were done already)
-    uint64_t fSubmits = 0, fFenceWaits = 0, fFenceBusy = 0, fPreps = 0, fPrepBusy = 0, fPrepNoSync = 0;
+    uint64_t fSubmits = 0, fCuts = 0, fFenceWaits = 0, fFenceBusy = 0, fPreps = 0, fPrepBusy = 0, fPrepNoSync = 0;
     char fName[32] = {};
     int fPid = 0;
     uint64_t fBytes = 0;
@@ -476,8 +476,8 @@ void NativeAdreno430UserClient::freeBuffer(uint32_t handle)
 
 IOReturn NativeAdreno430UserClient::clientClose()
 {
-    IOLog("NativeAdreno430: %s[%d] closes: %llu submissions; WAIT_FENCE %llu (%llu busy), CPU_PREP %llu (%llu busy, %llu "
-          "nosync); all clients: %llu submissions, %llu waits, %llu ms waited, longest %llu us\n", fName, fPid, fSubmits,
+    IOLog("NativeAdreno430: %s[%d] closes: %llu submissions (%llu waits for idle put before Mesa's fence writes); WAIT_FENCE %llu (%llu busy), CPU_PREP %llu (%llu busy, %llu "
+          "nosync); all clients: %llu submissions, %llu waits, %llu ms waited, longest %llu us\n", fName, fPid, fSubmits, fCuts,
           fFenceWaits, fFenceBusy, fPreps, fPrepBusy, fPrepNoSync, gSubmits, gWaits, gWaitNs / 1000000, gWaitMaxNs / 1000);
     if (fBuffers) {
         for (uint32_t h = 1; h <= kMaxHandles; ++h) freeBuffer(h);
@@ -594,6 +594,38 @@ IOReturn NativeAdreno430UserClient::param(msm::Param &r)
     }
 }
 
+// Mesa writes its own fence (pipe->control->fence) with CP_EVENT_WRITE CACHE_FLUSH_TS at the end of each batch and
+// trusts it: gltri made 101 submissions and not one WAIT_FENCE or CPU_PREP (boot 32). On the A4xx that event is not
+// preceded by a wait for idle, so the fence can land while a draw is still in the pipeline: boot 25 read a frame with
+// the clear but without the triangle. Each top-level command buffer is therefore cut before every CACHE_FLUSH_TS
+// event write, and HLSQ_FLUSH + CP_WAIT_FOR_IDLE go in between (as before the kernel's own fence). Packets are walked
+// by their headers; anything unknown ends the walk, leaving the rest uncut.
+constexpr uint32_t kMaxCuts = 4;
+
+static uint32_t findTimestampWrites(const uint32_t *ib, uint32_t dwords, uint32_t *at)
+{
+    uint32_t found = 0, i = 0;
+    while (i < dwords && found < kMaxCuts) {
+        const uint32_t header = ib[i], type = header >> 30;
+        uint32_t length;
+        if (type == 3) {
+            length = ((header >> 16) & 0x3fff) + 2;
+            if (((header >> 8) & 0xff) == CP_EVENT_WRITE && i > 0 && i + 1 < dwords &&
+                (ib[i + 1] & 0x3f) == CACHE_FLUSH_TS) {
+                at[found++] = i;
+            }
+        } else if (type == 0) {
+            length = ((header >> 16) & 0x3fff) + 2;
+        } else if (type == 2) {
+            length = 1;
+        } else {
+            break;
+        }
+        i += length;
+    }
+    return found;
+}
+
 IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
 {
     if (r.nrBos > kMaxSubmitBos || r.nrCmds == 0 || r.nrCmds > kMaxSubmitCmds) return kIOReturnBadArgument;
@@ -601,8 +633,10 @@ IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
     msm::SubmitBo *bos = r.nrBos ? IONew(msm::SubmitBo, r.nrBos) : nullptr;
     msm::SubmitCmd *cmds = IONew(msm::SubmitCmd, r.nrCmds);
     Buffer **used = r.nrBos ? IONew(Buffer *, r.nrBos) : nullptr;
+    uint32_t *cuts = IONew(uint32_t, r.nrCmds * (kMaxCuts + 1));   // per command: count, then dword offsets
     IOReturn ret = kIOReturnSuccess;
-    if ((r.nrBos && (!bos || !used)) || !cmds) {
+    uint32_t totalCuts = 0;
+    if ((r.nrBos && (!bos || !used)) || !cmds || !cuts) {
         ret = kIOReturnNoMemory;
     } else if ((r.nrBos && copyin(static_cast<user_addr_t>(r.bos), bos, r.nrBos * sizeof *bos)) ||
                copyin(static_cast<user_addr_t>(r.cmds), cmds, r.nrCmds * sizeof *cmds)) {
@@ -621,22 +655,48 @@ IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
         } else if (c.nrRelocs) {
             IOLog("NativeAdreno430: a submission with relocations (this driver only does softpin)\n");
             ret = kIOReturnUnsupported;
+        } else {
+            uint32_t *mine = cuts + i * (kMaxCuts + 1);
+            mine[0] = 0;
+            if (c.type == msm::SUBMIT_CMD_BUF) {
+                const uint8_t *base = static_cast<const uint8_t *>(used[c.submitIdx]->memory->getBytesNoCopy());
+                if (base) {
+                    mine[0] = findTimestampWrites(reinterpret_cast<const uint32_t *>(base + c.submitOffset),
+                                                  c.size / 4, mine + 1);
+                }
+            }
+            totalCuts += mine[0];
         }
     }
     if (ret == kIOReturnSuccess) {
         IOLockLock(gLock);
         if (gHung) {
             ret = kIOReturnNotReady;
-        } else if (!ringReserve(r.nrCmds * 4 + 12)) {
+        } else if (!ringReserve(r.nrCmds * 4 + totalCuts * 8 + 12)) {
             ret = kIOReturnTimeout;
         } else {
             for (uint32_t i = 0; i < r.nrCmds; ++i) {
                 const msm::SubmitCmd &c = cmds[i];
                 if (c.type == msm::SUBMIT_CMD_IB_TARGET_BUF) continue;
-                emit(pkt3(CP_INDIRECT_BUFFER_PFE, 2));
-                emit(used[c.submitIdx]->phys + c.submitOffset);
-                emit(c.size / 4);
-                emit(kPkt2);
+                const uint32_t *mine = cuts + i * (kMaxCuts + 1);
+                const uint32_t start = used[c.submitIdx]->phys + c.submitOffset, dwords = c.size / 4;
+                uint32_t from = 0;
+                for (uint32_t k = 0; k <= mine[0]; ++k) {
+                    const uint32_t to = k < mine[0] ? mine[1 + k] : dwords;
+                    if (to > from) {
+                        emit(pkt3(CP_INDIRECT_BUFFER_PFE, 2));
+                        emit(start + from * 4);
+                        emit(to - from);
+                        emit(kPkt2);
+                    }
+                    if (k < mine[0]) {
+                        emit(pkt3(CP_EVENT_WRITE, 1));
+                        emit(HLSQ_FLUSH);
+                        emit(pkt3(CP_WAIT_FOR_IDLE, 1));
+                        emit(0);
+                    }
+                    from = to;
+                }
             }
             const uint32_t fence = ++gSubmitted;
             emit(pkt0(CP_SCRATCH_REG2, 1));
@@ -652,6 +712,7 @@ IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
             for (uint32_t i = 0; i < r.nrBos; ++i) used[i]->lastFence = fence;
             kick();
             ++gSubmits;
+            fCuts += totalCuts;
             r.fence = fence;
             r.fenceFd = -1;
         }
@@ -660,6 +721,7 @@ IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
     if (bos) IODelete(bos, msm::SubmitBo, r.nrBos);
     if (used) IODelete(used, Buffer *, r.nrBos);
     if (cmds) IODelete(cmds, msm::SubmitCmd, r.nrCmds);
+    if (cuts) IODelete(cuts, uint32_t, r.nrCmds * (kMaxCuts + 1));
     return ret;
 }
 
