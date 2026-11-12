@@ -11,6 +11,10 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <spawn.h>
+#include <sys/wait.h>
+
+extern char **environ;
 extern "C" {
 #include "../iokit_min.h"
 }
@@ -171,5 +175,17 @@ int main(int argc, char **argv)
     say("%d submit+wait round trips in %llu us (%llu us each), gpu clock %llu ticks: PASS", rounds,
         (unsigned long long)(took / 1000), (unsigned long long)(took / 1000 / rounds),
         (unsigned long long)(t2.value - t1.value));
+
+    // Next stage: Mesa (gltri), if this boot's addon carries it.
+    static const char *const kGltri = "/usr/libexec/suzuran-gltri";
+    if (access(kGltri, X_OK) == 0) {
+        char *const args[] = {(char *)kGltri, NULL};
+        pid_t pid = 0;
+        int spawned = posix_spawn(&pid, kGltri, NULL, NULL, args, environ);
+        int status = 0;
+        if (!spawned) waitpid(pid, &status, 0);
+        say("gltri: spawn %d, %s %d", spawned, WIFSIGNALED(status) ? "signal" : "exit",
+            WIFSIGNALED(status) ? WTERMSIG(status) : WEXITSTATUS(status));
+    }
     return 0;
 }

@@ -454,7 +454,7 @@ jobs:
   kernel:
     # suzuran: a push to the suzuran branch builds the kernel too (this fork's session can push
     # but cannot dispatch workflows); the text log is published to the ci-results branch.
-    if: (github.event_name == 'workflow_dispatch' && (inputs.target == 'kernel' || inputs.target == 'both')) || (github.event_name == 'push' && github.ref == 'refs/heads/suzuran')
+    if: (github.event_name == 'workflow_dispatch' && (inputs.target == 'kernel' || inputs.target == 'both')) || (github.event_name == 'push' && github.ref == 'refs/heads/suzuran' && !contains(github.event.head_commit.message, '[userland]'))
     # suzuran: the repository variable MACOS_RUNNER (e.g. macos-15-intel) overrides the runner.
     runs-on: ${{ vars.MACOS_RUNNER || 'macos-latest' }}
     timeout-minutes: 360
@@ -630,7 +630,7 @@ jobs:
         if: always()
         run: |
           rm -rf "$RUNNER_TEMP/userland"
-          OUT="$RUNNER_TEMP/userland" bash userland/build.sh > userland.log 2>&1 || echo "userland build FAILED" >> userland.log
+          MESA=0 OUT="$RUNNER_TEMP/userland" bash userland/build.sh > userland.log 2>&1 || echo "userland build FAILED" >> userland.log
           cat userland.log
 
       - name: Publish the text results to the ci-results branch
@@ -661,3 +661,31 @@ jobs:
         run: |
           rm -rf out/ipsw out/feeds out/*/tree
           rm -f unixnu/unixnu.lock
+
+  # suzuran: the user-space programs and Mesa (no Apple code), on their own runner; published on the ci-userland-<run>
+  # branch with their cdhashes. A commit whose message contains [userland] builds only this.
+  userland:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/suzuran'
+    runs-on: ${{ vars.MACOS_RUNNER || 'macos-latest' }}
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build gputest, Mesa (freedreno + OSMesa) and gltri
+        run: |
+          set -o pipefail
+          OUT="$RUNNER_TEMP/userland" WORK="$RUNNER_TEMP/mesa" bash userland/build.sh 2>&1 | tee userland.log
+      - name: Publish to the ci-userland branch
+        if: always()
+        run: |
+          R="$RUNNER_TEMP/publish"; rm -rf "$R"; mkdir -p "$R/run"
+          cp userland.log "$R/run/" 2>/dev/null || true
+          for f in meson-setup.log ninja.log; do cp "$RUNNER_TEMP/mesa/$f" "$R/run/mesa-$f" 2>/dev/null || true; done
+          [ -d "$RUNNER_TEMP/userland" ] && cp -r "$RUNNER_TEMP/userland" "$R/run/userland"
+          cd "$R"
+          git init -q
+          git checkout -q -b "ci-userland-${{ github.run_id }}"
+          git add -A
+          git -c user.name="ci" -c user.email="ci@users.noreply.github.com" commit -q -m "userland of run ${{ github.run_id }} (${{ github.sha }})"
+          git push -q "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "ci-userland-${{ github.run_id }}"
