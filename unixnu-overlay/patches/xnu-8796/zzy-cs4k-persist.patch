@@ -1,0 +1,198 @@
+diff --git a/bsd/kern/ubc_subr.c b/bsd/kern/ubc_subr.c
+index 37a3132..55e777c 100644
+--- a/bsd/kern/ubc_subr.c
++++ b/bsd/kern/ubc_subr.c
+@@ -5713,6 +5713,166 @@ extern uint64_t mach_absolute_time(void);
+ #define CS_NATIVE4K_CHUNK       (1024 * 1024)
+ #define CS_NATIVE4K_UNCACHED    (32 * 1024 * 1024)
+ 
++/*
++ * suzuran: the 4K hashes of a large file (the shared cache: 2.7 GB, about 170 s of reading and
++ * hashing on an eMMC phone) are kept in /private/var/db/native4k-<cdhash>.bin after the first
++ * boot and loaded from there on later ones. The file is keyed by the code directory hash, so a
++ * changed signature never matches it, and carries a digest of its hashes, so a torn write is
++ * never used. Page faults still check every 4K page against these hashes. Boot-arg cs4kcache:
++ * 0 off, 1 load and save (default), 2 rebuild.
++ */
++#include <pexpert/pexpert.h>
++
++#define CS_NATIVE4K_FILE_MAGIC  "N4KCACHE"
++#define CS_NATIVE4K_FILE_VER    1
++
++struct cs_native4k_file_header {
++	char            magic[8];
++	uint32_t        version;
++	uint32_t        hash_size;
++	uint64_t        count;
++	uint64_t        limit;
++	uint8_t         cdhash[CS_CDHASH_LEN];
++	uint8_t         pad[4];
++	uint8_t         digest[CS_HASH_MAX_SIZE];
++};
++
++uint64_t cs_native4k_cache_hits = 0, cs_native4k_cache_saves = 0;
++
++static uint32_t
++cs_native4k_cache_mode(void)
++{
++	static uint32_t mode = ~0u;
++	if (mode == ~0u) {
++		uint32_t value = 1;
++		PE_parse_boot_argn("cs4kcache", &value, sizeof(value));
++		mode = value;
++	}
++	return mode;
++}
++
++static void
++cs_native4k_cache_path(const struct cs_blob *blob, char *path, size_t size)
++{
++	static const char hex[] = "0123456789abcdef";
++	char name[2 * CS_CDHASH_LEN + 1];
++	for (int i = 0; i < CS_CDHASH_LEN; i++) {
++		name[2 * i] = hex[blob->csb_cdhash[i] >> 4];
++		name[2 * i + 1] = hex[blob->csb_cdhash[i] & 15];
++	}
++	name[2 * CS_CDHASH_LEN] = '\0';
++	snprintf(path, size, "/private/var/db/native4k-%s.bin", name);
++}
++
++static void
++cs_native4k_cache_digest(const struct cs_hash *md, const uint8_t *hashes, size_t length, uint8_t *digest)
++{
++	union cs_hash_union ctx;
++	memset(digest, 0, CS_HASH_MAX_SIZE);
++	md->cs_init(&ctx);
++	md->cs_update(&ctx, hashes, length);
++	md->cs_final(digest, &ctx);
++}
++
++/* Fills storage from the cache file; 0 only when every check passed. */
++static int
++cs_native4k_cache_load(const struct cs_blob *blob, const struct cs_hash *md, uint64_t limit,
++    vm_size_t count, uint8_t *storage)
++{
++	struct cs_native4k_file_header header;
++	uint8_t digest[CS_HASH_MAX_SIZE];
++	char path[128];
++	vfs_context_t ctx = vfs_context_kernel();
++	vnode_t cvp = NULLVP;
++	size_t length = (size_t)count * md->cs_size;
++	int resid = 0, error;
++
++	if (cs_native4k_cache_mode() != 1 || length > INT_MAX) {
++		return ENOENT;
++	}
++	cs_native4k_cache_path(blob, path, sizeof(path));
++	error = vnode_open(path, FREAD | O_NOFOLLOW, 0, 0, &cvp, ctx);
++	if (error) {
++		return error;
++	}
++	error = vn_rdwr(UIO_READ, cvp, (caddr_t)&header, sizeof(header), 0, UIO_SYSSPACE, 0,
++	    vfs_context_ucred(ctx), &resid, current_proc());
++	if (!error && (resid || memcmp(header.magic, CS_NATIVE4K_FILE_MAGIC, 8) ||
++	    header.version != CS_NATIVE4K_FILE_VER || header.hash_size != md->cs_size ||
++	    header.count != count || header.limit != limit ||
++	    memcmp(header.cdhash, blob->csb_cdhash, CS_CDHASH_LEN))) {
++		error = EBADMACHO;
++	}
++	if (!error) {
++		error = vn_rdwr(UIO_READ, cvp, (caddr_t)storage, (int)length, sizeof(header), UIO_SYSSPACE,
++		    IO_NOCACHE, vfs_context_ucred(ctx), &resid, current_proc());
++		if (!error && resid) {
++			error = EBADMACHO;
++		}
++	}
++	vnode_close(cvp, FREAD, ctx);
++	if (!error) {
++		cs_native4k_cache_digest(md, storage, length, digest);
++		if (memcmp(digest, header.digest, md->cs_size)) {
++			error = EBADMACHO;
++		}
++	}
++	if (error) {
++		memset(storage, 0, length);
++		printf("cs4k: cache %s not used (error %d)\n", path, error);
++	}
++	return error;
++}
++
++static void
++cs_native4k_cache_save(const struct cs_blob *blob, const struct cs_hash *md, uint64_t limit,
++    vm_size_t count, const uint8_t *storage)
++{
++	struct cs_native4k_file_header header;
++	char path[128];
++	vfs_context_t ctx = vfs_context_kernel();
++	vnode_t cvp = NULLVP;
++	size_t length = (size_t)count * md->cs_size;
++	int resid = 0, error;
++
++	if (cs_native4k_cache_mode() == 0 || length > INT_MAX) {
++		return;
++	}
++	memset(&header, 0, sizeof(header));
++	memcpy(header.magic, CS_NATIVE4K_FILE_MAGIC, 8);
++	header.version = CS_NATIVE4K_FILE_VER;
++	header.hash_size = md->cs_size;
++	header.count = count;
++	header.limit = limit;
++	memcpy(header.cdhash, blob->csb_cdhash, CS_CDHASH_LEN);
++	cs_native4k_cache_digest(md, storage, length, header.digest);
++	cs_native4k_cache_path(blob, path, sizeof(path));
++	error = vnode_open(path, O_CREAT | O_TRUNC | FWRITE | O_NOFOLLOW, 0600, 0, &cvp, ctx);
++	if (error) {
++		printf("cs4k: cannot create %s (error %d)\n", path, error);
++		return;
++	}
++	error = vn_rdwr(UIO_WRITE, cvp, (caddr_t)&header, sizeof(header), 0, UIO_SYSSPACE, 0,
++	    vfs_context_ucred(ctx), &resid, current_proc());
++	if (!error && !resid) {
++		error = vn_rdwr(UIO_WRITE, cvp, (caddr_t)(uintptr_t)storage, (int)length, sizeof(header),
++		    UIO_SYSSPACE, 0, vfs_context_ucred(ctx), &resid, current_proc());
++	}
++	if (!error && resid) {
++		error = EIO;
++	}
++	if (!error) {
++		error = VNOP_FSYNC(cvp, MNT_WAIT, ctx);
++	}
++	vnode_close(cvp, FWRITE, ctx);
++	if (error) {
++		printf("cs4k: writing %s failed (error %d)\n", path, error);
++		return;
++	}
++	os_atomic_inc(&cs_native4k_cache_saves, relaxed);
++	printf("cs4k: saved %s (%lu hashes)\n", path, (unsigned long)count);
++}
++
+ __attribute__((noinline))
+ static int
+ cs_native4k_prepare(vnode_t vp, struct cs_blob *blob)
+@@ -5752,6 +5912,15 @@ cs_native4k_prepare(vnode_t vp, struct cs_blob *blob)
+ 	if (kr != KERN_SUCCESS) {
+ 		return ENOMEM;
+ 	}
++	if (limit > CS_NATIVE4K_UNCACHED) {
++		const uint64_t load_start = mach_absolute_time();
++		if (cs_native4k_cache_load(blob, md, limit, count, (uint8_t *)storage) == 0) {
++			os_atomic_inc(&cs_native4k_cache_hits, relaxed);
++			printf("cs4k: %llu MB from the cache in %llu ms\n", limit >> 20,
++			    (mach_absolute_time() - load_start) / 19200);
++			goto publish;
++		}
++	}
+ 	buffer = kalloc_data(CS_NATIVE4K_CHUNK, Z_WAITOK);
+ 	if (buffer == NULL) {
+ 		error = ENOMEM;
+@@ -5812,6 +5981,10 @@ cs_native4k_prepare(vnode_t vp, struct cs_blob *blob)
+ 		}
+ 		os_atomic_add(&cs_native4k_hash_ticks, mach_absolute_time() - hash_start, relaxed);
+ 	}
++	if (limit > CS_NATIVE4K_UNCACHED) {
++		cs_native4k_cache_save(blob, md, limit, count, (const uint8_t *)storage);
++	}
++publish:
+ 	kr = vm_map_protect(kernel_map, storage, storage + allocation, VM_PROT_READ, TRUE);
+ 	if (kr != KERN_SUCCESS) {
+ 		error = EPERM;
