@@ -409,6 +409,10 @@ class NativeAdreno430UserClient final : public IOUserClient {
     OSDeclareDefaultStructors(NativeAdreno430UserClient)
     task_t fTask = nullptr;
     Buffer **fBuffers = nullptr;   // index = handle - 1
+    // fBuffers and what hangs off it, for the calls of one client: Mesa allocates from one thread while its submit
+    // thread looks buffers up. With all 8 cores running (boot 40) two GEM_NEWs could take the same free slot, and Mesa's
+    // first submission hung the GPU. Never held while waiting for the GPU.
+    IOLock *fTableLock = nullptr;
     uint32_t fCount = 0, fNextQueue = 0;
     // what this client asked to wait for: calls, and how many found the GPU still busy (the rest were done already)
     uint64_t fSubmits = 0, fCuts = 0, fFenceWaits = 0, fFenceBusy = 0, fPreps = 0, fPrepBusy = 0, fPrepNoSync = 0;
@@ -421,6 +425,8 @@ class NativeAdreno430UserClient final : public IOUserClient {
         return handle >= 1 && handle <= kMaxHandles ? fBuffers[handle - 1] : nullptr;
     }
     void freeBuffer(uint32_t handle);
+    Buffer *detach(uint32_t handle);
+    void destroy(Buffer *b);
     IOReturn gemNew(msm::GemNew &r);
     IOReturn gemInfo(msm::GemInfo &r);
     IOReturn submit(msm::Submit &r);
@@ -450,16 +456,29 @@ bool NativeAdreno430UserClient::start(IOService *provider)
 {
     if (!gReady || !IOUserClient::start(provider)) return false;
     fBuffers = IONewZero(Buffer *, kMaxHandles);
-    return fBuffers != nullptr;
+    fTableLock = IOLockAlloc();
+    return fBuffers != nullptr && fTableLock != nullptr;
+}
+
+// Out of the table (fTableLock held, or no other caller left)
+Buffer *NativeAdreno430UserClient::detach(uint32_t handle)
+{
+    Buffer *b = buffer(handle);
+    if (!b) return nullptr;
+    fBuffers[handle - 1] = nullptr;
+    --fCount;
+    fBytes -= b->size;
+    return b;
 }
 
 void NativeAdreno430UserClient::freeBuffer(uint32_t handle)
 {
-    Buffer *b = buffer(handle);
+    destroy(detach(handle));
+}
+
+void NativeAdreno430UserClient::destroy(Buffer *b)
+{
     if (!b) return;
-    fBuffers[handle - 1] = nullptr;
-    --fCount;
-    fBytes -= b->size;
     // The GPU may still use it: wait for its last submission (outside the lock). A hung GPU keeps its memory.
     if (!fenceDone(b->lastFence) && !waitFence(b->lastFence, nowNs() + 2000000000ull)) {
         IOLog("NativeAdreno430: buffer at 0x%08x (%llu bytes) still in use by the GPU; not freed\n", b->phys,
@@ -492,6 +511,7 @@ void NativeAdreno430UserClient::free()
         for (uint32_t h = 1; h <= kMaxHandles; ++h) freeBuffer(h);
         IODelete(fBuffers, Buffer *, kMaxHandles);
     }
+    if (fTableLock) IOLockFree(fTableLock);
     IOUserClient::free();
 }
 
@@ -739,9 +759,11 @@ IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
 
 IOReturn NativeAdreno430UserClient::clientMemoryForType(UInt32 type, IOOptionBits *options, IOMemoryDescriptor **memory)
 {
+    IOLockLock(fTableLock);
     Buffer *b = buffer(type);
+    if (b) b->memory->retain();
+    IOLockUnlock(fTableLock);
     if (!b) return kIOReturnBadArgument;
-    b->memory->retain();
     *memory = b->memory;
     *options = 0;
     return kIOReturnSuccess;
@@ -770,6 +792,9 @@ IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternal
     memcpy(&r, args->structureInput, size);
 
     IOReturn ret = kIOReturnSuccess;
+    // the table lock for everything but WAIT_FENCE; CPU_PREP and GEM_CLOSE drop it before they wait
+    bool locked = selector != msm::kWaitFence;
+    if (locked) IOLockLock(fTableLock);
     switch (selector) {
     case msm::kGetParam:
         ret = param(r.param);
@@ -786,15 +811,18 @@ IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternal
         break;
     case msm::kGemCpuPrep: {
         Buffer *b = buffer(r.cpuPrep.handle);
+        const uint32_t fence = b ? b->lastFence : 0;
+        IOLockUnlock(fTableLock);
+        locked = false;
         ++fPreps;
-        if (b && !fenceDone(b->lastFence)) {
+        if (b && !fenceDone(fence)) {
             ++fPrepBusy;
             if (r.cpuPrep.op & msm::PREP_NOSYNC) ++fPrepNoSync;
         }
         if (!b) {
             ret = kIOReturnBadArgument;
-        } else if (!fenceDone(b->lastFence) &&
-                   ((r.cpuPrep.op & msm::PREP_NOSYNC) || !waitFence(b->lastFence, deadlineOf(r.cpuPrep.timeout)))) {
+        } else if (!fenceDone(fence) &&
+                   ((r.cpuPrep.op & msm::PREP_NOSYNC) || !waitFence(fence, deadlineOf(r.cpuPrep.timeout)))) {
             ret = kIOReturnBusy;
         }
         break;
@@ -824,13 +852,17 @@ IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternal
             copyout(&zero, static_cast<user_addr_t>(r.query.data), r.query.len < 8 ? r.query.len : 8);
         }
         break;
-    case msm::kGemClose:
-        if (!buffer(r.close.handle)) {
+    case msm::kGemClose: {
+        Buffer *b = detach(r.close.handle);
+        IOLockUnlock(fTableLock);
+        locked = false;
+        if (!b) {
             ret = kIOReturnBadArgument;
         } else {
-            freeBuffer(r.close.handle);
+            destroy(b);
         }
         break;
+    }
     case msm::kLog:
         r.log.text[sizeof r.log.text - 1] = 0;
         IOLog("gpu client: %s\n", r.log.text);
@@ -840,6 +872,7 @@ IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternal
         ret = kIOReturnUnsupported;
         break;
     }
+    if (locked) IOLockUnlock(fTableLock);
     if (ret == kIOReturnSuccess && args->structureOutput) {
         if (args->structureOutputSize > size) args->structureOutputSize = size;
         memcpy(args->structureOutput, &r, args->structureOutputSize);
