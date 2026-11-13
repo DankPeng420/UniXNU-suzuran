@@ -1,0 +1,30 @@
+ld: warning: static initializer '_loaded' found in '/private/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/inject-934562.o'. Use -no_inits to make this an error.  Use -no_warn_inits to suppress warning
+mesa-25.0.7/src/freedreno/drm/freedreno_pipe.c: fd_pipe_wait_timeout asks the kernel even when its own fence has passed
+[32m==>[0m [1mDownloading bottle manifests[0m
+✔︎ Bottle Manifest bison (3.8.2)
+[34m==>[0m [1mWould install 1 formula:[0m
+bison
+[32m==>[0m [1mFetching downloads for: [32mbison[39m[0m
+✔︎ Bottle bison (3.8.2)
+[34m==>[0m [1mPouring bison--3.8.2.sonoma.bottle.tar.gz[0m
+🍺  /usr/local/Cellar/bison/3.8.2: 99 files, 3.9MB
+
+[notice] A new release of pip is available: 26.2.1 -> 26.3
+[notice] To update, run: /Users/runner/work/_temp/mesa/venv/bin/python3.14 -m pip install --upgrade pip
+-rwxr-xr-x  1 runner  staff  14828344 Nov 13 22:14 /Users/runner/work/_temp/userland/libOSMesa.8.dylib
+Identifier=gputest-55554944de3b90fcddaa3770bd15e233027d2327
+Hash type=sha256 size=32
+CDHash=2bebb1d7c8c67bc94e45fe24066f5ae55a9133cc
+Identifier=libsuzuran.inject
+Hash type=sha256 size=32
+CDHash=b8f3b67e14413726fa302e1ace8560a170f90db2
+Identifier=libOSMesa.8
+Hash type=sha256 size=32
+CDHash=35c315da8ccdb2403eeec029b70e09baee33e925
+Identifier=gltri-555549447b59e40a4c6e3b2d81cefa90addaf033
+Hash type=sha256 size=32
+CDHash=900db86bd4cf70f8252c5e1a5da663f33e1de172
+4238b49f51e462ecae3273682bde65683ab01827f0c956b6e5d79f9738158efb  gputest
+4d18c7f603883bd68b8e06727bfbb583eb634875f7987aa4afd02d291a940bde  libsuzuran.inject.dylib
+f9657acccce84117faea0cbfdf8ebac8d30871eaba852cb4e7dc4e14270dbfc6  libOSMesa.8.dylib
+c39a8f1412fe10b56ea820adf32d7fbe3065be7a46d07032a00a80cfb293cfee  gltri
