@@ -1,0 +1,46 @@
+diff --git a/security/mac_base.c b/security/mac_base.c
+--- a/security/mac_base.c
++++ b/security/mac_base.c
+@@ -73,6 +73,7 @@
+ #include <string.h>
+ #include <security/mac_internal.h>
+ #include <security/mac_mach_internal.h>
++#include <pexpert/pexpert.h>
+ #include <sys/param.h>
+ #include <sys/vnode.h>
+ #include <sys/vnode_internal.h>
+@@ -1584,6 +1585,34 @@ __mac_syscall(proc_t p, struct __mac_syscall_args *uap, int *retv __unused)
+ 		return error;
+ 	}
+ 
++	/*
++	 * suzuran, boot-arg dyldallow=1: dyld asks AMFI what it may do for the process it is starting
++	 * (AMFI request 0x5a, amfi_check_dyld_policy_self: { input flags, pointer to output flags }).
++	 * Answered "everything" (0xff: @paths, DYLD_* variables, inserted libraries, interposing), as
++	 * HakiOS's AMFI stand-in does, so launchd's DYLD_INSERT_LIBRARIES can put our library into the
++	 * window server (the OpenGL ES route). Without the boot-arg AMFI answers as always.
++	 */
++	if (uap->call == 0x5a && strcmp(target, "AMFI") == 0) {
++		static int dyld_allow = -1;
++		if (dyld_allow < 0) {
++			int value = 0;
++			PE_parse_boot_argn("dyldallow", &value, sizeof(value));
++			dyld_allow = value ? 1 : 0;
++		}
++		if (dyld_allow) {
++			struct {
++				uint64_t input_flags;
++				user_addr_t output_flags;
++			} args;
++			uint64_t flags = 0xffULL;
++			error = copyin(uap->arg, &args, sizeof(args));
++			if (error == 0) {
++				error = copyout(&flags, args.output_flags, sizeof(flags));
++			}
++			return error;
++		}
++	}
++
+ 	error = ENOPOLICY;
+ 
+ 	for (i = 0; i < mac_policy_list.staticmax; i++) {
