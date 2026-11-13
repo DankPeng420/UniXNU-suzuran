@@ -1,0 +1,8 @@
+run 43461920219 attempt 1 sha 7355f4e80ac4ea31c2d6a5dee8aa4782c9112f7b status success
+Fri Nov 13 16:31:32 UTC 2026
+6067: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6073: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7515: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+155420: 1386 |                 NETEM_LOG(LOG_ERR, "| error: invalid scheduler model %d",
+155438: 1392 |                 NETEM_LOG(LOG_ERR, "| error: corruption_p %d > %d",
+31aebd1a000497b454b67ec13566c27a9d0f26a2f64a3126bb42ea0518cb489e  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho
