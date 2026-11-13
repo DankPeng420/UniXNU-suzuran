@@ -133,7 +133,7 @@ bool poll(const Window &w, uint32_t offset, uint32_t mask, uint32_t want, uint32
     return false;
 }
 
-// --- PM8994 / PMI8994 over SPMI (read-only; the same arbiter command channel as NativeAdreno418) ---
+// --- PM8994 / PMI8994 over SPMI (reads; one write user; the same arbiter command channel as NativeAdreno418) ---
 
 // One command channel, several users (the touch supplies and side keys here, NativeCpuClock's rails
 // and NativeBattery's charger through native_spmi_read): one command at a time.
@@ -152,6 +152,22 @@ bool spmiReadLocked(uint8_t slave, uint16_t address, uint8_t &value)
             value = uint8_t(spmi.read(0xf818) & 255);
             return true;
         }
+        IODelay(1);
+    }
+    return false;
+}
+
+// EXT_WRITEL of one byte (data in WDATA0 at +0x10, opcode 0), as the loader's spmi_w. Only NativeCpuClock writes
+// (the A53 rail S8 before it raises the A53 clock).
+bool spmiWriteLocked(uint8_t slave, uint16_t address, uint8_t value)
+{
+    if (!spmi.base && !spmi.open(kSpmiPhys, kSpmiSize)) return false;
+    if (spmi.read(0xf804)) return false;
+    spmi.write(0xf810, value);
+    spmi.write(0xf800, (uint32_t(slave) << 20) | (uint32_t(address >> 8) << 12) | (uint32_t(address & 255) << 4));
+    for (int i = 0; i < 1000; ++i) {
+        const uint32_t status = spmi.read(0xf808);
+        if (status) return status == 1;
         IODelay(1);
     }
     return false;
@@ -606,6 +622,15 @@ void probeThread(void *, wait_result_t)
 extern "C" bool native_spmi_read(uint8_t slave, uint16_t address, uint8_t *value)
 {
     return spmiRead(slave, address, *value);
+}
+
+extern "C" bool native_spmi_write(uint8_t slave, uint16_t address, uint8_t value)
+{
+    if (!gSpmiLock) return false;
+    IOLockLock(gSpmiLock);
+    const bool ok = spmiWriteLocked(slave, address, value);
+    IOLockUnlock(gSpmiLock);
+    return ok;
 }
 
 class NativeTouch final : public IOService {

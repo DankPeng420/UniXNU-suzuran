@@ -250,6 +250,103 @@ void raiseA57()
     IOLog("NativeCpuClock: a57 mux 0x%08x -> 0x%08x\n", before, mux.read(kMuxOffset));
 }
 
+// --- A53 cluster: 768 -> 1536 MHz ---
+// Sony's msm8994-v2.dtsi, speed bin 0 (fuse row 22 low word & 7 = 0 on this phone): the A53s run up to 1555.2 MHz,
+// virtual corner 13, which apc0's CPR table caps at 1180 mV (ceiling override); this chip's fused open-loop voltage
+// for that fuse corner works out at 1125 mV (rows 138/139, revision 4). The firmware leaves the cluster on PLL0
+// (L 80 = 1536 MHz, main output /2 = 768 MHz, lf select 2) with S8 at 1000 mV, already in fuse corner 3, so the
+// memory-assist setting is the same up to 1555 MHz (mem-acc0 map <1 1 0 0>). The step: S8 to 1150 mV (read back),
+// the idle PLL1 at L 80 with PLL0's own configuration and no post-divider, locked, then the lf mux onto PLL1 (select 1).
+// MX (S2) must read at least 1000 mV. Boot-arg nativea53=0 skips it.
+extern "C" bool native_spmi_write(uint8_t slave, uint16_t address, uint8_t value) __attribute__((weak));
+constexpr uint16_t kS8 = 0x2900, kS2 = 0x1700;
+constexpr uint32_t kA53TargetMV = 1150, kA53TargetL = 80, kMxMinMV = 1000;
+
+bool readFts(uint16_t base, uint8_t &vset)
+{
+    uint8_t type = 0, subtype = 0, range = 0;
+    return native_spmi_read && native_spmi_read(1, base + 0x04, &type) && native_spmi_read(1, base + 0x05, &subtype) &&
+           native_spmi_read(1, base + 0x40, &range) && native_spmi_read(1, base + 0x41, &vset) && type == 0x1c &&
+           subtype == 0x09 && range == 0;
+}
+
+void raiseA53()
+{
+    uint32_t wanted = 1;
+    PE_parse_boot_argn("nativea53", &wanted, sizeof wanted);
+    if (!wanted) {
+        IOLog("NativeCpuClock: a53 left as found (nativea53=0)\n");
+        return;
+    }
+    uint8_t s8 = 0, mx = 0;
+    if (!native_spmi_write || !readFts(kS8, s8) || !readFts(kS2, mx)) {
+        IOLog("NativeCpuClock: a53 rail or mx not an FTS2.5 in range 0 (or no SPMI write), a53 unchanged\n");
+        return;
+    }
+    if (railMV(mx) < kMxMinMV) {
+        IOLog("NativeCpuClock: mx at %u mV (< %u), a53 unchanged\n", railMV(mx), kMxMinMV);
+        return;
+    }
+    Window pll, mux;
+    if (!pll.open(kC0Pll, 0x1000) || !mux.open(kC0Mux, 0x1000)) {
+        IOLog("NativeCpuClock: a53 clock windows did not map\n");
+        return;
+    }
+    const uint32_t before = mux.read(kMuxOffset);
+    if (((before >> 1) & 3) != 2 || ((before >> 3) & 3) != 0 || pll.read(kPllL) != kA53TargetL) {
+        IOLog("NativeCpuClock: a53 mux 0x%08x / pll0 L %u not the firmware's lf pll0 at L %u, a53 unchanged\n", before,
+              pll.read(kPllL), kA53TargetL);
+        return;
+    }
+    if (pll.read(kPllA + kPllMode) & (kModeOutCtrl | kModeResetN)) {
+        IOLog("NativeCpuClock: a53 pll1 already running (mode 0x%08x), a53 unchanged\n", pll.read(kPllA + kPllMode));
+        return;
+    }
+    const uint8_t target = uint8_t((kA53TargetMV - 80) / 5);
+    if (s8 < target) {
+        if (!native_spmi_write(1, kS8 + 0x41, target)) {
+            IOLog("NativeCpuClock: writing S8 failed, a53 unchanged\n");
+            return;
+        }
+        IODelay(1000);   // FTS slew: 250 mV at >= 1.5 mV/us in well under 1 ms
+        uint8_t now = 0;
+        if (!readFts(kS8, now) || now != target) {
+            IOLog("NativeCpuClock: S8 reads vset 0x%02x after writing 0x%02x, a53 unchanged\n", now, target);
+            return;
+        }
+    }
+    IOLog("NativeCpuClock: a53 rail S8 %u -> %u mV (mx %u mV)\n", railMV(s8), railMV(target > s8 ? target : s8),
+          railMV(mx));
+    pll.write(kPllA + kPllMode, 0);
+    pll.write(kPllA + kPllL, kA53TargetL);
+    pll.write(kPllA + kPllAlpha, 0);
+    pll.write(kPllA + kPllConfigCtl, pll.read(kPllConfigCtl));
+    pll.write(kPllA + kPllTestLo, pll.read(kPllTestLo));
+    pll.write(kPllA + kPllTestHi, pll.read(kPllTestHi));
+    pll.write(kPllA + kPllUserCtl, pll.read(kPllUserCtl) & ~(3u << kPostDivShift));   // main output undivided
+    pll.write(kPllA + kPllMode, kModeBypassNl);
+    IODelay(10);
+    pll.write(kPllA + kPllMode, kModeBypassNl | kModeResetN);
+    bool locked = false;
+    for (int i = 0; i < 1000 && !locked; ++i) {
+        locked = (pll.read(kPllA + kPllMode) & kModeLock) != 0;
+        if (!locked) IODelay(1);
+    }
+    if (!locked) {
+        IOLog("NativeCpuClock: a53 pll1 did not lock (mode 0x%08x), turned off, a53 unchanged\n",
+              pll.read(kPllA + kPllMode));
+        pll.write(kPllA + kPllMode, 0);
+        return;
+    }
+    pll.write(kPllA + kPllMode, kModeBypassNl | kModeResetN | kModeOutCtrl);
+    IOLog("NativeCpuClock: a53 pll1 locked at L %u (user 0x%08x), switching the a53 mux\n", pll.read(kPllA + kPllL),
+          pll.read(kPllA + kPllUserCtl));
+    IOSleep(2500);   // console log flush first
+    mux.write(kMuxOffset, (before & ~(3u << 1)) | (1u << 1));
+    IODelay(10);
+    IOLog("NativeCpuClock: a53 mux 0x%08x -> 0x%08x\n", before, mux.read(kMuxOffset));
+}
+
 // --- timed dependent adds ---
 
 constexpr uint32_t kThreads = 8, kRounds = 12, kLoops = 200;   // 200 x 1000 adds per sample
@@ -315,6 +412,7 @@ void readoutThread(void *, wait_result_t)
     PE_parse_boot_argn("nativecpufreq", &raise, sizeof raise);
     if (raise) {
         raiseA57();
+        raiseA53();
     } else {
         IOLog("NativeCpuClock: clocks left as found (nativecpufreq=0)\n");
     }
