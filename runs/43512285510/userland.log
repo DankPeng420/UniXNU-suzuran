@@ -1,0 +1,9 @@
+ld: warning: static initializer '_loaded' found in '/private/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/inject-2b82d7.o'. Use -no_inits to make this an error.  Use -no_warn_inits to suppress warning
+Identifier=gputest-555549446197b836798c3434b0237ff15609f0d1
+Hash type=sha256 size=32
+CDHash=97da2cde727307865afe4f642fda725224f6ed84
+Identifier=libsuzuran.inject
+Hash type=sha256 size=32
+CDHash=b8f3b67e14413726fa302e1ace8560a170f90db2
+97ea41046a4d0518eccc2ea2a5a0ddd43596516b180524585b1f72f36163fc38  gputest
+4d18c7f603883bd68b8e06727bfbb583eb634875f7987aa4afd02d291a940bde  libsuzuran.inject.dylib
