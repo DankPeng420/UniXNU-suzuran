@@ -1,0 +1,4 @@
+HakiOS commit 63fc2b4633bac3af8e57dadab9f5a8d4cb940438 (Fri Nov 6 10:57:42 2026 +0200)
+Files: userland/src/eagl.c, eagl_slots.txt, gl_osmesa.c, hakios.gl.h, userland/mkeagl.py (MIT, LICENSE.HakiOS).
+Changes here: eagl.c's say() also sends each line to the kernel log (suzuran_log.c), since backboardd's
+standard error goes nowhere on this phone.
