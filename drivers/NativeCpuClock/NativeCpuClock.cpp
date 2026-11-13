@@ -398,7 +398,8 @@ int sensorDeciC(const Window &tsens, int n)
     return 300 + (raw - at30) * 10000 / kDtsiSlope[n];
 }
 
-void logTemperatures(const Window &tsens, const char *when)
+// logs all eight and returns the hottest A57 in tenths of a degree (kNoReading if none read)
+int logTemperatures(const Window &tsens, const char *when)
 {
     int deci[8], hottest = kNoReading;
     for (int c = 0; c < 8; ++c) {
@@ -408,6 +409,148 @@ void logTemperatures(const Window &tsens, const char *when)
     auto whole = [](int d) { return d == kNoReading ? -999 : d / 10; };
     IOLog("NativeCpuClock: temp %s: a53 %d %d %d %d, a57 %d %d %d %d C (max %d)\n", when, whole(deci[0]), whole(deci[1]),
           whole(deci[2]), whole(deci[3]), whole(deci[4]), whole(deci[5]), whole(deci[6]), whole(deci[7]), whole(hottest));
+    int a57 = kNoReading;
+    for (int c = 4; c < 8; ++c) {
+        if (deci[c] > a57) a57 = deci[c];
+    }
+    return a57;
+}
+
+// --- A57 cluster: 633.6 -> 960 MHz (boot-arg nativea57=960; off otherwise) ---
+// Sony's bin-0 table: 960 MHz is A57 virtual corner 8, the top of fuse corner 3 (ceiling 1000 mV; this chip's
+// open-loop value 905 mV). Going up a corner, cpr-regulator.c raises MX first (fuse corner 3 wants MX nominal; S2
+// already reads 1045 mV), then the rail, then the memory-assist setting: mem-acc1 types 1-3 (0xf900f084/88/8c) go
+// from 0x02 to 0x06, type 4 (0xf900f090) is 0x0b, written through TrustZone (scm_io_write, as mem-acc-regulator.c;
+// fast SIP calls 0x82000501 / 0x82000502, the ones the loader uses for the L2 power bit). The Lumia port's 960 MHz
+// without mem-acc reset after ~6 minutes. Then PLL0 (idle; PLL1 carries the 633.6 MHz) locks at L 100 = 1920 MHz
+// VCO with the /2 post-divider, and the lf mux moves from PLL1 (select 1) to PLL0 (select 2). Only below 60 degC.
+// The temperature loop moves the cluster back to PLL1 (633.6 MHz) if an A57 sensor reaches 85 degC.
+constexpr uint64_t kScmIoRead = 0x82000501, kScmIoWrite = 0x82000502;
+constexpr uint32_t kA57MemAcc = 0xf900f084;
+constexpr uint16_t kS11Rail = 0x3200;
+constexpr uint32_t kA57FastMV = 1000, kA57FastL = 100, kA57StartBelowDeciC = 600, kA57BackAtDeciC = 850;
+
+uint64_t smcFast(uint64_t function, uint64_t arginfo, uint64_t a2, uint64_t a3, uint64_t *r1)
+{
+    register uint64_t x0 __asm__("x0") = function, x1 __asm__("x1") = arginfo, x2 __asm__("x2") = a2,
+                      x3 __asm__("x3") = a3, x4 __asm__("x4") = 0, x5 __asm__("x5") = 0, x6 __asm__("x6") = 0;
+    __asm__ volatile("smc #0"
+                     : "+r"(x0), "+r"(x1), "+r"(x2), "+r"(x3), "+r"(x4), "+r"(x5), "+r"(x6)
+                     :
+                     : "x7", "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15", "x16", "x17", "memory");
+    if (r1) *r1 = x1;
+    return x0;
+}
+
+bool scmIoRead(uint32_t address, uint32_t &value)
+{
+    uint64_t v = 0;
+    if (smcFast(kScmIoRead, 1, address, 0, &v) != 0) return false;
+    value = uint32_t(v);
+    return true;
+}
+
+bool scmIoWrite(uint32_t address, uint32_t value)
+{
+    return smcFast(kScmIoWrite, 2, address, value, nullptr) == 0;
+}
+
+bool gA57Fast = false;
+
+void raiseA57To960(int a57DeciC)
+{
+    uint32_t wanted = 0;
+    PE_parse_boot_argn("nativea57", &wanted, sizeof wanted);
+    if (wanted != 960) {
+        IOLog("NativeCpuClock: a57 stays at 633.6 MHz (nativea57=960 raises it)\n");
+        return;
+    }
+    if (a57DeciC == kNoReading || a57DeciC >= int(kA57StartBelowDeciC)) {
+        IOLog("NativeCpuClock: a57 at %d.%d C (or unread), not raised\n", a57DeciC / 10, a57DeciC % 10);
+        return;
+    }
+    uint8_t s11 = 0, mx = 0;
+    if (!native_spmi_write || !readFts(kS11Rail, s11) || !readFts(kS2, mx) || railMV(mx) < kMxMinMV) {
+        IOLog("NativeCpuClock: a57 rail / mx not as expected (mx %u mV), a57 unchanged\n", railMV(mx));
+        return;
+    }
+    Window pll, mux;
+    if (!pll.open(kC1Pll, 0x1000) || !mux.open(kC1Mux, 0x1000)) {
+        IOLog("NativeCpuClock: a57 clock windows did not map\n");
+        return;
+    }
+    const uint32_t before = mux.read(kMuxOffset);
+    if (((before >> 1) & 3) != 1 || ((before >> 3) & 3) != 0 || (pll.read(kPllMode) & (kModeOutCtrl | kModeResetN))) {
+        IOLog("NativeCpuClock: a57 mux 0x%08x / pll0 mode 0x%08x not lf pll1 with pll0 idle, a57 unchanged\n", before,
+              pll.read(kPllMode));
+        return;
+    }
+    uint32_t acc[4] = {};
+    for (int i = 0; i < 4; ++i) {
+        if (!scmIoRead(kA57MemAcc + 4 * i, acc[i])) {
+            IOLog("NativeCpuClock: scm_io_read of mem-acc 0x%08x failed, a57 unchanged\n", kA57MemAcc + 4 * i);
+            return;
+        }
+    }
+    IOLog("NativeCpuClock: a57 mem-acc %02x %02x %02x %02x, rail S11 %u mV, mx %u mV\n", acc[0], acc[1], acc[2],
+          acc[3], railMV(s11), railMV(mx));
+    const uint8_t target = uint8_t((kA57FastMV - 80) / 5);
+    if (s11 < target) {
+        uint8_t now = 0;
+        if (!native_spmi_write(1, kS11Rail + 0x41, target) || (IODelay(1000), !readFts(kS11Rail, now)) || now != target) {
+            IOLog("NativeCpuClock: S11 did not take %u mV (reads 0x%02x), a57 unchanged\n", kA57FastMV, now);
+            return;
+        }
+    }
+    const uint32_t want[4] = {0x06, 0x06, 0x06, 0x0b};
+    for (int i = 0; i < 4; ++i) {
+        uint32_t now = 0;
+        if (!scmIoWrite(kA57MemAcc + 4 * i, want[i]) || !scmIoRead(kA57MemAcc + 4 * i, now) || (now & 0xff) != want[i]) {
+            IOLog("NativeCpuClock: mem-acc 0x%08x did not take 0x%02x (reads 0x%02x), a57 stays at 633.6 MHz\n",
+                  kA57MemAcc + 4 * i, want[i], now);
+            return;
+        }
+    }
+    pll.write(kPllMode, 0);
+    pll.write(kPllL, kA57FastL);
+    pll.write(kPllAlpha, 0);
+    pll.write(kPllConfigCtl, kV2ConfigCtl);
+    pll.write(kPllTestLo, kV2TestLo);
+    pll.write(kPllTestHi, kV2TestHi);
+    pll.write(kPllUserCtl, (pll.read(kPllUserCtl) & ~(3u << kPostDivShift)) | (kPostDiv2 << kPostDivShift));
+    pll.write(kPllMode, kModeBypassNl);
+    IODelay(10);
+    pll.write(kPllMode, kModeBypassNl | kModeResetN);
+    bool locked = false;
+    for (int i = 0; i < 1000 && !locked; ++i) {
+        locked = (pll.read(kPllMode) & kModeLock) != 0;
+        if (!locked) IODelay(1);
+    }
+    if (!locked) {
+        IOLog("NativeCpuClock: a57 pll0 did not lock at L %u (mode 0x%08x), turned off, a57 stays at 633.6 MHz\n",
+              kA57FastL, pll.read(kPllMode));
+        pll.write(kPllMode, 0);
+        return;
+    }
+    pll.write(kPllMode, kModeBypassNl | kModeResetN | kModeOutCtrl);
+    IOLog("NativeCpuClock: a57 S11 %u mV, mem-acc 06 06 06 0b, pll0 locked at L %u /2, switching the a57 mux\n",
+          railMV(target > s11 ? target : s11), kA57FastL);
+    IOSleep(2500);
+    mux.write(kMuxOffset, (before & ~(3u << 1)) | (2u << 1));
+    IODelay(10);
+    gA57Fast = true;
+    IOLog("NativeCpuClock: a57 mux 0x%08x -> 0x%08x (960 MHz)\n", before, mux.read(kMuxOffset));
+}
+
+void a57Back(int a57DeciC)
+{
+    Window mux;
+    if (!mux.open(kC1Mux, 0x1000)) return;
+    const uint32_t now = mux.read(kMuxOffset);
+    mux.write(kMuxOffset, (now & ~(3u << 1)) | (1u << 1));
+    gA57Fast = false;
+    IOLog("NativeCpuClock: a57 at %d C: back on pll1 (633.6 MHz), mux 0x%08x -> 0x%08x\n", a57DeciC / 10, now,
+          mux.read(kMuxOffset));
 }
 
 // --- timed dependent adds ---
@@ -500,11 +643,22 @@ void readoutThread(void *, wait_result_t)
     IOSleep(2500);   // console log flush before the first access, in case it hangs the bus
     IOLog("NativeCpuClock: tsens ctrl 0x%08x\n", tsens.read(0));
     readTsensCalibration(qfprom);
-    for (unsigned minutes2 = 0;; ++minutes2) {
+    raiseA57To960(logTemperatures(tsens, "start"));
+    for (unsigned half = 0;; ++half) {
+        // every 30 s in the log; every 5 s checked while the A57s run fast
+        for (int tick = 0; tick < 6; ++tick) {
+            IOSleep(5000);
+            if (!gA57Fast) continue;
+            int hottest = kNoReading;
+            for (int c = 4; c < 8; ++c) {
+                const int d = sensorDeciC(tsens, kCpuSensor[c]);
+                if (d > hottest) hottest = d;
+            }
+            if (hottest >= int(kA57BackAtDeciC)) a57Back(hottest);
+        }
         char when[16];
-        snprintf(when, sizeof when, "%us", minutes2 * 30);
+        snprintf(when, sizeof when, "%us", (half + 1) * 30);
         logTemperatures(tsens, when);
-        IOSleep(30000);
     }
 }
 
