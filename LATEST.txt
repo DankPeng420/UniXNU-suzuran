@@ -1,0 +1,8 @@
+run 43466828266 attempt 1 sha 71745e39f8152fa1b13833ce258a308abfd822de status success
+Fri Nov 13 17:07:49 UTC 2026
+6063: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6069: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7014:rsSetup for corefile failed with error: 0x%x\n", err);
+146211: 1386 |                 NETEM_LOG(LOG_ERR, "| error: invalid scheduler model %d",
+146228:TEM_LOG(LOG_ERR, "| error: corruption_p %d > %d",
+879881a43b0a9f81fc08c705d2683dd16f73b20ffe1b34bb0b1e53af3c9a7824  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho
