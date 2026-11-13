@@ -9,7 +9,7 @@ void suzuran_log(const char *text)
     static int tried;
     if (!tried) {
         tried = 1;
-        io_service_t service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("NativeAdreno430"));
+        io_service_t service = IOServiceGetMatchingService(MACH_PORT_NULL, IOServiceMatching("NativeAdreno430"));
         if (service) {
             if (IOServiceOpen(service, mach_task_self(), 0, &gpu) != KERN_SUCCESS) gpu = 0;
             IOObjectRelease(service);
