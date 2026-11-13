@@ -1,0 +1,82 @@
+diff --git a/bsd/kern/kern_exec.c b/bsd/kern/kern_exec.c
+--- a/bsd/kern/kern_exec.c
++++ b/bsd/kern/kern_exec.c
+@@ -5568,6 +5568,53 @@ bad:
+  * Note:	The argument and environment vectors are user space pointers
+  *		to arrays of user space pointers.
+  */
++/*
++ * suzuran, boot-arg dyldinsert=NAME[,NAME...]: a program whose file name is one of the NAMEs is
++ * started with DYLD_INSERT_LIBRARIES=/usr/lib/libsuzuran.inject.dylib in its environment (the
++ * OpenGL ES route: our library inside the window server). launchd drops DYLD_* variables from a
++ * job's description, so the kernel adds this one, as HakiOS's exec_inject_env() does; dyld honours
++ * it with dyldallow=1 (security/mac_base.c).
++ */
++#define SUZURAN_INJECT_LIBRARY "/usr/lib/libsuzuran.inject.dylib"
++
++static bool
++exec_inject_env(struct image_params *imgp, char *env, size_t size)
++{
++	static char names[128];
++	static int parsed;
++	const char *name, *p;
++	size_t namelen;
++
++	if (!parsed) {
++		if (!PE_parse_boot_arg_str("dyldinsert", names, sizeof(names))) {
++			names[0] = 0;
++		}
++		parsed = 1;
++	}
++	if (names[0] == 0 || imgp->ip_ndp == NULL) {
++		return false;
++	}
++	name = imgp->ip_ndp->ni_cnd.cn_nameptr;
++	namelen = imgp->ip_ndp->ni_cnd.cn_namelen;
++	if (name == NULL || namelen == 0) {
++		return false;
++	}
++	for (p = names; *p != 0;) {
++		const char *word = p;
++		while (*p != 0 && *p != ',') {
++			p++;
++		}
++		if ((size_t)(p - word) == namelen && strncmp(word, name, namelen) == 0) {
++			strlcpy(env, "DYLD_INSERT_LIBRARIES=" SUZURAN_INJECT_LIBRARY, size);
++			return true;
++		}
++		if (*p == ',') {
++			p++;
++		}
++	}
++	return false;
++}
++
+ __attribute__((noinline))
+ static int
+ exec_extract_strings(struct image_params *imgp)
+@@ -5741,6 +5788,24 @@ exec_extract_strings(struct image_params *imgp)
+ 		imgp->ip_envc++;
+ 	}
+ 
++	/* suzuran: one more variable for the programs named by dyldinsert= (see exec_inject_env) */
++	{
++		char inject_env[96];
++
++		if (exec_inject_env(imgp, inject_env, sizeof(inject_env))) {
++			error = exec_add_user_string(imgp, CAST_USER_ADDR_T(inject_env), UIO_SYSSPACE, TRUE);
++			if (error) {
++				goto bad;
++			}
++			if (imgp->ip_argspace < new_ptr_size) {
++				error = E2BIG;
++				goto bad;
++			}
++			imgp->ip_argspace -= new_ptr_size;
++			imgp->ip_envc++;
++		}
++	}
++
+ 	/* Save space for envv[] NULL terminator */
+ 	if (imgp->ip_argspace < new_ptr_size) {
+ 		error = E2BIG;
