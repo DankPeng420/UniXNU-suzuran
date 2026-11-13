@@ -347,6 +347,69 @@ void raiseA53()
     IOLog("NativeCpuClock: a53 mux 0x%08x -> 0x%08x\n", before, mux.read(kMuxOffset));
 }
 
+// --- CPU temperatures (TSENS, read-only) ---
+// Sony's msm8994.dtsi / msm8974-tsens.c: 16 sensors, status at 0xfc4a8000 + 0x1044 + 4 n (code in bits 9:0, valid bit 14);
+// two-point calibration (30 and 120 degC) fused at QFPROM 0xfc4bc000 + 0xd0/0xd4/0xd8 (mode in 0xd8 bits 22:20 = 3:
+// base0 0xd0 [9:0], base1 [19:10], per-sensor 4-bit offsets from 0xd0 bit 20 on, 4 bits each); without it the
+// calibration-less defaults (point 532, the dtsi slopes x 1/1000 code per degC). msm-thermal's CPU sensors:
+// cpu0-3 (A53) = 7 8 9 10, cpu4-7 (A57) = 13 14 15 6. Sony limits frequency from 60 degC, caps the A57s at 960 MHz
+// at 95 and resets at 115. Logged every 30 s from the readout thread on.
+constexpr uint64_t kTsens = 0xfc4a8000;
+constexpr int kNoReading = -1000000;
+constexpr int kCpuSensor[8] = {7, 8, 9, 10, 13, 14, 15, 6};
+constexpr int kDtsiSlope[16] = {2901, 2846, 3200, 3200, 3200, 3200, 3200, 3200, 3200, 3200, 3200, 3200, 3200, 3200, 3200, 3200};
+
+struct TsensCalibration {
+    bool twoPoint = false;
+    int base0 = 0, base1 = 0;
+    int point[16] = {};
+} gCal;
+
+void readTsensCalibration(const Window &qfprom)
+{
+    const uint32_t d0 = qfprom.read(0xd0), d1 = qfprom.read(0xd4), d2 = qfprom.read(0xd8);
+    const uint32_t redundant = qfprom.read(0x464) >> 29;
+    gCal.twoPoint = redundant != 3 && ((d2 >> 20) & 7) == 3;
+    gCal.base0 = int(d0 & 0x3ff);
+    gCal.base1 = int((d0 >> 10) & 0x3ff);
+    const uint64_t points = (uint64_t(d0) >> 20) | (uint64_t(d1) << 12) | (uint64_t(d2 & 0xfffff) << 44);
+    for (int i = 0; i < 16; ++i) gCal.point[i] = gCal.twoPoint ? int((points >> (4 * i)) & 15) : 532;
+    if (!gCal.twoPoint || gCal.base1 <= gCal.base0) {
+        gCal.twoPoint = false;
+        gCal.base0 = 0;
+        for (int &p : gCal.point) p = 532;
+    }
+    IOLog("NativeCpuClock: tsens calibration %s (fuses 0x%08x 0x%08x 0x%08x, redundancy %u): base %d / %d\n",
+          gCal.twoPoint ? "two-point" : "none, defaults", d0, d1, d2, redundant, gCal.base0, gCal.base1);
+}
+
+// tenths of a degree, or kNoReading when the reading is not valid
+int sensorDeciC(const Window &tsens, int n)
+{
+    uint32_t code = 0;
+    for (int tries = 0; tries < 3; ++tries) {
+        code = tsens.read(0x1044 + 4 * uint32_t(n));
+        if (code & (1u << 14)) break;
+        code = 0;
+    }
+    if (!code) return kNoReading;
+    const int raw = int(code & 0x3ff), at30 = gCal.base0 + gCal.point[n];
+    if (gCal.twoPoint) return 300 + (raw - at30) * 900 / (gCal.base1 - gCal.base0);
+    return 300 + (raw - at30) * 10000 / kDtsiSlope[n];
+}
+
+void logTemperatures(const Window &tsens, const char *when)
+{
+    int deci[8], hottest = kNoReading;
+    for (int c = 0; c < 8; ++c) {
+        deci[c] = sensorDeciC(tsens, kCpuSensor[c]);
+        if (deci[c] > hottest) hottest = deci[c];
+    }
+    auto whole = [](int d) { return d == kNoReading ? -999 : d / 10; };
+    IOLog("NativeCpuClock: temp %s: a53 %d %d %d %d, a57 %d %d %d %d C (max %d)\n", when, whole(deci[0]), whole(deci[1]),
+          whole(deci[2]), whole(deci[3]), whole(deci[4]), whole(deci[5]), whole(deci[6]), whole(deci[7]), whole(hottest));
+}
+
 // --- timed dependent adds ---
 
 constexpr uint32_t kThreads = 8, kRounds = 12, kLoops = 200;   // 200 x 1000 adds per sample
@@ -428,6 +491,21 @@ void readoutThread(void *, wait_result_t)
     }
     for (int wait = 0; wait < 100 && __atomic_load_n(&gDone, __ATOMIC_RELAXED) < kThreads; ++wait) IOSleep(50);
     IOLog("NativeCpuClock: done\n");
+    Window tsens, qfprom;
+    if (!tsens.open(kTsens, 0x2000) || !qfprom.open(kQfprom, 0x1000)) {
+        IOLog("NativeCpuClock: tsens windows did not map, no temperatures\n");
+        return;
+    }
+    IOLog("NativeCpuClock: reading tsens\n");
+    IOSleep(2500);   // console log flush before the first access, in case it hangs the bus
+    IOLog("NativeCpuClock: tsens ctrl 0x%08x\n", tsens.read(0));
+    readTsensCalibration(qfprom);
+    for (unsigned minutes2 = 0;; ++minutes2) {
+        char when[16];
+        snprintf(when, sizeof when, "%us", minutes2 * 30);
+        logTemperatures(tsens, when);
+        IOSleep(30000);
+    }
 }
 
 }
