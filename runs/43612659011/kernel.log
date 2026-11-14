@@ -1,0 +1,10 @@
+skip zzz-boot-progress: the 8796 console has no vc_progress hook and no sleh.c; the boot screen is a 10063 feature
+skip zzy-staged-system-apps: builds on the owner Data mount this line does not have
+skip zzy-native-gpu-addon-mount: builds on the owner Data mount this line does not have
+skip offline-owner-systemos-mount: the owner chain, cryptex policy and its kern_exec hooks are 10063 only
+skip pgz-aligned-validation: XNU 8796 has no page-guard zones; zone_id_require_aligned does not exist
+skip public-entitlements-header: the 8796 necp client includes CodeSignature/Entitlements.h, not CoreEntitlements
+skip published-freezer-condition: the 8796 freezer has no FREEZE_ENABLED_DEFAULT flag to repair
+skip zzy-native-gpu-addon-mount: builds on the owner Data mount this line does not have
+skip zzy-staged-system-apps: builds on the owner Data mount this line does not have
+skip zzz-boot-progress: the 8796 console has no vc_progress hook and no sleh.c; the boot screen is a 10063 feature

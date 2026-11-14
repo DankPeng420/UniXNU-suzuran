@@ -1,0 +1,7 @@
+run 43612659011 attempt 1 sha ff2d1d5d344d0438dcbbf38ede72832056c242ea status cancelled
+Sat Nov 14 16:05:10 UTC 2026
+6065: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6071: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7511: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+109477: 1049 |         os_log_error:27: note: expanded from macro 'LIST_CHECK_HEAD'
+151521: 1386 |                 NETEM_LOG(LOG_ERR, "| error: invalid scheduler model %d",
