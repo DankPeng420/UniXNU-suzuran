@@ -61,6 +61,9 @@ public:
 	IOOptionBits              mapCache;     /* cache mode for user mappings */
 	IOBufferMemoryDescriptor *state;        /* shared state page, read-only for users */
 	IOMemoryMap              *kernelMap;    /* lazily created for kernel copies */
+	uint32_t                  gpuPhys;      /* memory from the GPU's pool (native_gpu_memory()): its address, or 0 */
+	uint32_t                  gpuPlace;     /* ... and its place there, to give it back with */
+	uint8_t                  *gpuKva;
 
 	bool init() APPLE_KEXT_OVERRIDE { return OSObject::init(); }
 	void free() APPLE_KEXT_OVERRIDE;

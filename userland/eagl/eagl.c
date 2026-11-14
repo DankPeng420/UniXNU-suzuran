@@ -608,7 +608,7 @@ surface_mirrored(struct eagl *e, struct image *image)
 	IOSurfaceRef surface = image->surface;
 	GLint bound = 0;
 
-	if (!blit_targets || !share_surfaces || !image->target || image->alpha_first || IOSurfaceGetPlaneCount(surface) != 0 ||
+	if (!blit_targets || !share_surfaces || !image->target || image->alpha_first || (IOSurfaceGetPlaneCount(surface) != 0 && IOSurfaceGetPixelFormat(surface) != 'b3a8') ||
 	    image->format != GL_BGRA || image->type != GL_UNSIGNED_BYTE || image->plane != 0 ||
 	    (size_t)image->width != IOSurfaceGetWidth(surface) || (size_t)image->height != IOSurfaceGetHeight(surface)) {
 		return false;
@@ -637,7 +637,7 @@ surface_shared(struct eagl *e, struct image *image)
 	IOSurfaceRef surface = image->surface;
 
 	if (!share_surfaces || image->invert || image->alpha_first || image->format != GL_BGRA || image->type != GL_UNSIGNED_BYTE ||
-	    image->plane != 0 || IOSurfaceGetPlaneCount(surface) != 0 || (size_t)image->width != IOSurfaceGetWidth(surface) ||
+	    image->plane != 0 || (IOSurfaceGetPlaneCount(surface) != 0 && IOSurfaceGetPixelFormat(surface) != 'b3a8') || (size_t)image->width != IOSurfaceGetWidth(surface) ||
 	    (size_t)image->height != IOSurfaceGetHeight(surface) ||
 	    !hakios_gl_surface_texture(e->gl, IOSurfaceGetID(surface))) {
 		/* why a surface is copied rather than its memory used: the first ones of a run, for the copies to be made fewer */
@@ -4181,6 +4181,9 @@ my_attachImage(id self, SEL selector, unsigned long target, IOSurfaceRef surface
 	glGetIntegerv(GL_TEXTURE_BINDING_2D, &texture);
 	pixels = IOSurfaceGetPixelFormat(surface);
 	/*
+	 * (With kernel gl7 the window server's 'BGRA' and 'b3a8' surfaces are in memory the GPU addresses,
+	 * and the library makes a texture of plane 0 -- the kernel describes it as 'BGRA': surface_mirrored().)
+	 *
 	 * 'b3a8': blue-first pixels Apple's GPU keeps compressed, with a second plane for the
 	 * compression's bookkeeping -- what CoreAnimation's OpenGL ES renderer draws the screen into
 	 * on this identity. Nothing here compresses: plane 0 is plain BGRA rows, which is how the

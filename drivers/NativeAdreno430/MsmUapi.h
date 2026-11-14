@@ -14,6 +14,7 @@ enum : uint32_t {
     kSubmitQueueNew = kCommandBase + 0x0a, kSubmitQueueClose = kCommandBase + 0x0b,
     kSubmitQueueQuery = kCommandBase + 0x0c,
     kGemClose = 0x09,          // DRM_IOCTL_GEM_CLOSE
+    kSurface = 0x7e,           // ours (HakiOS's HAKIOS_GPU_SURFACE): an IOSurface as a buffer
     kLog = 0x7f,               // ours: a line for the kernel log (the test tools have no terminal)
 };
 
@@ -38,6 +39,13 @@ struct SubmitQueue { uint32_t flags, prio, id; };
 struct SubmitQueueQuery { uint64_t data; uint32_t id, param, len, pad; };
 struct GemClose { uint32_t handle, pad; };
 struct Log { char text[240]; };
+// hakios-drm's struct hakios_drm_surface
+struct Surface {
+    uint32_t surface, handle;
+    uint64_t size;
+    uint32_t offset, rowBytes;
+    uint32_t width, height, pixelFormat, planes;
+};
 
 enum : uint32_t {
     PARAM_GPU_ID = 1, PARAM_GMEM_SIZE = 2, PARAM_CHIP_ID = 3, PARAM_MAX_FREQ = 4, PARAM_TIMESTAMP = 5,

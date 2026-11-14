@@ -51,6 +51,10 @@
  */
 #include "NativeSurface.h"
 
+/* NativeAdreno430's buffer pool (drivers/NativeAdreno430): memory the GPU can address. */
+extern "C" IOMemoryDescriptor *native_gpu_memory(uint64_t size, uint8_t **kva, uint32_t *phys, uint32_t *place);
+extern "C" void native_gpu_memory_free(uint32_t place, uint64_t size);
+
 #include <IOKit/IOService.h>
 #include <IOKit/IOUserClient.h>
 #include <IOKit/IOKitKeys.h>
@@ -62,6 +66,7 @@
 #include <libkern/c++/OSNumber.h>
 #include <libkern/c++/OSUnserialize.h>
 #include <sys/proc.h>
+#include <pexpert/pexpert.h>
 
 enum {
 	kNativeSurfaceCreate             = 0,
@@ -110,6 +115,10 @@ NativeSurface::free()
 	}
 	OSSafeReleaseNULL(kernelMap);
 	OSSafeReleaseNULL(memory);
+	if (gpuPhys != 0) {
+		native_gpu_memory_free(gpuPlace, allocSize);
+		gpuPhys = 0;
+	}
 	OSSafeReleaseNULL(state);
 	OSObject::free();
 }
@@ -117,6 +126,9 @@ NativeSurface::free()
 uintptr_t
 NativeSurface::kernelAddress()
 {
+	if (gpuKva != NULL) {
+		return (uintptr_t)gpuKva;      /* the pool's own mapping (write-combined) */
+	}
 	IOBufferMemoryDescriptor *buffer = OSDynamicCast(IOBufferMemoryDescriptor, memory);
 	if (buffer != NULL) {
 		return (uintptr_t)buffer->getBytesNoCopy();
@@ -673,6 +685,109 @@ IOSurfaceRootUserClient::returnSurface(NativeSurface *s, IOExternalMethodArgumen
 	return ret;
 }
 
+/*
+ * With suzurangl=1 the window server's big surfaces ('BGRA', and 'b3a8', the screen) come from the GPU's buffer
+ * pool, so that the GPU draws into them itself (NativeAdreno430's HAKIOS_GPU_SURFACE, Mesa's EGLImage of a surface):
+ * copying each frame out of the GPU's memory took 250-450 ms (boot 55). Their rows are made a multiple of 128 bytes,
+ * as freedreno takes in a buffer of 32-bit pixels (32 pixels: 3008 bytes a row for 750 -> 3072), and the planes after
+ * the first moved to suit. Others, or when the pool is full, are made as before.
+ */
+static int native_surface_gl = -1;
+
+static bool
+native_surface_for_gpu(NativeSurface *s)
+{
+	char name[32];
+
+	if (native_surface_gl < 0) {
+		uint32_t gl = 0;
+		PE_parse_boot_argn("suzurangl", &gl, sizeof(gl));
+		native_surface_gl = gl == 1;
+	}
+	if (!native_surface_gl || s->allocSize < (512u << 10) || s->bytesPerElement != 4 || s->elementWidth != 1 ||
+	    s->elementHeight != 1 || s->offset != 0 ||
+	    !((s->pixelFormat == 0x42475241 /* 'BGRA' */ && s->planeCount == 0) ||
+	    (s->pixelFormat == 0x62336138 /* 'b3a8' */ && s->planeCount == 2))) {
+		return false;
+	}
+	proc_selfname(name, sizeof(name));
+	if (strcmp(name, "backboardd") != 0) {
+		return false;
+	}
+	if (s->planeCount > 0 && (s->planes[0].bytesPerElement != 4 || s->planes[0].elementWidth != 1 ||
+	    s->planes[0].elementHeight != 1 || s->planes[0].width != s->width || s->planes[0].height != s->height)) {
+		return false;
+	}
+	/* the layout, rows of 128 bytes */
+	uint32_t bpr = (s->bytesPerRow + 127) & ~127u;
+	uint64_t end = (uint64_t)bpr * s->height;
+	if (s->planeCount > 0) {
+		uint64_t next = 0;
+		for (uint32_t i = 0; i < s->planeCount; i++) {
+			struct native_surface_plane *p = &s->planes[i];
+			if (i == 0) {
+				p->bytesPerRow = (p->bytesPerRow + 127) & ~127u;
+				bpr = p->bytesPerRow;
+			}
+			p->offset = (uint32_t)next;
+			p->size = p->bytesPerRow * native_div_up(p->height, p->elementHeight);
+			next = round_page((uint64_t)p->offset + p->size);
+		}
+		end = next;
+	}
+	uint64_t alloc = round_page(end);
+	if (alloc > NATIVE_SURFACE_MAX_ALLOC) {
+		return false;
+	}
+	uint8_t *kva = NULL;
+	uint32_t phys = 0, place = 0;
+	IOMemoryDescriptor *memory = native_gpu_memory(alloc, &kva, &phys, &place);
+	static unsigned said;
+	if (memory == NULL) {
+		if (said++ < 8) {
+			IOLog("NativeSurface: no room in the GPU's pool for %llu bytes ('%c%c%c%c' %ux%u): made as before\n", alloc,
+			    s->pixelFormat >> 24, s->pixelFormat >> 16 & 0xff, s->pixelFormat >> 8 & 0xff, s->pixelFormat & 0xff,
+			    s->width, s->height);
+		}
+		/* (the layout above is a layout too: rows of 128 bytes are fine for the ordinary memory) */
+		s->bytesPerRow = bpr;
+		s->allocSize = (uint32_t)alloc;
+		return false;
+	}
+	s->bytesPerRow = bpr;            /* ('b3a8': the same as its plane 0's, as CoreAnimation made it) */
+	s->allocSize = (uint32_t)alloc;
+	s->memory = memory;
+	s->mapCache = kIOMapWriteCombineCache;
+	s->gpuPhys = phys;
+	s->gpuPlace = place;
+	s->gpuKva = kva;
+	return true;
+}
+
+/* NativeAdreno430's: a surface whose memory the GPU can address, held, and what it is to the GPU; NULL if none. */
+extern "C" OSObject *
+native_surface_gpu(uint32_t id, IOMemoryDescriptor **memory, uint8_t **kva, uint32_t *phys, uint64_t *size,
+    uint32_t *offset, uint32_t *rowBytes, uint32_t *width, uint32_t *height, uint32_t *format, uint32_t *planes)
+{
+	NativeSurface *s = native_surface_copy(id);
+	if (s == NULL || s->gpuPhys == 0 || s->memory == NULL) {
+		OSSafeReleaseNULL(s);
+		return NULL;
+	}
+	s->memory->retain();
+	*memory = s->memory;
+	*kva = s->gpuKva;
+	*phys = s->gpuPhys;
+	*size = s->allocSize;
+	*offset = s->planeCount > 0 ? s->planes[0].offset : s->offset;
+	*rowBytes = s->planeCount > 0 ? s->planes[0].bytesPerRow : s->bytesPerRow;
+	*width = s->width;
+	*height = s->height;
+	*format = 0x42475241;           /* 'BGRA' ('b3a8': its plane 0) */
+	*planes = 0;
+	return s;
+}
+
 IOReturn
 IOSurfaceRootUserClient::create(IOExternalMethodArguments *args)
 {
@@ -713,20 +828,27 @@ IOSurfaceRootUserClient::create(IOExternalMethodArguments *args)
 	ret = native_surface_layout(s, props);
 	if (ret == kIOReturnSuccess) {
 		IOBufferMemoryDescriptor *mem = NULL;
-		if ((uint64_t)OSAddAtomic64(s->allocSize, (volatile SInt64 *)&native_surface_wired) +
-		    s->allocSize <= NATIVE_SURFACE_WIRED_MAX) {
-			mem = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task,
-			    kIODirectionInOut | kIOMemoryKernelUserShared, s->allocSize, page_size);
-		}
-		if (mem == NULL) {
-			OSAddAtomic64(-(SInt64)s->allocSize, (volatile SInt64 *)&native_surface_wired);
-			ret = kIOReturnNoMemory;
-		} else {
-			bzero(mem->getBytesNoCopy(), s->allocSize);
-			s->memory = mem;
-			s->mapCache = kIOMapDefaultCache;
+		if (native_surface_for_gpu(s)) {
+			/* from the GPU's pool (zeroed, write-combined): the GPU draws into it itself */
 			if (!native_surface_publish(s)) {
 				ret = kIOReturnNoResources;
+			}
+		} else {
+			if ((uint64_t)OSAddAtomic64(s->allocSize, (volatile SInt64 *)&native_surface_wired) +
+			    s->allocSize <= NATIVE_SURFACE_WIRED_MAX) {
+				mem = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task,
+				    kIODirectionInOut | kIOMemoryKernelUserShared, s->allocSize, page_size);
+			}
+			if (mem == NULL) {
+				OSAddAtomic64(-(SInt64)s->allocSize, (volatile SInt64 *)&native_surface_wired);
+				ret = kIOReturnNoMemory;
+			} else {
+				bzero(mem->getBytesNoCopy(), s->allocSize);
+				s->memory = mem;
+				s->mapCache = kIOMapDefaultCache;
+				if (!native_surface_publish(s)) {
+					ret = kIOReturnNoResources;
+				}
 			}
 		}
 	}
