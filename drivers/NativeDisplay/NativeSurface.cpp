@@ -66,6 +66,8 @@
 enum {
 	kNativeSurfaceCreate             = 0,
 	kNativeSurfaceLookup             = 4,
+	kNativeSurfaceWrapClientImage    = 6,
+	kNativeSurfaceWrapClientMemory   = 7,
 	kNativeSurfaceLimits             = 13,
 	kNativeSurfaceLookupFromPort     = 34,
 	kNativeSurfaceCreatePort         = 35,
@@ -800,6 +802,18 @@ IOSurfaceRootUserClient::externalMethod(uint32_t selector, IOExternalMethodArgum
 		native_surf_log_once("sel", selector);
 		return kIOReturnSuccess;
 	}
+	case kNativeSurfaceWrapClientImage:
+	case kNativeSurfaceWrapClientMemory:
+		/*
+		 * A surface around memory of the client's own (IOSurfaceClientWrapClientImage: CoreAnimation's
+		 * OpenGL ES renderer asks for one for each picture it draws from). Answered with success and
+		 * no lock result, the framework made a client with no state page and QuartzCore read through
+		 * it (iosurface_get_edr_factor -> IOSurfaceClientGetBulkAttachments, far 0x30: boots 49-52).
+		 * Refused, the renderer draws those pictures another way (HakiOS's MiniIOSurface did so before
+		 * it made them).
+		 */
+		native_surf_log_once("sel", selector);
+		return kIOReturnUnsupported;
 	default:
 		/* Values, notifications, ownership, timestamps...: accept and ignore. */
 		for (uint32_t i = 0; i < args->scalarOutputCount; i++) {
