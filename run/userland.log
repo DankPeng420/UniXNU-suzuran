@@ -1,0 +1,36 @@
+ld: warning: static initializer '_loaded' found in '/private/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/inject-6bedf1.o'. Use -no_inits to make this an error.  Use -no_warn_inits to suppress warning
+mesa-25.0.7/src/freedreno/drm/freedreno_pipe.c: fd_pipe_wait_timeout asks the kernel even when its own fence has passed
+[32m==>[0m [1mDownloading bottle manifests[0m
+✔︎ Bottle Manifest bison (3.8.2)
+[34m==>[0m [1mWould install 1 formula:[0m
+bison
+[32m==>[0m [1mFetching downloads for: [32mbison[39m[0m
+✔︎ Bottle bison (3.8.2)
+[34m==>[0m [1mPouring bison--3.8.2.sonoma.bottle.tar.gz[0m
+🍺  /usr/local/Cellar/bison/3.8.2: 99 files, 3.9MB
+
+[notice] A new release of pip is available: 26.2.1 -> 26.3
+[notice] To update, run: /Users/runner/work/_temp/mesa/venv/bin/python3.14 -m pip install --upgrade pip
+-rwxr-xr-x  1 runner  staff  14828344 Nov 14 10:37 /Users/runner/work/_temp/userland/libOSMesa.8.dylib
+mkeagl.py: 409 entries: 356 passed on, 30 by hand, 23 without a function in the library
+eagl:     1296 gl functions exported by libOSMesa
+Identifier=gputest-555549449024656fa1763f68964accd48337aadb
+Hash type=sha256 size=32
+CDHash=faba3558b9234f308597fdb5903048d7a11d9ee2
+Identifier=libsuzuran.inject
+Hash type=sha256 size=32
+CDHash=6b541be41b4af8ad998479920591810e23b02c34
+Identifier=libOSMesa.8
+Hash type=sha256 size=32
+CDHash=0ab3c76d50c9a1be6bfab469e7fd084ca9f1fb89
+Identifier=gltri-555549447b59e40a4c6e3b2d81cefa90addaf033
+Hash type=sha256 size=32
+CDHash=900db86bd4cf70f8252c5e1a5da663f33e1de172
+Identifier=libsuzuran.gl
+Hash type=sha256 size=32
+CDHash=2b24760cccd73a34125949866f33775a713fda94
+b5000418c5e9b71891d0b44a36e82a8790abe538cbd03ec4ef6287a57cf254d9  gputest
+9eba521e68e3967db6a5438385649e1a013126bdb4f7fe04a97b68eec7783fa7  libsuzuran.inject.dylib
+16d71e63e39d22beaf862448443afc7aefde9d4675c9eff49b2998d1f007eb15  libOSMesa.8.dylib
+c39a8f1412fe10b56ea820adf32d7fbe3065be7a46d07032a00a80cfb293cfee  gltri
+ae62d582106b6badf25af8c27a93e122cefa9c92bdf423777489915694781386  libsuzuran.gl.dylib
