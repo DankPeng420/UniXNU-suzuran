@@ -115,6 +115,10 @@ NativeSurface::free()
 	}
 	OSSafeReleaseNULL(kernelMap);
 	OSSafeReleaseNULL(gpuCachedMap);
+	if (wrapped && memory != NULL) {
+		memory->complete();
+		wrapped = false;
+	}
 	OSSafeReleaseNULL(memory);
 	if (gpuPool) {
 		native_gpu_memory_free(gpuPlace, allocSize);
@@ -478,6 +482,7 @@ class IOSurfaceRootUserClient : public IOUserClient {
 	IOReturn addRef(NativeSurface *s, NativeSurfaceRef **refOut, bool *existing);
 	IOReturn returnSurface(NativeSurface *s, IOExternalMethodArguments *args);
 	IOReturn create(IOExternalMethodArguments *args);
+	IOReturn wrapClientImage(IOExternalMethodArguments *args);
 
 public:
 	bool initWithTask(task_t owningTask, void *securityID, UInt32 type) APPLE_KEXT_OVERRIDE;
@@ -919,6 +924,78 @@ IOSurfaceRootUserClient::create(IOExternalMethodArguments *args)
 	return ret;
 }
 
+/*
+ * A surface around a picture of the client's own (IOSurfaceClientWrapClientImage): what CoreAnimation's OpenGL ES
+ * renderer asks for each image it draws from -- icons, glyph masks, gradients. Refused (boots 50-59) those were not
+ * drawn: no icons. The request is 32 bytes (IOSurfaceClientWrapClientImage's, and HakiOS's MiniIOSurface's reading):
+ *
+ *     address (8), width, height, pixel format, bytes per element, bytes per row, size (4 each)
+ *
+ * The surface's pixels are that memory itself, wired while the surface lasts; the reply is a create's.
+ */
+IOReturn
+IOSurfaceRootUserClient::wrapClientImage(IOExternalMethodArguments *args)
+{
+	struct {
+		uint64_t address;
+		uint32_t width, height, format, bytesPerElement, bytesPerRow, size;
+	} r;
+	static unsigned said;
+
+	if (args->structureInput == NULL || args->structureInputSize < sizeof(r)) {
+		return kIOReturnBadArgument;
+	}
+	memcpy(&r, args->structureInput, sizeof(r));
+	if (r.address == 0 || r.size == 0 || r.width == 0 || r.height == 0 || r.bytesPerElement == 0 ||
+	    r.bytesPerElement > 16 || r.width > NATIVE_SURFACE_MAX_DIM || r.height > NATIVE_SURFACE_MAX_DIM ||
+	    r.size > NATIVE_SURFACE_MAX_ALLOC || (uint64_t)r.bytesPerRow * (r.height - 1) + (uint64_t)r.width * r.bytesPerElement >
+	    r.size + (uint64_t)r.bytesPerRow) {
+		if (said++ < 8) {
+			IOLog("NativeSurface: wrap of %ux%u fmt 0x%x bpe %u bpr %u size %u refused\n", r.width, r.height, r.format,
+			    r.bytesPerElement, r.bytesPerRow, r.size);
+		}
+		return kIOReturnBadArgument;
+	}
+	const uint64_t first = trunc_page_64(r.address), length = round_page_64(r.address + r.size) - first;
+	IOMemoryDescriptor *memory = IOMemoryDescriptor::withAddressRange(first, length, kIODirectionInOut, fTask);
+	if (memory == NULL) {
+		return kIOReturnNoMemory;
+	}
+	if (memory->prepare() != kIOReturnSuccess) {
+		memory->release();
+		return kIOReturnVMError;
+	}
+	NativeSurface *s = native_surface_alloc();
+	if (s == NULL) {
+		memory->complete();
+		memory->release();
+		return kIOReturnNoMemory;
+	}
+	s->width = r.width;
+	s->height = r.height;
+	s->pixelFormat = r.format;
+	s->bytesPerElement = (uint16_t)r.bytesPerElement;
+	s->elementWidth = s->elementHeight = 1;
+	s->bytesPerRow = r.bytesPerRow ? r.bytesPerRow : r.width * r.bytesPerElement;
+	s->offset = (uint32_t)(r.address - first);
+	s->allocSize = (uint32_t)length;
+	s->planeCount = 0;
+	s->memory = memory;
+	s->mapCache = kIOMapDefaultCache;
+	s->wrapped = true;
+	if (!native_surface_publish(s)) {
+		s->release();
+		return kIOReturnNoResources;
+	}
+	if (said++ < 8) {
+		IOLog("NativeSurface: wrapped a picture of the client's: id %u %ux%u fmt 0x%x bpe %u bpr %u size %u\n", s->id,
+		    r.width, r.height, r.format, r.bytesPerElement, r.bytesPerRow, r.size);
+	}
+	IOReturn ret = returnSurface(s, args);   /* takes the creator's user count */
+	s->release();
+	return ret;
+}
+
 IOReturn
 IOSurfaceRootUserClient::externalMethod(uint32_t selector, IOExternalMethodArguments *args,
     __unused IOExternalMethodDispatch *dispatch, __unused OSObject *target,
@@ -971,14 +1048,12 @@ IOSurfaceRootUserClient::externalMethod(uint32_t selector, IOExternalMethodArgum
 		return kIOReturnSuccess;
 	}
 	case kNativeSurfaceWrapClientImage:
+		native_surf_log_once("sel", selector);
+		return wrapClientImage(args);
 	case kNativeSurfaceWrapClientMemory:
 		/*
-		 * A surface around memory of the client's own (IOSurfaceClientWrapClientImage: CoreAnimation's
-		 * OpenGL ES renderer asks for one for each picture it draws from). Answered with success and
-		 * no lock result, the framework made a client with no state page and QuartzCore read through
-		 * it (iosurface_get_edr_factor -> IOSurfaceClientGetBulkAttachments, far 0x30: boots 49-52).
-		 * Refused, the renderer draws those pictures another way (HakiOS's MiniIOSurface did so before
-		 * it made them).
+		 * Answered with success and no lock result, the framework made a client with no state page
+		 * and QuartzCore read through it (far 0x30: boots 49-52); refused, the caller does without.
 		 */
 		native_surf_log_once("sel", selector);
 		return kIOReturnUnsupported;

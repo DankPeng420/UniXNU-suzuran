@@ -67,6 +67,7 @@ public:
 	IOMemoryMap              *gpuCachedMap;  /* (unused since gl11: a cached alias of write-combined pages is not cached) */
 	bool                      gpuPool;      /* gpuPhys is the GPU's pool's (given back when the surface goes) */
 	bool                      gpuPanel;     /* the panel's own memory (NativeDisplay's default surface) */
+	bool                      wrapped;      /* memory is a client's own, wired (WrapClientImage): completed when freed */
 
 	bool init() APPLE_KEXT_OVERRIDE { return OSObject::init(); }
 	void free() APPLE_KEXT_OVERRIDE;
