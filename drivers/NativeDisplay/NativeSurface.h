@@ -64,7 +64,9 @@ public:
 	uint32_t                  gpuPhys;      /* memory from the GPU's pool (native_gpu_memory()): its address, or 0 */
 	uint32_t                  gpuPlace;     /* ... and its place there, to give it back with */
 	uint8_t                  *gpuKva;
-	IOMemoryMap              *gpuCachedMap;  /* the same memory mapped cached, for the display's reads (see cachedAddress) */
+	IOMemoryMap              *gpuCachedMap;  /* (unused since gl11: a cached alias of write-combined pages is not cached) */
+	bool                      gpuPool;      /* gpuPhys is the GPU's pool's (given back when the surface goes) */
+	bool                      gpuPanel;     /* the panel's own memory (NativeDisplay's default surface) */
 
 	bool init() APPLE_KEXT_OVERRIDE { return OSObject::init(); }
 	void free() APPLE_KEXT_OVERRIDE;
@@ -76,6 +78,7 @@ public:
 
 /* Retained surface for an id, or NULL. */
 NativeSurface *native_surface_copy(uint32_t id);
+extern bool native_surface_gpu_presents;     /* the GPU draws the frames onto the panel itself (NativeSurface.cpp) */
 
 /*
  * Publish physical memory (the panel framebuffer) as a surface. Returns a

@@ -260,6 +260,10 @@ struct eagl {
 	GLuint colour;                  /* ... and the texture that is its colour attachment (0: none, or no texture) */
 	GLuint reader;                  /* a framebuffer of ours, to read a texture back */
 	GLuint writer;                  /* ... and one to copy a frame into its surface with (blit_targets) */
+	GLuint panel_texture;           /* the panel's own memory, IOSurface 1 (present_to_panel) */
+	GLuint panel_writer;
+	int panel_state;                /* 0 not tried, 1 made, -1 not to be had */
+	size_t panel_width, panel_height;
 	GLuint program;                 /* the one in use, as CoreAnimation has it */
 	GLuint plain, lookup;           /* programs of ours for when that is none (plain_draw_begin()) */
 	GLint plain_matrix, plain_textured, lookup_matrix;
@@ -357,6 +361,7 @@ static int share_surfaces = 1;          /* boot-arg glcopy=1: 0 */
  * Boot-arg glblit=0: the surface's memory, as before.
  */
 static int blit_targets = 1;
+static int present_panel = 1;   /* boot-arg glpanel=0: the display copies the frames as before */
 /*
  * A frame that is handed to the display must have been drawn. The display's driver waits for
  * the GPU itself before it puts a surface on the panel, on a thread of its own, and says so in
@@ -823,6 +828,68 @@ surface_to_texture(struct eagl *e, struct image *image)
 	e->upload_bytes += row * (size_t)image->height;
 }
 
+/*
+ * The screen's frame onto the panel, by the GPU: the panel's own memory (IOSurface 1, NativeDisplay's) is made a
+ * texture like any surface in the GPU's memory, and the frame is scaled onto it, fitted as the display fits it
+ * (750x1334 into 720x1280: 719 wide, at the left). Then the display copies nothing (NativeSurface: once the panel is
+ * the GPU's): that copy, from the GPU's write-combined memory, took 50-110 ms a frame (boots 58, 59). For the
+ * window server's 'b3a8' surfaces the size of the screen, the ones the display shows.
+ */
+static void
+present_to_panel(struct eagl *e, struct image *image)
+{
+	IOSurfaceRef surface = image->surface;
+
+	if (!present_panel || e->panel_state < 0 || IOSurfaceGetPixelFormat(surface) != 'b3a8') {
+		return;
+	}
+	if (e->panel_state == 0) {
+		IOSurfaceRef panel = IOSurfaceLookup(1);
+		GLint bound = 0;
+		bool made;
+
+		e->panel_state = -1;
+		if (panel == NULL) {
+			say("the panel (IOSurface 1) is not to be had: the display copies the frames");
+			return;
+		}
+		e->panel_width = IOSurfaceGetWidth(panel);
+		e->panel_height = IOSurfaceGetHeight(panel);
+		CFRelease(panel);
+		glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
+		glGenTextures(1, &e->panel_texture);
+		glBindTexture(GL_TEXTURE_2D, e->panel_texture);
+		made = hakios_gl_surface_texture(e->gl, 1);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)bound);
+		if (!made || e->panel_width == 0 || e->panel_height == 0) {
+			glDeleteTextures(1, &e->panel_texture);
+			e->panel_texture = 0;
+			say("the panel (IOSurface 1) is not a texture here: the display copies the frames");
+			return;
+		}
+		glGenFramebuffers(1, &e->panel_writer);
+		e->panel_state = 1;
+		say("the frames go onto the panel (IOSurface 1, %zu x %zu) by the GPU", e->panel_width, e->panel_height);
+	}
+	size_t lw = (size_t)image->width, lh = (size_t)image->height, pw = e->panel_width, ph = e->panel_height;
+	size_t fw, fh;
+
+	if (lw * ph <= pw * lh) {
+		fh = ph;
+		fw = lw * ph / lh;
+	} else {
+		fw = pw;
+		fh = lh * pw / lw;
+	}
+	GLint x = (GLint)((pw - fw) / 2), y = (GLint)((ph - fh) / 2);
+
+	/* (the read framebuffer holds the frame: target_to_surface()) */
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, e->panel_writer);
+	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, e->panel_texture, 0);
+	glBlitFramebuffer(0, 0, image->width, image->height, x, image->invert ? y + (GLint)fh : y, x + (GLint)fw,
+	    image->invert ? y : y + (GLint)fh, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+}
+
 /* What has been drawn into a texture, into its IOSurface, unless it is there (frame_end() waits for it). */
 static void
 target_to_surface(struct eagl *e, struct image *image)
@@ -852,6 +919,7 @@ target_to_surface(struct eagl *e, struct image *image)
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, image->mirror, 0);
 		glBlitFramebuffer(0, 0, image->width, image->height, 0, image->invert ? image->height : 0, image->width,
 		    image->invert ? 0 : image->height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+		present_to_panel(e, image);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, (GLuint)read);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, (GLuint)draw);
 		if (IOSurfaceLock(surface, 0, NULL) == 0) {
@@ -4403,6 +4471,7 @@ install(void)
 		}
 		share_surfaces = strstr(arguments, "glcopy=1") == NULL;
 		blit_targets = strstr(arguments, "glblit=0") == NULL;
+		present_panel = strstr(arguments, "glpanel=0") == NULL;
 		sync_frames = strstr(arguments, "glsync=0") == NULL;
 		if (strstr(arguments, "glwait=0") != NULL || (strstr(arguments, "glwait=1") == NULL && display_waits())) {
 			wait_for_frames = 0;

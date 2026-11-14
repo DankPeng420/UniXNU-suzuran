@@ -116,8 +116,9 @@ NativeSurface::free()
 	OSSafeReleaseNULL(kernelMap);
 	OSSafeReleaseNULL(gpuCachedMap);
 	OSSafeReleaseNULL(memory);
-	if (gpuPhys != 0) {
+	if (gpuPool) {
 		native_gpu_memory_free(gpuPlace, allocSize);
+		gpuPool = false;
 		gpuPhys = 0;
 	}
 	OSSafeReleaseNULL(state);
@@ -791,8 +792,16 @@ native_surface_for_gpu(NativeSurface *s)
 	s->gpuPhys = phys;
 	s->gpuPlace = place;
 	s->gpuKva = kva;
+	s->gpuPool = true;
 	return true;
 }
+
+/*
+ * Once the panel's own memory has been made a GPU buffer (eagl's present_to_panel(): the GPU scales each frame
+ * onto the panel itself), the display no longer copies surfaces in the GPU's memory to it: that copy took
+ * 50-110 ms a frame from write-combined memory (boots 58, 59).
+ */
+bool native_surface_gpu_presents;
 
 /* NativeAdreno430's: a surface whose memory the GPU can address, held, and what it is to the GPU; NULL if none. */
 extern "C" OSObject *
@@ -815,6 +824,11 @@ native_surface_gpu(uint32_t id, IOMemoryDescriptor **memory, uint8_t **kva, uint
 	*height = s->height;
 	*format = 0x42475241;           /* 'BGRA' ('b3a8': its plane 0) */
 	*planes = 0;
+	if (s->gpuPanel && !native_surface_gpu_presents) {
+		native_surface_gpu_presents = true;
+		IOLog("NativeSurface: the panel (surface %u) is drawn into by the GPU: the window server's frames in the "
+		    "GPU's memory are no longer copied to it\n", s->id);
+	}
 	return s;
 }
 

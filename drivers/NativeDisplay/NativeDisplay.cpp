@@ -242,6 +242,13 @@ AppleCLCD::start(IOService *provider)
 	fClients = OSArray::withCapacity(4);
 	fSurface = native_surface_create_physical(fPhys, fWidth, fHeight, fRowBytes, NATIVE_FB_FORMAT_BGRA);
 	fPixels = fSurface != NULL ? fSurface->kernelAddress() : 0;
+	if (fSurface != NULL && fPixels != 0 && fPhys != 0 && fPhys + (uint64_t)fRowBytes * fHeight <= 0x100000000ULL &&
+	    (fRowBytes & 127) == 0) {
+		/* the panel, for the GPU to draw onto (NativeAdreno430's HAKIOS_GPU_SURFACE: eagl's present_to_panel) */
+		fSurface->gpuPhys = (uint32_t)fPhys;
+		fSurface->gpuKva = (uint8_t *)fPixels;
+		fSurface->gpuPanel = true;
+	}
 	fWorkLoop = IOWorkLoop::workLoop();
 	if (fLock == NULL || fClients == NULL || fPixels == 0 || fWorkLoop == NULL) {
 		IOLog("NativeDisplay: setup failed\n");
@@ -470,10 +477,12 @@ AppleCLCD::present(const uint8_t *rec)
 			OSSafeReleaseNULL(s);
 			continue;
 		}
-		uintptr_t src = s->gpuPhys ? s->cachedAddress() : 0;
-		if (src == 0) {
-			src = s->kernelAddress();
+		if (s->gpuPool && native_surface_gpu_presents) {
+			/* the GPU has scaled this frame onto the panel itself (eagl): nothing to copy */
+			s->release();
+			continue;
 		}
+		uintptr_t src = s->kernelAddress();
 		uint32_t bpe = s->bytesPerElement ? s->bytesPerElement : 4;
 		/*
 		 * A surface with planes ('b3a8', what CoreAnimation's OpenGL ES renderer draws the screen
@@ -621,8 +630,7 @@ AppleCLCD::presentFitted(NativeSurface *s, uintptr_t src, int32_t sx, int32_t sy
 	longest = ns > longest ? ns : longest;
 	if (++count % 300 == 0 || count <= 3) {
 		IOLog("NativeDisplay: %llu fitted copies, %llu us each, longest %llu us (surface %u%s)\n", count,
-		    spent / 1000 / count, longest / 1000, s->id, s->gpuCachedMap ? ", in the GPU's memory, read cached" :
-		    s->gpuPhys ? ", in the GPU's memory" : "");
+		    spent / 1000 / count, longest / 1000, s->id, s->gpuPhys ? ", in the GPU's memory" : "");
 	}
 }
 
