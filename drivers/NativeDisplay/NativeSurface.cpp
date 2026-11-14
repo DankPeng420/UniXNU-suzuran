@@ -615,8 +615,10 @@ native_surface_fill_result(NativeSurface *s, NativeSurfaceRef *ref, uint8_t *out
 		const struct native_surface_plane *pl = &s->planes[i];
 		put32(p, 0x00, pl->width);
 		put32(p, 0x04, pl->height);
-		put32(p, 0x08, pl->bytesPerRow);
+		/* (bytes a row at 0x10, as IOSurfaceClientGetBytesPerRowOfPlane reads them; 0x08 is not used: they were
+		 * there until boot 54, and the framework said 0 -- a slanted, then black screen through OpenGL ES) */
 		put32(p, 0x0c, pl->offset);
+		put32(p, 0x10, pl->bytesPerRow);
 		put32(p, 0x14, pl->size);
 		memcpy(p + 0x18, &pl->bytesPerElement, 2);
 		p[0x1a] = pl->elementWidth;

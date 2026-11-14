@@ -239,6 +239,7 @@ struct image {
 	GLuint mirror;                  /* a texture that is the surface's memory, which the GPU copies the frame into (blit_targets) */
 	bool wrapped;                   /* the surface is memory of somebody's with a surface made around it */
 	bool alpha_first;               /* its pixels are opacity, blue, green, red in memory: see my_attachImage() */
+	bool w30r;                      /* 'w30r': 10 bits each, blue lowest (OpenGL ES's 2_10_10_10_REV has red lowest): swapped */
 	bool painted;                   /* something has been drawn into it (it is a target in fact, not only in name) */
 	unsigned looked;                /* ... the frame in which that memory was last looked at, */
 	uint64_t sum;                   /* ... and what it added up to */
@@ -705,13 +706,40 @@ surface_changed(struct eagl *e, struct image *image)
 	return true;
 }
 
+/*
+ * A plane's bytes a row. Our kernel's lock result had them at the wrong place in a plane's record
+ * before kernel gl6 (0x08 for 0x10): the framework said 0, and the screen ('b3a8', 3008 bytes a
+ * row) came out slanted (boot 53) and then black (boot 54, every row put on the first). Plane 0 of
+ * a surface of whole pixels then has the surface's own.
+ */
+static size_t
+plane_row(IOSurfaceRef surface, uint32_t plane)
+{
+	size_t row = IOSurfaceGetBytesPerRowOfPlane(surface, plane);
+
+	return row != 0 || plane != 0 ? row : IOSurfaceGetBytesPerRow(surface);
+}
+
+/* 'w30r' <-> OpenGL ES's 2_10_10_10_REV: the first and third ten bits change places. */
+static void
+swap_w30r(uint8_t *pixels, size_t bytes)
+{
+	for (size_t at = 0; at + 4 <= bytes; at += 4) {
+		uint32_t v;
+
+		memcpy(&v, pixels + at, 4);
+		v = (v & 0xfff00c00u) | (v & 0x3ffu) << 20 | (v >> 20 & 0x3ffu);
+		memcpy(pixels + at, &v, 4);
+	}
+}
+
 /* Fill a texture, which is bound, from its IOSurface, unless it is the surface. */
 static void
 surface_to_texture(struct eagl *e, struct image *image)
 {
 	IOSurfaceRef surface = image->surface;
 	bool planar = IOSurfaceGetPlaneCount(surface) > 0;
-	size_t row = planar ? IOSurfaceGetBytesPerRowOfPlane(surface, image->plane) : IOSurfaceGetBytesPerRow(surface);
+	size_t row = planar ? plane_row(surface, image->plane) : IOSurfaceGetBytesPerRow(surface);
 	unsigned pixel = bytes_a_pixel(image->format, image->type);
 	GLint row_length = 0, alignment = 4;
 	uint8_t *base, *flipped = NULL;
@@ -731,7 +759,7 @@ surface_to_texture(struct eagl *e, struct image *image)
 	 */
 	size_t tight = (size_t)image->width * pixel;
 	bool padded = row > tight;
-	if ((image->invert || alpha_first || padded) && (flipped = calloc(tight, (size_t)image->height)) != NULL) {
+	if ((image->invert || alpha_first || padded || image->w30r) && (flipped = calloc(tight, (size_t)image->height)) != NULL) {
 		for (GLsizei y = 0; y < image->height; y++) {
 			const uint8_t *from = base + row * (size_t)(image->invert ? image->height - 1 - y : y);
 			uint8_t *to = flipped + tight * (size_t)y;
@@ -751,6 +779,9 @@ surface_to_texture(struct eagl *e, struct image *image)
 		}
 		base = flipped;
 		row = tight;
+		if (image->w30r) {
+			swap_w30r(flipped, tight * (size_t)image->height);
+		}
 	}
 	glGetIntegerv(GL_UNPACK_ROW_LENGTH, &row_length);
 	glGetIntegerv(GL_UNPACK_ALIGNMENT, &alignment);
@@ -798,7 +829,8 @@ target_to_surface(struct eagl *e, struct image *image)
 {
 	IOSurfaceRef surface = image->surface;
 	bool planar = IOSurfaceGetPlaneCount(surface) > 0;
-	size_t row = planar ? IOSurfaceGetBytesPerRowOfPlane(surface, 0) : IOSurfaceGetBytesPerRow(surface);
+	size_t row = planar ? plane_row(surface, 0) : IOSurfaceGetBytesPerRow(surface);
+	GLenum format = image->w30r ? GL_RGBA : GL_BGRA, type = image->w30r ? 0x8368 : GL_UNSIGNED_BYTE;
 	uint8_t *base;
 
 	image->drawn = false;
@@ -846,7 +878,7 @@ target_to_surface(struct eagl *e, struct image *image)
 		size_t tight = (size_t)image->width * 4;
 		uint8_t *rows;
 
-		if (!image->invert && row == tight) {
+		if (!image->invert && row == tight && !image->w30r) {
 			glReadPixels(0, 0, image->width, image->height, GL_BGRA, GL_UNSIGNED_BYTE, base);
 		} else if (!image->invert && (rows = malloc(tight * (size_t)image->height)) != NULL) {
 			/*
@@ -855,14 +887,22 @@ target_to_surface(struct eagl *e, struct image *image)
 			 * frame came out with every row 8 bytes early, slanted (boot 53).
 			 */
 			glPixelStorei(GL_PACK_ROW_LENGTH, 0);
-			glReadPixels(0, 0, image->width, image->height, GL_BGRA, GL_UNSIGNED_BYTE, rows);
+			glReadPixels(0, 0, image->width, image->height, format, type, rows);
+			if (image->w30r) {
+				swap_w30r(rows, tight * (size_t)image->height);
+			}
 			for (GLsizei y = 0; y < image->height; y++) {
 				memcpy(base + row * (size_t)y, rows + tight * (size_t)y, tight);
 			}
 			free(rows);
 		} else {
 			for (GLsizei y = 0; y < image->height; y++) {
-				glReadPixels(0, y, image->width, 1, GL_BGRA, GL_UNSIGNED_BYTE, base + row * (size_t)(image->height - 1 - y));
+				uint8_t *to = base + row * (size_t)(image->height - 1 - y);
+
+				glReadPixels(0, y, image->width, 1, format, type, to);
+				if (image->w30r) {
+					swap_w30r(to, tight);
+				}
 			}
 		}
 		glPixelStorei(GL_PACK_ROW_LENGTH, 0);
@@ -4147,7 +4187,14 @@ my_attachImage(id self, SEL selector, unsigned long target, IOSurfaceRef surface
 	 * display and the software renderer read it too.
 	 */
 	bool b3a8 = pixels == 'b3a8' && IOSurfaceGetPlaneCount(surface) == 2 && IOSurfaceGetBytesPerElementOfPlane(surface, 0) == 4;
-	if (target != GL_TEXTURE_2D || texture == 0 || (pixels != 'BGRA' && pixels != 0 && !b3a8) ||
+	/*
+	 * 'w30r': ten bits a colour, wide colour, what CoreAnimation draws some layers into on this
+	 * identity (boot 54, once the screen came on: refused, those frames drew into nothing). Here a
+	 * texture of 10:10:10:2, red and blue swapped on the way in and out. Darwin's extended range
+	 * (0.0 at 384) is not done: those layers come out a little paler.
+	 */
+	bool w30r = pixels == 'w30r' && IOSurfaceGetPlaneCount(surface) == 0;
+	if (target != GL_TEXTURE_2D || texture == 0 || (pixels != 'BGRA' && pixels != 0 && !b3a8 && !w30r) ||
 	    IOSurfaceGetBytesPerElement(surface) != 4 || (IOSurfaceGetPlaneCount(surface) != 0 && !b3a8) ||
 	    (image = image_new(e, (GLuint)texture, surface)) == NULL) {
 		say("hakios-gl: -attachImage: target %#lx, texture %d, an IOSurface of '%.4s': not done\n", target, texture,
@@ -4161,6 +4208,12 @@ my_attachImage(id self, SEL selector, unsigned long target, IOSurfaceRef surface
 	image->height = (GLsizei)IOSurfaceGetHeight(surface);
 	image->internal = image->format = GL_BGRA;
 	image->type = GL_UNSIGNED_BYTE;
+	if (w30r) {
+		image->w30r = true;
+		image->internal = 0x8059;               /* GL_RGB10_A2 */
+		image->format = GL_RGBA;
+		image->type = 0x8368;                   /* GL_UNSIGNED_INT_2_10_10_10_REV */
+	}
 	/*
 	 * A surface with no pixel format is memory CoreAnimation has made a surface around: a
 	 * picture to be shown, as an application has drawn it. Those that come this way are mostly
@@ -4173,7 +4226,7 @@ my_attachImage(id self, SEL selector, unsigned long target, IOSurfaceRef surface
 	 * there being no pixel format.
 	 */
 	image->wrapped = image->alpha_first = pixels == 0;
-	note_format("IOSurface attached", GL_BGRA, GL_BGRA, GL_UNSIGNED_BYTE, image->width, image->height);
+	note_format("IOSurface attached", image->internal, image->format, image->type, image->width, image->height);
 	/*
 	 * What is attached is as often read as drawn into (a picture CoreAnimation has made a surface
 	 * around, to be shown): a texture that is not the surface's memory starts with what the surface holds.
