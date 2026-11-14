@@ -71,6 +71,7 @@ extern "C" int native_console_muted;     /* osfmk/console/video_console.c (zzr o
 #include <IOKit/IOWorkLoop.h>
 #include <IOKit/IOTimerEventSource.h>
 #include <IOKit/system.h>
+#include <kern/clock.h>
 #include <pexpert/pexpert.h>
 #include <kern/clock.h>
 #include <sys/proc.h>
@@ -581,18 +582,43 @@ AppleCLCD::presentFitted(NativeSurface *s, uintptr_t src, int32_t sx, int32_t sy
 		int32_t lx = (int32_t)(((uint64_t)px * fLogicalW) / fFitW);
 		cols[px] = (lx >= dx && lx < dx + w) ? sx + (lx - dx) : -1;
 	}
+	/*
+	 * A row of the surface is read whole into `row` first, then picked from: a surface in the GPU's
+	 * memory (write-combined, not cached: the window server's screen with zero copy, boot 57) read a
+	 * pixel at a time made every frame's copy slow; read in one go it streams.
+	 */
+	static uint32_t row[4096];
+	int32_t read = -1;
+	uint64_t began = mach_absolute_time();
+	if (w > 4096) {
+		return;
+	}
 	for (uint32_t py = 0; py < fFitH; py++) {
 		int32_t ly = (int32_t)(((uint64_t)py * fLogicalH) / fFitH);
 		if (ly < dy || ly >= dy + h) {
 			continue;
 		}
-		const uint32_t *in = (const uint32_t *)(src + s->offset + (uint64_t)(sy + (ly - dy)) * s->bytesPerRow);
+		if (ly != read) {
+			memcpy(row, (const void *)(src + s->offset + (uint64_t)(sy + (ly - dy)) * s->bytesPerRow + (uint64_t)sx * 4),
+			    (size_t)w * 4);
+			read = ly;
+		}
 		uint32_t *out = (uint32_t *)(fPixels + (uint64_t)(fFitY + py) * fRowBytes + (uint64_t)fFitX * 4);
 		for (uint32_t px = 0; px < fFitW; px++) {
 			if (cols[px] >= 0) {
-				out[px] = in[cols[px]];
+				out[px] = row[cols[px] - sx];
 			}
 		}
+	}
+	/* how long the copies take: a line for every 300 */
+	static uint64_t spent, count, longest;
+	uint64_t ns = 0;
+	absolutetime_to_nanoseconds(mach_absolute_time() - began, &ns);
+	spent += ns;
+	longest = ns > longest ? ns : longest;
+	if (++count % 300 == 0 || count <= 3) {
+		IOLog("NativeDisplay: %llu fitted copies, %llu us each, longest %llu us (surface %u%s)\n", count,
+		    spent / 1000 / count, longest / 1000, s->id, s->gpuPhys ? ", in the GPU's memory" : "");
 	}
 }
 
