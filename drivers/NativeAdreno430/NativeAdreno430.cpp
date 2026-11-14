@@ -603,9 +603,11 @@ void NativeAdreno430UserClient::destroy(Buffer *b)
         IODelete(b, Buffer, 1);
         return;
     }
-    IOLockLock(gLock);
-    gTotalBytes -= b->size;
-    IOLockUnlock(gLock);
+    if (!b->owner) {                 // (an IOSurface's memory is not counted in: boot 56's count went below 0)
+        IOLockLock(gLock);
+        gTotalBytes -= b->size;
+        IOLockUnlock(gLock);
+    }
     b->memory->release();
     if (b->poolPage != UINT32_MAX) poolGive(b->poolPage, static_cast<uint32_t>(b->size >> 12));
     if (b->owner) b->owner->release();
