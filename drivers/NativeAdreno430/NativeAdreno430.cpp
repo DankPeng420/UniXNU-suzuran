@@ -26,6 +26,7 @@
 #include <IOKit/IOLocks.h>
 #include <IOKit/IOMemoryDescriptor.h>
 #include <IOKit/IOBufferMemoryDescriptor.h>
+#include <IOKit/IOSubMemoryDescriptor.h>
 #include <IOKit/system.h>
 #include <kern/thread.h>
 #include <kern/clock.h>
@@ -114,6 +115,79 @@ uint64_t gTotalBytes;
 uint64_t gSubmits;
 // wait statistics (all clients; logged when a client closes)
 uint64_t gWaits, gWaitNs, gWaitMaxNs;
+
+// --- the buffer pool ---
+// The GPU's addresses are physical, so every buffer is contiguous. Late in a boot the kernel rarely has 4 MB of it
+// (boot 51: backboardd's first 750x1334 texture, "no contiguous memory for a 4194304-byte buffer", 140 s after power-on,
+// and the window server could not draw). So one block is taken at start, while memory is still in one piece, and
+// buffers are cut from it, a page at a time; a buffer that does not fit is allocated on its own as before.
+// Boot-arg adrenopool=MB (default 192 with suzurangl=1, else 0: the route that needs it); halved until it is had.
+IOLock *gPoolLock;
+IOBufferMemoryDescriptor *gPool;
+uint8_t *gPoolKva;
+uint32_t gPoolPhys, gPoolPages, gPoolUsed;
+uint8_t *gPoolMap;                 // a byte a page: 1 = used
+
+void poolInit()
+{
+    uint32_t mb = 0, gl = 0;
+    PE_parse_boot_argn("suzurangl", &gl, sizeof gl);
+    if (gl == 1) mb = 192;
+    PE_parse_boot_argn("adrenopool", &mb, sizeof mb);
+    if (mb == 0 || (gPoolLock = IOLockAlloc()) == nullptr) return;
+    for (; mb >= 16; mb /= 2) {
+        const uint64_t bytes = static_cast<uint64_t>(mb) << 20;
+        IOBufferMemoryDescriptor *pool = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task,
+            kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMemoryKernelUserShared | kIOMapWriteCombineCache,
+            bytes, 0xfffff000ULL);
+        IOByteCount length = 0;
+        const uint64_t phys = pool ? pool->getPhysicalSegment(0, &length, kIOMemoryMapperNone) : 0;
+        if (pool && phys && length >= bytes && !(phys >> 32) && pool->getBytesNoCopy()) {
+            gPoolMap = IONewZero(uint8_t, bytes >> 12);
+            if (!gPoolMap) {
+                pool->release();
+                return;
+            }
+            gPool = pool;
+            gPoolKva = static_cast<uint8_t *>(pool->getBytesNoCopy());
+            gPoolPhys = static_cast<uint32_t>(phys);
+            gPoolPages = static_cast<uint32_t>(bytes >> 12);
+            IOLog("NativeAdreno430: buffer pool of %u MB at 0x%08x\n", mb, gPoolPhys);
+            return;
+        }
+        if (pool) pool->release();
+    }
+    IOLog("NativeAdreno430: no buffer pool (no 16 MB in one piece)\n");
+}
+
+// First fit; returns the first page, or UINT32_MAX.
+uint32_t poolTake(uint32_t pages)
+{
+    if (!gPool) return UINT32_MAX;
+    IOLockLock(gPoolLock);
+    uint32_t run = 0, found = UINT32_MAX;
+    for (uint32_t i = 0; i < gPoolPages; ++i) {
+        run = gPoolMap[i] ? 0 : run + 1;
+        if (run == pages) {
+            found = i + 1 - pages;
+            break;
+        }
+    }
+    if (found != UINT32_MAX) {
+        for (uint32_t i = 0; i < pages; ++i) gPoolMap[found + i] = 1;
+        gPoolUsed += pages;
+    }
+    IOLockUnlock(gPoolLock);
+    return found;
+}
+
+void poolGive(uint32_t first, uint32_t pages)
+{
+    IOLockLock(gPoolLock);
+    for (uint32_t i = 0; i < pages; ++i) gPoolMap[first + i] = 0;
+    gPoolUsed -= pages;
+    IOLockUnlock(gPoolLock);
+}
 
 uint64_t nowNs()
 {
@@ -380,6 +454,7 @@ bool NativeAdreno430::start(IOService *provider)
     }
     gLock = IOLockAlloc();
     if (!gLock) return false;
+    poolInit();
     setProperty(kIOUserClientClassKey, "NativeAdreno430UserClient");
     retain();
     thread_t thread = nullptr;
@@ -399,9 +474,11 @@ bool NativeAdreno430::start(IOService *provider)
 
 namespace {
 struct Buffer {
-    IOBufferMemoryDescriptor *memory;
+    IOMemoryDescriptor *memory;    // its own, or a part of the pool
+    uint8_t *kva;                  // the kernel's address of it
     uint64_t size;
     uint32_t phys, flags, lastFence;
+    uint32_t poolPage;             // UINT32_MAX: not from the pool
 };
 }
 
@@ -490,6 +567,7 @@ void NativeAdreno430UserClient::destroy(Buffer *b)
     gTotalBytes -= b->size;
     IOLockUnlock(gLock);
     b->memory->release();
+    if (b->poolPage != UINT32_MAX) poolGive(b->poolPage, static_cast<uint32_t>(b->size >> 12));
     IODelete(b, Buffer, 1);
 }
 
@@ -531,15 +609,36 @@ IOReturn NativeAdreno430UserClient::gemNew(msm::GemNew &r)
               static_cast<unsigned long long>(size), static_cast<unsigned long long>(gTotalBytes >> 20));
         return kIOReturnNoMemory;
     }
-    // Contiguous (the GPU's addresses are physical while the SMMU does not translate), below 4 GiB, write-combined
-    // like Linux's msm buffers; comes zeroed.
-    IOBufferMemoryDescriptor *memory = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task,
-        kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMemoryKernelUserShared | kIOMapWriteCombineCache,
-        size, 0xfffff000ULL);
+    // From the pool if it fits there (zeroed here), else contiguous on its own (the GPU's addresses are physical while
+    // the SMMU does not translate), below 4 GiB, write-combined like Linux's msm buffers; comes zeroed.
+    const uint32_t pages = static_cast<uint32_t>(size >> 12);
+    const uint32_t first = poolTake(pages);
+    IOMemoryDescriptor *memory = nullptr;
+    uint8_t *kva = nullptr;
+    uint64_t phys = 0;
     IOByteCount length = 0;
-    const uint64_t phys = memory ? memory->getPhysicalSegment(0, &length, kIOMemoryMapperNone) : 0;
+    if (first != UINT32_MAX) {
+        memory = IOSubMemoryDescriptor::withSubRange(gPool, static_cast<uint64_t>(first) << 12, size, kIODirectionInOut);
+        if (memory) {
+            kva = gPoolKva + (static_cast<uint64_t>(first) << 12);
+            bzero(kva, size);
+            phys = gPoolPhys + (static_cast<uint64_t>(first) << 12);
+            length = size;
+        } else {
+            poolGive(first, pages);
+        }
+    }
+    if (!memory) {
+        IOBufferMemoryDescriptor *own = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task,
+            kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMemoryKernelUserShared | kIOMapWriteCombineCache,
+            size, 0xfffff000ULL);
+        memory = own;
+        kva = own ? static_cast<uint8_t *>(own->getBytesNoCopy()) : nullptr;
+        phys = own ? own->getPhysicalSegment(0, &length, kIOMemoryMapperNone) : 0;
+    }
     if (!memory || !phys || length < size || (phys >> 32)) {
-        IOLog("NativeAdreno430: no contiguous memory for a %llu-byte buffer\n", static_cast<unsigned long long>(size));
+        IOLog("NativeAdreno430: no contiguous memory for a %llu-byte buffer (pool: %u of %u pages used)\n",
+              static_cast<unsigned long long>(size), gPoolUsed, gPoolPages);
         if (memory) memory->release();
         IOLockLock(gLock);
         gTotalBytes -= size;
@@ -549,12 +648,15 @@ IOReturn NativeAdreno430UserClient::gemNew(msm::GemNew &r)
     Buffer *b = IONew(Buffer, 1);
     if (!b) {
         memory->release();
+        if (first != UINT32_MAX) poolGive(first, pages);
         IOLockLock(gLock);
         gTotalBytes -= size;
         IOLockUnlock(gLock);
         return kIOReturnNoMemory;
     }
     b->memory = memory;
+    b->kva = kva;
+    b->poolPage = first;
     b->size = size;
     b->phys = static_cast<uint32_t>(phys);
     b->flags = r.flags;
@@ -691,7 +793,7 @@ IOReturn NativeAdreno430UserClient::submit(msm::Submit &r)
             uint32_t *mine = cuts + i * (kMaxCuts + 1);
             mine[0] = 0;
             if (c.type == msm::SUBMIT_CMD_BUF && cutsWanted()) {
-                const uint8_t *base = static_cast<const uint8_t *>(used[c.submitIdx]->memory->getBytesNoCopy());
+                const uint8_t *base = used[c.submitIdx]->kva;
                 if (base) {
                     mine[0] = findTimestampWrites(reinterpret_cast<const uint32_t *>(base + c.submitOffset),
                                                   c.size / 4, mine + 1);
@@ -765,7 +867,7 @@ IOReturn NativeAdreno430UserClient::clientMemoryForType(UInt32 type, IOOptionBit
     IOLockUnlock(fTableLock);
     if (!b) return kIOReturnBadArgument;
     *memory = b->memory;
-    *options = 0;
+    *options = b->poolPage != UINT32_MAX ? kIOMapWriteCombineCache : 0;   // (a part of the pool has no cache mode of its own)
     return kIOReturnSuccess;
 }
 
