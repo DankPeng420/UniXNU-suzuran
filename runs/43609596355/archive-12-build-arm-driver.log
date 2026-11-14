@@ -1,0 +1,6 @@
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeDisplay/NativeSurface.cpp:994:86: warning: operand of ? changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+  994 |         uint32_t seed = bump ? OSIncrementAtomic((volatile SInt32 *)native_surface_seed(s)) + 1 :
+      |                  ~~~~          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+1 warning generated.
+NativeDisplay: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-display/libNativeDisplay.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-display/libNativeDisplay.a
