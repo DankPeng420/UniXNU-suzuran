@@ -887,7 +887,7 @@ present_to_panel(struct eagl *e, struct image *image)
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, e->panel_writer);
 	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, e->panel_texture, 0);
 	glBlitFramebuffer(0, 0, image->width, image->height, x, image->invert ? y + (GLint)fh : y, x + (GLint)fw,
-	    image->invert ? y : y + (GLint)fh, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	    image->invert ? y : y + (GLint)fh, GL_COLOR_BUFFER_BIT, 0x2601 /* GL_LINEAR */);
 }
 
 /* What has been drawn into a texture, into its IOSurface, unless it is there (frame_end() waits for it). */
