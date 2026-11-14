@@ -725,11 +725,17 @@ surface_to_texture(struct eagl *e, struct image *image)
 		return;
 	}
 	base = planar ? IOSurfaceGetBaseAddressOfPlane(surface, image->plane) : IOSurfaceGetBaseAddress(surface);
-	if ((image->invert || alpha_first) && (flipped = calloc(row, (size_t)image->height)) != NULL) {
+	/*
+	 * Rows longer than their pixels are made packed here too: our Mesa leaves GL_PACK_ROW_LENGTH out
+	 * (boot 53: a slanted frame), and GL_UNPACK_ROW_LENGTH is not trusted either.
+	 */
+	size_t tight = (size_t)image->width * pixel;
+	bool padded = row > tight;
+	if ((image->invert || alpha_first || padded) && (flipped = calloc(tight, (size_t)image->height)) != NULL) {
 		for (GLsizei y = 0; y < image->height; y++) {
 			const uint8_t *from = base + row * (size_t)(image->invert ? image->height - 1 - y : y);
-			uint8_t *to = flipped + row * (size_t)y;
-			size_t used = (size_t)image->width * pixel;     /* (the last row may end where its pixels do) */
+			uint8_t *to = flipped + tight * (size_t)y;
+			size_t used = tight;     /* (the last row may end where its pixels do) */
 
 			if (!alpha_first) {
 				memcpy(to, from, used < row ? used : row);
@@ -744,6 +750,7 @@ surface_to_texture(struct eagl *e, struct image *image)
 			}
 		}
 		base = flipped;
+		row = tight;
 	}
 	glGetIntegerv(GL_UNPACK_ROW_LENGTH, &row_length);
 	glGetIntegerv(GL_UNPACK_ALIGNMENT, &alignment);
@@ -836,8 +843,23 @@ target_to_surface(struct eagl *e, struct image *image)
 		base = planar ? IOSurfaceGetBaseAddressOfPlane(surface, 0) : IOSurfaceGetBaseAddress(surface);
 		glPixelStorei(GL_PACK_ROW_LENGTH, (GLint)(row / 4));
 		glPixelStorei(GL_PACK_ALIGNMENT, 4);
-		if (!image->invert) {
+		size_t tight = (size_t)image->width * 4;
+		uint8_t *rows;
+
+		if (!image->invert && row == tight) {
 			glReadPixels(0, 0, image->width, image->height, GL_BGRA, GL_UNSIGNED_BYTE, base);
+		} else if (!image->invert && (rows = malloc(tight * (size_t)image->height)) != NULL) {
+			/*
+			 * A surface whose rows are longer than its pixels ('b3a8' 750 wide: 3008 bytes a row): read
+			 * packed and put row by row. Our Mesa's glReadPixels left GL_PACK_ROW_LENGTH out -- the
+			 * frame came out with every row 8 bytes early, slanted (boot 53).
+			 */
+			glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+			glReadPixels(0, 0, image->width, image->height, GL_BGRA, GL_UNSIGNED_BYTE, rows);
+			for (GLsizei y = 0; y < image->height; y++) {
+				memcpy(base + row * (size_t)y, rows + tight * (size_t)y, tight);
+			}
+			free(rows);
 		} else {
 			for (GLsizei y = 0; y < image->height; y++) {
 				glReadPixels(0, y, image->width, 1, GL_BGRA, GL_UNSIGNED_BYTE, base + row * (size_t)(image->height - 1 - y));
