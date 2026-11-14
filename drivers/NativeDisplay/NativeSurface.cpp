@@ -733,6 +733,11 @@ IOSurfaceRootUserClient::create(IOExternalMethodArguments *args)
 		IOLog("NativeSurface: %s create id %u %ux%u fmt 0x%x bpe %u bpr %u planes %u size %u keys %u -> 0x%x\n",
 		    name, s->id, s->width, s->height, s->pixelFormat, s->bytesPerElement,
 		    s->bytesPerRow, s->planeCount, s->allocSize, props->getCount(), ret);
+		for (uint32_t i = 0; i < s->planeCount && ret == kIOReturnSuccess; i++) {
+			IOLog("NativeSurface:   plane %u %ux%u bpe %u elem %ux%u bpr %u offset %u size %u\n", i,
+			    s->planes[i].width, s->planes[i].height, s->planes[i].bytesPerElement, s->planes[i].elementWidth,
+			    s->planes[i].elementHeight, s->planes[i].bytesPerRow, s->planes[i].offset, s->planes[i].size);
+		}
 	}
 	props->release();
 	if (ret != kIOReturnSuccess) {

@@ -471,6 +471,15 @@ AppleCLCD::present(const uint8_t *rec)
 		}
 		uintptr_t src = s->kernelAddress();
 		uint32_t bpe = s->bytesPerElement ? s->bytesPerElement : 4;
+		/*
+		 * A surface with planes ('b3a8', what CoreAnimation's OpenGL ES renderer draws the screen
+		 * into on this identity): the pixels are plane 0, four bytes each, at its own offset
+		 * (the other plane is the compression's bookkeeping, which nothing here writes).
+		 */
+		if (src != 0 && s->planeCount > 0) {
+			src += s->planes[0].offset;
+			bpe = s->planes[0].bytesPerElement;
+		}
 		if (w <= 0 || h <= 0) {
 			w = (int32_t)s->width;
 			h = (int32_t)s->height;
