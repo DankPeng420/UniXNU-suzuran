@@ -1,0 +1,2 @@
+ArmDTPlatform: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/armdt-platform/libArmDTPlatform.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/armdt-platform/libArmDTPlatform.a
