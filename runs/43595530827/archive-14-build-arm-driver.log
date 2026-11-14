@@ -1,0 +1,18 @@
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeCpuClock/NativeCpuClock.cpp:490:39: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+  490 |         if (!scmIoRead(kA57MemAcc + 4 * i, acc[i])) {
+      |                                   ~ ~~^~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeCpuClock/NativeCpuClock.cpp:491:107: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+  491 |             IOLog("NativeCpuClock: scm_io_read of mem-acc 0x%08x failed, a57 unchanged\n", kA57MemAcc + 4 * i);
+      |                                                                                                       ~ ~~^~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeCpuClock/NativeCpuClock.cpp:508:83: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+  508 |         if (!scmIoWrite(kA57MemAcc + 4 * i, want[i]) || !scmIoRead(kA57MemAcc + 4 * i, now) || (now & 0xff) != want[i]) {
+      |                                                                               ~ ~~^~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeCpuClock/NativeCpuClock.cpp:508:40: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+  508 |         if (!scmIoWrite(kA57MemAcc + 4 * i, want[i]) || !scmIoRead(kA57MemAcc + 4 * i, now) || (now & 0xff) != want[i]) {
+      |                                    ~ ~~^~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeCpuClock/NativeCpuClock.cpp:510:34: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+  510 |                   kA57MemAcc + 4 * i, want[i], now);
+      |                              ~ ~~^~~
+5 warnings generated.
+NativeCpuClock: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-cpu-clock/libNativeCpuClock.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-cpu-clock/libNativeCpuClock.a
