@@ -114,6 +114,7 @@ NativeSurface::free()
 		OSAddAtomic64(-(SInt64)allocSize, (volatile SInt64 *)&native_surface_wired);
 	}
 	OSSafeReleaseNULL(kernelMap);
+	OSSafeReleaseNULL(gpuCachedMap);
 	OSSafeReleaseNULL(memory);
 	if (gpuPhys != 0) {
 		native_gpu_memory_free(gpuPlace, allocSize);
@@ -121,6 +122,35 @@ NativeSurface::free()
 	}
 	OSSafeReleaseNULL(state);
 	OSObject::free();
+}
+
+/*
+ * The display reads a surface in the GPU's memory through a cached mapping of it: through the pool's own
+ * (write-combined, not cached) the fitted copy took 50 ms a frame (boot 58: 77 MB/s). The GPU writes behind the
+ * caches, so the lines are invalidated first (nothing writes through this mapping: none of them is dirty).
+ */
+extern "C" void flush_dcache64(addr64_t addr, unsigned count, int phys);
+
+uintptr_t
+NativeSurface::cachedAddress()
+{
+	if (gpuPhys == 0) {
+		return 0;
+	}
+	if (gpuCachedMap == NULL) {
+		IOMemoryDescriptor *pd = IOMemoryDescriptor::withPhysicalAddress(gpuPhys, allocSize, kIODirectionIn);
+		if (pd == NULL) {
+			return 0;
+		}
+		gpuCachedMap = pd->map(kIOMapCopybackCache);
+		pd->release();
+		if (gpuCachedMap == NULL) {
+			return 0;
+		}
+	}
+	uintptr_t va = (uintptr_t)gpuCachedMap->getVirtualAddress();
+	flush_dcache64((addr64_t)va, allocSize, 0);
+	return va;
 }
 
 uintptr_t

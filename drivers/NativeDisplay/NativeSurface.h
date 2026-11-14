@@ -64,12 +64,14 @@ public:
 	uint32_t                  gpuPhys;      /* memory from the GPU's pool (native_gpu_memory()): its address, or 0 */
 	uint32_t                  gpuPlace;     /* ... and its place there, to give it back with */
 	uint8_t                  *gpuKva;
+	IOMemoryMap              *gpuCachedMap;  /* the same memory mapped cached, for the display's reads (see cachedAddress) */
 
 	bool init() APPLE_KEXT_OVERRIDE { return OSObject::init(); }
 	void free() APPLE_KEXT_OVERRIDE;
 
 	/* Kernel address of the pixels (mapped on first use), or 0. */
 	uintptr_t kernelAddress();
+	uintptr_t cachedAddress();      /* GPU memory: a cached mapping of it, its lines invalidated first; else 0 */
 };
 
 /* Retained surface for an id, or NULL. */
