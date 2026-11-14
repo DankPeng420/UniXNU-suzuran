@@ -1,0 +1,11 @@
+ArmCpu source prepared: a00844ff50266acb5ef7c7897efffb9dfd26b311231e05d411cc00cf06bec492
+Source preparation only; compile with the recorded XNU ABI recipe.
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/armcpu/generated/ArmCpu.cpp:534:75: warning: implicit conversion changes signedness: 'unsigned int' to 'int' [-Wsign-conversion]
+  534 |   if ((controller == nullptr) || (controller->initCPUInterruptController (cpuCount, 1) != kIOReturnSuccess)) {
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~  ^~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/armcpu/generated/ArmCpu.cpp:539:48: warning: implicit conversion changes signedness: 'uint32_t' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  539 |   if (controller->registerInterrupt (provider, logicalId, this, &ArmCpu::dispatch, nullptr) != kIOReturnSuccess) {
+      |                   ~~~~~~~~~~~~~~~~~            ^~~~~~~~~
+2 warnings generated.
+ArmCpu: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/armcpu/libArmCpu.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/armcpu/libArmCpu.a

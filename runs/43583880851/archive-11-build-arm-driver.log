@@ -1,0 +1,2 @@
+NativeWatchdog: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-watchdog/libNativeWatchdog.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-watchdog/libNativeWatchdog.a
