@@ -1,0 +1,2 @@
+NativeAdreno418: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-adreno418/libNativeAdreno418.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-adreno418/libNativeAdreno418.a
