@@ -1,0 +1,58 @@
+ninja: Entering directory `build'
+[1/1134] Generating src/freedreno/registers/adreno/a2xx.py with a custom command (wrapped by meson to capture output)
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+
+[2/1134] Generating src/freedreno/registers/adreno/a4xx.py with a custom command (wrapped by meson to capture output)
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+
+[3/1134] Generating src/freedreno/registers/adreno/a3xx.py with a custom command (wrapped by meson to capture output)
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+
+[4/1134] Generating src/freedreno/registers/adreno/a5xx.py with a custom command (wrapped by meson to capture output)
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+
+[5/1134] Generating src/util/driconf_static.h with a custom command
+[6/1134] Generating src/freedreno/registers/adreno/a6xx.py with a custom command (wrapped by meson to capture output)
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+lxml not found, skipping validation
+
+[7/1134] Generating src/git_sha1.h with a custom command
+[8/1134] Generating src/util/format/u_format_gen.h with a custom command (wrapped by meson to capture output)
+[9/1134] Generating src/util/format/u_format_pack.h with a custom command (wrapped by meson to capture output)
+[10/1134] Generating src/util/format/u_format_table.c with a custom command (wrapped by meson to capture output)
+[11/1134] Generating src/mapi/glapi/gen/enums.c with a custom command (wrapped by meson to capture output)
+/Users/runner/work/_temp/mesa/build/../mesa-25.0.7/src/mapi/glapi/gen/gl_enums.py:68: SyntaxWarning: "\c" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\c"? A raw string is also an option.
+  * Compare a key enum value to an element in the \c enum_string_table_offsets array.
+
+[12/1134] Generating src/mapi/glapi/gen/api_exec_init.c with a custom command (wrapped by meson to capture output)
+/Users/runner/work/_temp/mesa/build/../mesa-25.0.7/src/mapi/glapi/gen/api_exec_init.py:61: SyntaxWarning: "\p" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\p"? A raw string is also an option.
+  * \param ctx  GL context
+
+[13/1134] Generating src/mapi/glapi/gen/glapi_mapi_tmp.h with a custom command (wrapped by meson to capture output)
+/Users/runner/work/_temp/mesa/build/../mesa-25.0.7/src/mapi/mapi_abi.py:47: SyntaxWarning: "\w" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\w"? A raw string is also an option.
+  '^(?P<type>[\w\s*]+?)(?P<name>\w+)(\[(?P<array>\d+)\])?$')
+
+[14/1134] Generating src/mapi/glapi/gen/api_exec_decl.h with a custom command (wrapped by meson to capture output)
+[15/1134] Generating src/mapi/glapi/gen/api_save_init.h with a custom command (wrapped by meson to capture output)
+[16/1134] Generating src/mapi/glapi/gen/api_save.h with a custom command (wrapped by meson to capture output)
+[17/1134] Generating src/mapi/glapi/gen/api_beginend_init.h with a custom command (wrapped by meson to capture output)
+[18/1134] Generating src/mapi/glapi/gen/api_hw_select_init.h with a custom command (wrapped by meson to capture output)
+[19/1134] Generating src/mapi/glapi/gen/unmarshal_table.c with a custom command (wrapped by meson to capture output)
+[20/1134] Generating src/mapi/glapi/gen/marshal_generated1.c with a custom command (wrapped by meson to capture output)
+[21/1134] Generating src/mapi/glapi/gen/marshal_generated0.c with a custom command (wrapped by meson to capture output)
+[22/1134] Generating src/mapi/glapi/gen/marshal_generated2.c with a custom command (wrapped by meson to capture output)
+[23/1134] Generating src/mapi/glapi/gen/marshal_generated3.c with a custom command (wrapped by meson to capture output)
