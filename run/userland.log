@@ -1,0 +1,36 @@
+ld: warning: static initializer '_loaded' found in '/private/var/folders/20/jp1_0n3n7kndh6rnbqb5344m0000gn/T/inject-13827c.o'. Use -no_inits to make this an error.  Use -no_warn_inits to suppress warning
+mesa-25.0.7/src/freedreno/drm/freedreno_pipe.c: fd_pipe_wait_timeout asks the kernel even when its own fence has passed
+[32m==>[0m [1mDownloading bottle manifests[0m
+✔︎ Bottle Manifest bison (3.8.2)
+[34m==>[0m [1mWould install 1 formula:[0m
+bison
+[32m==>[0m [1mFetching downloads for: [32mbison[39m[0m
+✔︎ Bottle bison (3.8.2)
+[34m==>[0m [1mPouring bison--3.8.2.sonoma.bottle.tar.gz[0m
+🍺  /usr/local/Cellar/bison/3.8.2: 99 files, 3.9MB
+
+[notice] A new release of pip is available: 26.2.1 -> 26.3
+[notice] To update, run: /Users/runner/work/_temp/mesa/venv/bin/python3.14 -m pip install --upgrade pip
+-rwxr-xr-x  1 runner  staff  14828344 Nov 14 12:41 /Users/runner/work/_temp/userland/libOSMesa.8.dylib
+mkeagl.py: 409 entries: 356 passed on, 30 by hand, 23 without a function in the library
+eagl:     1296 gl functions exported by libOSMesa
+Identifier=gputest-55554944e245376fc2be392399f85377e97a00cc
+Hash type=sha256 size=32
+CDHash=7c8ab89e3a7e41c104ceeb4bd0f674dd1b1d496d
+Identifier=libsuzuran.inject
+Hash type=sha256 size=32
+CDHash=6b541be41b4af8ad998479920591810e23b02c34
+Identifier=libOSMesa.8
+Hash type=sha256 size=32
+CDHash=85f0d0f1b1049b16c9810dbeaed6362f7084e827
+Identifier=gltri-555549447b59e40a4c6e3b2d81cefa90addaf033
+Hash type=sha256 size=32
+CDHash=900db86bd4cf70f8252c5e1a5da663f33e1de172
+Identifier=libsuzuran.gl
+Hash type=sha256 size=32
+CDHash=6258d4a1dfaff18441e5b339783c771741098d39
+7a97520331b97cdf95f4c7fbe0a6a6ef9a5a3bc17b8dad4f5b4954ac2d7b1e66  gputest
+9eba521e68e3967db6a5438385649e1a013126bdb4f7fe04a97b68eec7783fa7  libsuzuran.inject.dylib
+98638a6eb81ddf5064c140c2653f27fe7bdd5ebe1f0f528fdb52b7a79c7b96ce  libOSMesa.8.dylib
+c39a8f1412fe10b56ea820adf32d7fbe3065be7a46d07032a00a80cfb293cfee  gltri
+e4506c5b225e4f77a058c4130a66913b8e8d3cbc349dde29f193e5c78c7a1965  libsuzuran.gl.dylib
