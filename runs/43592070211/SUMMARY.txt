@@ -1,0 +1,8 @@
+run 43592070211 attempt 1 sha b767b25725848274a479fb89dd8ba34e232e0b67 status success
+Sat Nov 14 12:06:39 UTC 2026
+6066: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6072: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7512: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+77143:1049 |         os_log_error:/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/.cache/xnu-work/osfmk/kern/startup.h(necp_data_trace_log_ha5261:23: warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+154554: 1386 |                 NETEM_LOG(LOG_ERR, "| error: invalid scheduler model %d",
+33d857b119ac313b637534dd7a5bb45eb72a33befaacaaa60db13371ad2ebd3b  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho
