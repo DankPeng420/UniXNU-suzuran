@@ -1,0 +1,1279 @@
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/NativeHID.cpp:586:62: warning: implicit conversion changes signedness: 'UInt32' (aka 'unsigned int') to 'SInt32' (aka 'int') [-Wsign-conversion]
+  586 |                 child->setIntegerValue(kIOHIDEventFieldDigitizerEventMask, mask);
+      |                        ~~~~~~~~~~~~~~~                                     ^~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/NativeHID.cpp:601:66: warning: implicit conversion changes signedness: 'UInt32' (aka 'unsigned int') to 'SInt32' (aka 'int') [-Wsign-conversion]
+  601 |         collection->setIntegerValue(kIOHIDEventFieldDigitizerEventMask, cmask);
+      |                     ~~~~~~~~~~~~~~~                                     ^~~~~
+2 warnings generated.
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:159:17: warning: implicit conversion changes signedness: 'int' to 'IOOptionBits' (aka 'unsigned int') [-Wsign-conversion]
+  159 |     _options &= ~kIOHIDEventOptionContinuousTime;
+      |              ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:186:21: warning: implicit conversion changes signedness: 'int' to 'IOOptionBits' (aka 'unsigned int') [-Wsign-conversion]
+  186 |         _options &= ~kIOHIDEventOptionContinuousTime;
+      |                  ~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:227:27: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  227 |     keyboard->usagePage = usagePage;
+      |                         ~ ^~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:228:23: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  228 |     keyboard->usage = usage;
+      |                     ~ ^~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:571:28: warning: implicit conversion loses integer precision: 'IOHIDProximityDetectionMask' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  571 |     event->detectionMask        = mask;
+      |                                 ~ ^~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:595:31: warning: implicit conversion loses integer precision: 'IOHIDProximityDetectionMask' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  595 |     event->detectionMask    = mask;
+      |                             ~ ^~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:723:67: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'UInt8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  723 |         subEvent = buttonEvent(timeStamp, data->button.mask, index+1, (bool)(buttonState&0x1));
+      |                    ~~~~~~~~~~~                               ~~~~~^~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:782:67: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'UInt8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  782 |         subEvent = buttonEvent(timeStamp, data->button.mask, index+1, (bool)(buttonState&0x1));
+      |                    ~~~~~~~~~~~                               ~~~~~^~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:858:67: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'UInt8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  858 |         subEvent = buttonEvent(timeStamp, data->button.mask, index+1, (bool)(buttonState&0x1));
+      |                    ~~~~~~~~~~~                               ~~~~~^~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:962:129: warning: implicit conversion changes signedness: 'IOOptionBits' (aka 'unsigned int') to 'IOFixed' (aka 'int') [-Wsign-conversion]
+  962 |     me = IOHIDEvent::digitizerEvent(timeStamp, transducerID, type, inRange, buttonState, x, y, tipPressure, auxPressure, twist, options);
+      |          ~~~~~~~~~~                                                                                                             ^~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:999:129: warning: implicit conversion changes signedness: 'IOOptionBits' (aka 'unsigned int') to 'IOFixed' (aka 'int') [-Wsign-conversion]
+  999 |     me = IOHIDEvent::digitizerEvent(timeStamp, transducerID, type, inRange, buttonState, x, y, tipPressure, auxPressure, twist, options);
+      |          ~~~~~~~~~~                                                                                                             ^~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1112:129: warning: implicit conversion changes signedness: 'IOOptionBits' (aka 'unsigned int') to 'IOFixed' (aka 'int') [-Wsign-conversion]
+ 1112 |     me = IOHIDEvent::digitizerEvent(timeStamp, transducerID, type, inRange, buttonState, x, y, tipPressure, auxPressure, twist, options);
+      |          ~~~~~~~~~~                                                                                                             ^~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1181:27: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 1181 |     event->usagePage    = usagePage;
+      |                         ~ ^~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1182:27: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 1182 |     event->usage        = usage;
+      |                         ~ ^~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1226:24: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 1226 |     event->usagePage = usagePage;
+      |                      ~ ^~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1227:20: warning: implicit conversion loses integer precision: 'UInt32' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 1227 |     event->usage = usage;
+      |                  ~ ^~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8242:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8242 |     _IOHIDVendorDefinedGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:151:36: note: expanded from macro '_IOHIDVendorDefinedGetFieldsAsFixedMacro'
+  151 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDVendorDefinedEventData*)event)->version); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8242:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8242 |     _IOHIDVendorDefinedGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:154:36: note: expanded from macro '_IOHIDVendorDefinedGetFieldsAsFixedMacro'
+  154 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDVendorDefinedEventData*)event)->length); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8244:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8244 |     _IOHIDSymbolicHotKeyGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:383:36: note: expanded from macro '_IOHIDSymbolicHotKeyGetFieldsAsFixedMacro'
+  383 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDSymbolicHotKeyEventData*)event)->hotKey); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8246:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8246 |     _IOHIDAccelerometerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:631:36: note: expanded from macro '_IOHIDAccelerometerGetFieldsAsFixedMacro'
+  631 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAccelerometerEventData*)event)->motionType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8246:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8246 |     _IOHIDAccelerometerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:634:36: note: expanded from macro '_IOHIDAccelerometerGetFieldsAsFixedMacro'
+  634 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAccelerometerEventData*)event)->motionSubType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8246:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8246 |     _IOHIDAccelerometerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:637:36: note: expanded from macro '_IOHIDAccelerometerGetFieldsAsFixedMacro'
+  637 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAccelerometerEventData*)event)->motionSequence); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8248:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8248 |     _IOHIDProgressGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:798:36: note: expanded from macro '_IOHIDProgressGetFieldsAsFixedMacro'
+  798 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDProgressEventData*)event)->eventType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'IOHIDGenericGestureType' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8249:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8249 |     _IOHIDGenericGestureGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:979:36: note: expanded from macro '_IOHIDGenericGestureGetFieldsAsFixedMacro'
+  979 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((__IOHIDGenericGestureEventData*)event)->gestureType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8249:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8249 |     _IOHIDGenericGestureGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:987:48: note: expanded from macro '_IOHIDGenericGestureGetFieldsAsFixedMacro'
+  987 |                         value = (typeof(value))CAST_INTEGER_TO_FIXED(((__IOHIDGenericGestureEventData*)event)->type.tap.count); \
+      |                               ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8251:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8251 |     _IOHIDAmbientLightSensorGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1437:36: note: expanded from macro '_IOHIDAmbientLightSensorGetFieldsAsFixedMacro'
+ 1437 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAmbientLightSensorEventData*)event)->level); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8251:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8251 |     _IOHIDAmbientLightSensorGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1440:36: note: expanded from macro '_IOHIDAmbientLightSensorGetFieldsAsFixedMacro'
+ 1440 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAmbientLightSensorEventData*)event)->ch0); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8251:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8251 |     _IOHIDAmbientLightSensorGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1443:36: note: expanded from macro '_IOHIDAmbientLightSensorGetFieldsAsFixedMacro'
+ 1443 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAmbientLightSensorEventData*)event)->ch1); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8251:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8251 |     _IOHIDAmbientLightSensorGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1446:36: note: expanded from macro '_IOHIDAmbientLightSensorGetFieldsAsFixedMacro'
+ 1446 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAmbientLightSensorEventData*)event)->ch2); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8251:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8251 |     _IOHIDAmbientLightSensorGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1449:36: note: expanded from macro '_IOHIDAmbientLightSensorGetFieldsAsFixedMacro'
+ 1449 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAmbientLightSensorEventData*)event)->ch3); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8252:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8252 |     _IOHIDPowerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1585:36: note: expanded from macro '_IOHIDPowerGetFieldsAsFixedMacro'
+ 1585 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDPowerEventData*)event)->powerType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8252:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8252 |     _IOHIDPowerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1588:36: note: expanded from macro '_IOHIDPowerGetFieldsAsFixedMacro'
+ 1588 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDPowerEventData*)event)->powerSubType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8253:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8253 |     _IOHIDForceGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1715:36: note: expanded from macro '_IOHIDForceGetFieldsAsFixedMacro'
+ 1715 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDForceEventData*)event)->behavior); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8253:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8253 |     _IOHIDForceGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1721:36: note: expanded from macro '_IOHIDForceGetFieldsAsFixedMacro'
+ 1721 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDForceEventData*)event)->stage); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8254:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8254 |     _IOHIDMotionGestureGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:1821:36: note: expanded from macro '_IOHIDMotionGestureGetFieldsAsFixedMacro'
+ 1821 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDMotionGestureEventData*)event)->gestureType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8256:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8256 |     _IOHIDGameControllerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:2300:36: note: expanded from macro '_IOHIDGameControllerGetFieldsAsFixedMacro'
+ 2300 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDGameControllerEventData*)event)->controllerType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3218:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3218 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->transducerIndex); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3221:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3221 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->transducerType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3224:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3224 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->identity); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3227:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3227 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->eventMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3230:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3230 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->childEventMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3233:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3233 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->buttonMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3245:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3245 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->orientationType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3248:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3248 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->generationCount); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3251:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3251 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->willUpdateMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8258:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8258 |     _IOHIDDigitizerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3254:36: note: expanded from macro '_IOHIDDigitizerGetFieldsAsFixedMacro'
+ 3254 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDigitizerEventData*)event)->didUpdateMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8259:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8259 |     _IOHIDCompassGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3491:36: note: expanded from macro '_IOHIDCompassGetFieldsAsFixedMacro'
+ 3491 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDCompassEventData*)event)->motionType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8259:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8259 |     _IOHIDCompassGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3494:36: note: expanded from macro '_IOHIDCompassGetFieldsAsFixedMacro'
+ 3494 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDCompassEventData*)event)->motionSubType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8259:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8259 |     _IOHIDCompassGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3497:36: note: expanded from macro '_IOHIDCompassGetFieldsAsFixedMacro'
+ 3497 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDCompassEventData*)event)->motionSequence); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8261:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8261 |     _IOHIDMotionActivityGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3712:36: note: expanded from macro '_IOHIDMotionActivityGetFieldsAsFixedMacro'
+ 3712 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDMotionActivityEventData*)event)->activityType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8262:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8262 |     _IOHIDMultiAxisPointerGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:3896:36: note: expanded from macro '_IOHIDMultiAxisPointerGetFieldsAsFixedMacro'
+ 3896 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDMultiAxisPointerEventData*)event)->button.mask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint64_t' (aka 'unsigned long long') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8263:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8263 |     _IOHIDBrightnessGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4023:36: note: expanded from macro '_IOHIDBrightnessGetFieldsAsFixedMacro'
+ 4023 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDBrightnessEventData*)event)->transitionTime); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8264:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8264 |     _IOHIDGyroGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4189:36: note: expanded from macro '_IOHIDGyroGetFieldsAsFixedMacro'
+ 4189 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDGyroEventData*)event)->motionType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8264:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8264 |     _IOHIDGyroGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4192:36: note: expanded from macro '_IOHIDGyroGetFieldsAsFixedMacro'
+ 4192 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDGyroEventData*)event)->motionSubType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8264:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8264 |     _IOHIDGyroGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4195:36: note: expanded from macro '_IOHIDGyroGetFieldsAsFixedMacro'
+ 4195 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDGyroEventData*)event)->motionSequence); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8265:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8265 |     _IOHIDButtonGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4337:36: note: expanded from macro '_IOHIDButtonGetFieldsAsFixedMacro'
+ 4337 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDButtonEventData*)event)->mask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8265:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8265 |     _IOHIDButtonGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4349:36: note: expanded from macro '_IOHIDButtonGetFieldsAsFixedMacro'
+ 4349 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDButtonEventData*)event)->state); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'IOHIDSwipeMask' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8266:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8266 |     _IOHIDNavigationSwipeGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4530:36: note: expanded from macro '_IOHIDNavigationSwipeGetFieldsAsFixedMacro'
+ 4530 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDNavigationSwipeEventData*)event)->swipeMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8267:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8267 |     _IOHIDAtmosphericPressureGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4639:36: note: expanded from macro '_IOHIDAtmosphericPressureGetFieldsAsFixedMacro'
+ 4639 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDAtmosphericPressureEventData*)event)->sequence); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8268:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8268 |     _IOHIDHumidityGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:4739:36: note: expanded from macro '_IOHIDHumidityGetFieldsAsFixedMacro'
+ 4739 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDHumidityEventData*)event)->sequence); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8271:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8271 |     _IOHIDBiometricGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:5135:36: note: expanded from macro '_IOHIDBiometricGetFieldsAsFixedMacro'
+ 5135 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDBiometricEventData*)event)->eventType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'IOHIDSwipeMask' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8272:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8272 |     _IOHIDBoundaryScrollGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:5310:36: note: expanded from macro '_IOHIDBoundaryScrollGetFieldsAsFixedMacro'
+ 5310 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDBoundaryScrollEventData*)event)->swipeMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8273:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8273 |     _IOHIDLEDGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:5431:36: note: expanded from macro '_IOHIDLEDGetFieldsAsFixedMacro'
+ 5431 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDLEDEventData*)event)->mask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8273:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8273 |     _IOHIDLEDGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:5437:36: note: expanded from macro '_IOHIDLEDGetFieldsAsFixedMacro'
+ 5437 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDLEDEventData*)event)->state); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8274:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8274 |     _IOHIDOrientationGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:5855:36: note: expanded from macro '_IOHIDOrientationGetFieldsAsFixedMacro'
+ 5855 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((__IOHIDOrientationEventData*)event)->orientationType); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8274:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8274 |     _IOHIDOrientationGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:5887:48: note: expanded from macro '_IOHIDOrientationGetFieldsAsFixedMacro'
+ 5887 |                         value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDOrientationEventData*)event)->orientation.deviceOrientation.usage); \
+      |                               ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8275:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8275 |     _IOHIDProximityGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:6137:48: note: expanded from macro '_IOHIDProximityGetFieldsAsFixedMacro'
+ 6137 |                         value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDProximityEventData*)event)->proximity.probability); \
+      |                               ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8275:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8275 |     _IOHIDProximityGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:6146:48: note: expanded from macro '_IOHIDProximityGetFieldsAsFixedMacro'
+ 6146 |                         value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDProximityEventData*)event)->proximity.level); \
+      |                               ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'IOHIDSwipeMask' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8276:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8276 |     _IOHIDFluidTouchGestureGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:6313:36: note: expanded from macro '_IOHIDFluidTouchGestureGetFieldsAsFixedMacro'
+ 6313 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDFluidTouchGestureEventData*)event)->swipeMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'IOHIDSwipeMask' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8277:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8277 |     _IOHIDDockSwipeGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:6503:36: note: expanded from macro '_IOHIDDockSwipeGetFieldsAsFixedMacro'
+ 6503 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDDockSwipeEventData*)event)->swipeMask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8278:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8278 |     _IOHIDUnicodeGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:6630:36: note: expanded from macro '_IOHIDUnicodeGetFieldsAsFixedMacro'
+ 6630 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDUnicodeEventData*)event)->encoding); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8278:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8278 |     _IOHIDUnicodeGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:6636:36: note: expanded from macro '_IOHIDUnicodeGetFieldsAsFixedMacro'
+ 6636 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDUnicodeEventData*)event)->length); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8279:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8279 |     _IOHIDKeyboardGetFieldsAsFixedMacro(event, field) \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:6888:36: note: expanded from macro '_IOHIDKeyboardGetFieldsAsFixedMacro'
+ 6888 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDKeyboardEventData*)event)->down); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1492:5: warning: operand of ? changes signedness: 'IOFixed' (aka 'int') to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1492 |     GET_EVENT_VALUE(this, key, value, options, Fixed);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:210:13: note: expanded from macro 'GET_EVENT_VALUE'
+  210 |             IOHIDEventGet ## typeToken ## FieldsMacro(e,key);                           \
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<scratch space>:107:1: note: expanded from here
+  107 | IOHIDEventGetFixedFieldsMacro
+      | ^
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:8280:5: note: expanded from macro 'IOHIDEventGetFixedFieldsMacro'
+ 8280 |     _IOHIDPointerGetFieldsAsFixedMacro(event, field) 
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventMacroDefs.h:7045:36: note: expanded from macro '_IOHIDPointerGetFieldsAsFixedMacro'
+ 7045 |             value = (typeof(value))CAST_INTEGER_TO_FIXED(((IOHIDPointerEventData*)event)->button.mask); \
+      |                   ~                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:161:103: note: expanded from macro 'CAST_INTEGER_TO_FIXED'
+  161 | #define CAST_INTEGER_TO_FIXED(value)        (((IOFixed)(value) != kIOFixedNaN) ? ((value) * 65536) : (kIOFixedNaN))
+      |                                                                                                       ^~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEventData.h:155:34: note: expanded from macro 'kIOFixedNaN'
+  155 | #define kIOFixedNaN             ((IOFixed)0x80000000)
+      |                                  ^~~~~~~~~~~~~~~~~~~
+/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/drivers/NativeHID/IOHIDEvent.cpp:1792:60: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1792 |     _data->options |= ((phase & kIOHIDEventEventPhaseMask) << kIOHIDEventEventOptionPhaseShift);
+      |                    ~~  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+75 warnings generated.
+NativeHID: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-hid/libNativeHID.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-hid/libNativeHID.a

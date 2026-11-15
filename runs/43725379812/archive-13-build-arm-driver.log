@@ -1,0 +1,2 @@
+NativeTouch: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-touch/libNativeTouch.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-touch/libNativeTouch.a

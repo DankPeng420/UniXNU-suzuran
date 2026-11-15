@@ -1,0 +1,2 @@
+NativeLegacyDisplay: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-legacy-display/libNativeLegacyDisplay.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-legacy-display/libNativeLegacyDisplay.a
