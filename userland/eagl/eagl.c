@@ -4226,7 +4226,17 @@ my_texImageIOSurface(id self, SEL selector, IOSurfaceRef surface, unsigned long 
 	image->height = height;
 	note_format(invert ? "IOSurface shown, inverted" : "IOSurface shown", image->internal, image->format, image->type, width,
 	    height);
-	if (shown++ < 24) {
+	/* each kind of picture once (format and size), up to 96: which pictures are drawn at all (icons: boot 65) */
+	static uint64_t kinds[96];
+	uint64_t kind = (uint64_t)IOSurfaceGetPixelFormat(surface) << 32 | (uint64_t)(IOSurfaceGetWidth(surface) & 0xffff) << 16 |
+	    (IOSurfaceGetHeight(surface) & 0xffff);
+	bool fresh = true;
+
+	for (unsigned k = 0; k < shown && k < 96; k++) {
+		fresh = fresh && kinds[k] != kind;
+	}
+	if (fresh && shown < 96) {
+		kinds[shown++] = kind;
 		say("hakios-gl: -texImageIOSurface: surface %u ('%.4s' %zu x %zu, %zu planes) as texture %d: %d x %d, plane %u%s\n",
 		    IOSurfaceGetID(surface), (const char *)&(uint32_t){ __builtin_bswap32(IOSurfaceGetPixelFormat(surface)) },
 		    IOSurfaceGetWidth(surface), IOSurfaceGetHeight(surface), IOSurfaceGetPlaneCount(surface), texture, width,

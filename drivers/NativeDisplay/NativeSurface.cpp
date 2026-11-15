@@ -998,9 +998,22 @@ IOSurfaceRootUserClient::wrapClientImage(IOExternalMethodArguments *args)
 		s->release();
 		return kIOReturnNoResources;
 	}
-	if (said++ < 8 || said % 500 == 0) {
-		IOLog("NativeSurface: wrapped a picture of the client's: id %u %ux%u fmt 0x%x bpe %u bpr %u size %u\n", s->id,
-		    r.width, r.height, r.format, r.bytesPerElement, r.bytesPerRow, r.size);
+	/* each kind (format and size) once, up to 96, and a count every 500 */
+	static uint64_t kinds[96];
+	static unsigned nkinds;
+	uint64_t kind = (uint64_t)r.format << 32 | (uint64_t)(r.width & 0xffff) << 16 | (r.height & 0xffff);
+	bool fresh = true;
+	for (unsigned k = 0; k < nkinds; k++) {
+		fresh = fresh && kinds[k] != kind;
+	}
+	if (fresh && nkinds < 96) {
+		kinds[nkinds++] = kind;
+	} else {
+		fresh = false;
+	}
+	if (fresh || ++said % 500 == 0) {
+		IOLog("NativeSurface: wrapped a picture of the client's: id %u %ux%u fmt 0x%x bpe %u bpr %u size %u (%u so far)\n",
+		    s->id, r.width, r.height, r.format, r.bytesPerElement, r.bytesPerRow, r.size, said);
 	}
 	IOReturn ret = returnSurface(s, args);   /* takes the creator's user count */
 	s->release();
