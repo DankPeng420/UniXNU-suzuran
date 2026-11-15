@@ -1,0 +1,2 @@
+NativeBattery: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-battery/libNativeBattery.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-battery/libNativeBattery.a
