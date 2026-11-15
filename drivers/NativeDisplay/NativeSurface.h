@@ -79,6 +79,7 @@ public:
 
 /* Retained surface for an id, or NULL. */
 NativeSurface *native_surface_copy(uint32_t id);
+NativeSurface *native_surface_create_gpu_panel(uint32_t width, uint32_t height, uint32_t bytesPerRow, uint32_t pixelFormat);
 extern bool native_surface_gpu_presents;     /* the GPU draws the frames onto the panel itself (NativeSurface.cpp) */
 
 /*

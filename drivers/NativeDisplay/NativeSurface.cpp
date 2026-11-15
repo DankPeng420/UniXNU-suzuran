@@ -320,6 +320,41 @@ native_surface_create_physical(uint64_t phys, uint32_t width, uint32_t height,
 	return s;
 }
 
+/* A second panel buffer, in the GPU's pool (NativeDisplay's page flip): published, its memory the GPU's. */
+NativeSurface *
+native_surface_create_gpu_panel(uint32_t width, uint32_t height, uint32_t bytesPerRow, uint32_t pixelFormat)
+{
+	NativeSurface *s = native_surface_alloc();
+	if (s == NULL) {
+		return NULL;
+	}
+	s->width = width;
+	s->height = height;
+	s->bytesPerRow = bytesPerRow;
+	s->bytesPerElement = 4;
+	s->elementWidth = s->elementHeight = 1;
+	s->pixelFormat = pixelFormat;
+	s->allocSize = (uint32_t)round_page(bytesPerRow * height);
+	uint8_t *kva = NULL;
+	uint32_t phys = 0, place = 0;
+	s->memory = native_gpu_memory(s->allocSize, &kva, &phys, &place);
+	if (s->memory == NULL) {
+		s->release();
+		return NULL;
+	}
+	s->mapCache = kIOMapWriteCombineCache;
+	s->gpuPhys = phys;
+	s->gpuPlace = place;
+	s->gpuKva = kva;
+	s->gpuPool = true;
+	s->gpuPanel = true;
+	if (!native_surface_publish(s)) {
+		s->release();
+		return NULL;
+	}
+	return s;
+}
+
 mach_port_name_t
 native_surface_port_in_task(NativeSurface *s, task_t task)
 {

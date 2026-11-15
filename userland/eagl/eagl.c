@@ -80,6 +80,7 @@
 #include "hakios.gl.h"
 
 void suzuran_log(const char *line);     /* suzuran: suzuran_log.c */
+int suzuran_panel(unsigned selector, uint32_t *id);     /* suzuran: suzuran_log.c (page flip) */
 
 /* ---- OpenGL ES: the types, the few names used here, the library's functions --------------------- */
 
@@ -262,6 +263,9 @@ struct eagl {
 	GLuint writer;                  /* ... and one to copy a frame into its surface with (blit_targets) */
 	GLuint panel_texture;           /* the panel's own memory, IOSurface 1 (present_to_panel) */
 	GLuint panel_writer;
+	uint32_t panel_ids[2];          /* the panel's buffers (the kernel flips between them): their IOSurfaces ... */
+	GLuint panel_textures[2];       /* ... and textures */
+	uint32_t panel_drawn;           /* the one this frame went onto, to be told of once the GPU is done */
 	int panel_state;                /* 0 not tried, 1 made, -1 not to be had */
 	uint32_t screens[2];            /* the IOSurfaces the screen's frames are drawn into: the first two such */
 	size_t panel_width, panel_height;
@@ -857,34 +861,64 @@ present_to_panel(struct eagl *e, struct image *image)
 	if (id != e->screens[0] && id != e->screens[1]) {
 		return;
 	}
-	if (e->panel_state == 0) {
-		IOSurfaceRef panel = IOSurfaceLookup(1);
+	/*
+	 * Which of the panel's buffers to draw onto: the kernel flips between two (NativeDisplay's page flip) and
+	 * names the one not shown; with no flip it is IOSurface 1, the one the panel shows (and a frame is seen
+	 * half drawn: boots 60-64).
+	 */
+	uint32_t back = 1;
+
+	if (suzuran_panel(0x7c, &back) != 0 || back == 0) {
+		back = 1;
+	}
+	unsigned slot = 2;
+
+	for (unsigned k = 0; k < 2; k++) {
+		slot = slot == 2 && e->panel_ids[k] == back ? k : slot;
+	}
+	if (slot == 2) {
+		for (unsigned k = 0; k < 2 && slot == 2; k++) {
+			slot = e->panel_ids[k] == 0 ? k : slot;
+		}
+		if (slot == 2) {
+			e->panel_state = -1;
+			say("hakios-gl: a third panel buffer (IOSurface %u): the display copies the frames", back);
+			return;
+		}
+		IOSurfaceRef panel = IOSurfaceLookup(back);
 		GLint bound = 0;
 		bool made;
 
-		e->panel_state = -1;
 		if (panel == NULL) {
-			say("the panel (IOSurface 1) is not to be had: the display copies the frames");
+			e->panel_state = -1;
+			say("hakios-gl: the panel's buffer (IOSurface %u) is not to be had: the display copies the frames", back);
 			return;
 		}
 		e->panel_width = IOSurfaceGetWidth(panel);
 		e->panel_height = IOSurfaceGetHeight(panel);
 		CFRelease(panel);
 		glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
-		glGenTextures(1, &e->panel_texture);
-		glBindTexture(GL_TEXTURE_2D, e->panel_texture);
-		made = hakios_gl_surface_texture(e->gl, 1);
+		glGenTextures(1, &e->panel_textures[slot]);
+		glBindTexture(GL_TEXTURE_2D, e->panel_textures[slot]);
+		made = hakios_gl_surface_texture(e->gl, back);
 		glBindTexture(GL_TEXTURE_2D, (GLuint)bound);
 		if (!made || e->panel_width == 0 || e->panel_height == 0) {
-			glDeleteTextures(1, &e->panel_texture);
-			e->panel_texture = 0;
-			say("the panel (IOSurface 1) is not a texture here: the display copies the frames");
+			glDeleteTextures(1, &e->panel_textures[slot]);
+			e->panel_textures[slot] = 0;
+			e->panel_state = -1;
+			say("hakios-gl: the panel's buffer (IOSurface %u) is not a texture here: the display copies the frames", back);
 			return;
 		}
-		glGenFramebuffers(1, &e->panel_writer);
+		e->panel_ids[slot] = back;
+		if (e->panel_writer == 0) {
+			glGenFramebuffers(1, &e->panel_writer);
+		}
 		e->panel_state = 1;
-		say("the frames go onto the panel (IOSurface 1, %zu x %zu) by the GPU", e->panel_width, e->panel_height);
+		say("hakios-gl: the frames go onto the panel's buffer IOSurface %u (%zu x %zu) by the GPU", back, e->panel_width,
+		    e->panel_height);
 	}
+	e->panel_texture = e->panel_textures[slot];
+	e->panel_drawn = back;
 	size_t lw = (size_t)image->width, lh = (size_t)image->height, pw = e->panel_width, ph = e->panel_height;
 	size_t fw, fh;
 
@@ -1354,6 +1388,14 @@ frame_end(struct eagl *e, bool finished)
 			(void)glClientWaitSync(sync, GL_SYNC_FLUSH_COMMANDS_BIT, 0);
 			glDeleteSync(sync);
 		}
+	}
+	if (e->panel_drawn != 0) {
+		/* the panel's buffer is shown once the kernel is told it is drawn: only when it is */
+		if (finished || in_place == 0 || !wait_for_frames) {
+			glFinish();
+		}
+		(void)suzuran_panel(0x7b, &e->panel_drawn);
+		e->panel_drawn = 0;
 	}
 	waited = now_us();
 	for (unsigned i = 0; i < e->image_count; i++) {

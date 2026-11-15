@@ -14,6 +14,8 @@ enum : uint32_t {
     kSubmitQueueNew = kCommandBase + 0x0a, kSubmitQueueClose = kCommandBase + 0x0b,
     kSubmitQueueQuery = kCommandBase + 0x0c,
     kGemClose = 0x09,          // DRM_IOCTL_GEM_CLOSE
+    kPanelReady = 0x7b,        // ours: the panel buffer named (Surface.surface) holds a finished frame
+    kPanelBack = 0x7c,         // ours: which panel buffer to draw the next frame onto (Surface.surface)
     kSurface = 0x7e,           // ours (HakiOS's HAKIOS_GPU_SURFACE): an IOSurface as a buffer
     kLog = 0x7f,               // ours: a line for the kernel log (the test tools have no terminal)
 };

@@ -150,6 +150,22 @@ public:
 	bool          fOffRequested;  /* backboardd asked for off while lumiafb_stayon kept the panel on */
 	uint32_t      fFadeStep;      /* fade-out steps done while off */
 
+	/* page flip (see probeFlip): the MDSS source pipe the bootloader left scanning the panel out */
+	IOMemoryMap  *fMdssMap;
+	volatile uint8_t *fMdss;
+	uint32_t      fPipeOff, fCtlOff, fFlushBits;
+	bool          fFlip;          /* the pipe was found: the GPU's frames are flipped to, not copied */
+	NativeSurface *fPanel[2];     /* [0] the bootloader's panel memory (fSurface), [1] a second, in the GPU's pool */
+	int           fFront;         /* which one the pipe shows */
+	volatile bool fBackReady;     /* the other holds a finished frame (eagl, through NativeAdreno430) */
+	uint64_t      fFlips;
+	IOLock       *fFlipLock;
+
+	void probeFlip();
+	void flipTo(int which);
+	uint32_t panelBack();
+	void panelReady(uint32_t id);
+
 	bool start(IOService *provider) APPLE_KEXT_OVERRIDE;
 	void addClient(IOMobileFramebufferUserClient *client);
 	void removeClient(IOMobileFramebufferUserClient *client);
@@ -280,6 +296,7 @@ AppleCLCD::start(IOService *provider)
 	setProperty("external", false);
 	setProperty("DisplayPipePlaneBaseAlignment", 64ULL, 32);
 	registerService();
+	probeFlip();
 	gNativeCLCD = this;
 	IOLog("NativeDisplay: AppleCLCD %ux%u stride %u at 0x%llx, default surface %u, presented as %ux%u%s\n",
 	    fWidth, fHeight, fRowBytes, fPhys, fSurface->id, fLogicalW, fLogicalH, fFit ? ", fitted" : "");
@@ -297,6 +314,168 @@ extern "C" bool
 native_display_off_requested(void)
 {
 	return gNativeCLCD != NULL && gNativeCLCD->fOffRequested;
+}
+
+/*
+ * Page flip. With the GPU drawing each frame straight onto the panel memory the pipe is scanning out
+ * (eagl's present_to_panel, boots 60-64), a frame was seen half drawn: tearing, and the passcode screen
+ * flickering until the keyboard could not be had. The bootloader left one MDSS source pipe scanning the
+ * panel memory out in video mode; it is found by its source address (SSPP_SRC0_ADDR, 0x14 into the pipe,
+ * the pipes at msm8994's offsets from 0xfd900000), a second buffer is taken from the GPU's pool, eagl draws
+ * into whichever is not shown, and at the next vsync tick the pipe is pointed at it (the address takes
+ * effect at the panel's next frame after the CTL flush). Boot-arg lumiafb_flip=0: no flips, one buffer.
+ */
+static const struct {
+	uint32_t off, flush;
+} native_mdss_pipes[] = {
+	{ 0x05000, 1u << 0 }, { 0x07000, 1u << 1 }, { 0x09000, 1u << 2 }, { 0x0b000, 1u << 18 },     /* VIG0-3 */
+	{ 0x15000, 1u << 3 }, { 0x17000, 1u << 4 }, { 0x19000, 1u << 5 }, { 0x1b000, 1u << 19 },     /* RGB0-3 */
+	{ 0x25000, 1u << 11 }, { 0x27000, 1u << 12 },                                               /* DMA0-1 */
+};
+#define NATIVE_MDSS_BASE        0xfd900000ULL
+#define NATIVE_MDSS_SIZE        0x30000
+#define NATIVE_SSPP_SRC0_ADDR   0x14
+#define NATIVE_SSPP_SRC_YSTRIDE 0x24
+#define NATIVE_CTL_LAYER0       0x00
+#define NATIVE_CTL_FLUSH        0x18
+
+static inline uint32_t
+native_mdss_read(volatile uint8_t *base, uint32_t off)
+{
+	return *(volatile uint32_t *)(base + off);
+}
+
+static inline void
+native_mdss_write(volatile uint8_t *base, uint32_t off, uint32_t value)
+{
+	*(volatile uint32_t *)(base + off) = value;
+	__asm__ volatile ("dsb sy" ::: "memory");
+}
+
+void
+AppleCLCD::probeFlip()
+{
+	uint32_t on = 1, gl = 0;
+	PE_parse_boot_argn("suzurangl", &gl, sizeof(gl));
+	PE_parse_boot_argn("lumiafb_flip", &on, sizeof(on));
+	if (gl != 1 || on == 0 || fSurface == NULL || !fSurface->gpuPanel) {
+		return;
+	}
+	IOMemoryDescriptor *md = IOMemoryDescriptor::withPhysicalAddress(NATIVE_MDSS_BASE, NATIVE_MDSS_SIZE, kIODirectionInOut);
+	fMdssMap = md != NULL ? md->map(kIOMapInhibitCache) : NULL;
+	OSSafeReleaseNULL(md);
+	if (fMdssMap == NULL) {
+		IOLog("NativeDisplay: flip: MDSS registers not mapped\n");
+		return;
+	}
+	fMdss = (volatile uint8_t *)fMdssMap->getVirtualAddress();
+	int found = -1;
+	for (unsigned i = 0; i < sizeof(native_mdss_pipes) / sizeof(native_mdss_pipes[0]); i++) {
+		uint32_t addr = native_mdss_read(fMdss, native_mdss_pipes[i].off + NATIVE_SSPP_SRC0_ADDR);
+		uint32_t stride = native_mdss_read(fMdss, native_mdss_pipes[i].off + NATIVE_SSPP_SRC_YSTRIDE) & 0xffff;
+		if (addr != 0) {
+			IOLog("NativeDisplay: flip: pipe at 0x%05x reads from 0x%08x, %u a row\n", native_mdss_pipes[i].off, addr, stride);
+		}
+		if (addr == (uint32_t)fPhys && found < 0) {
+			found = (int)i;
+		}
+	}
+	uint32_t ctl = 0;
+	for (uint32_t c = 0x2000; c <= 0x2800; c += 0x200) {
+		uint32_t layer = native_mdss_read(fMdss, c + NATIVE_CTL_LAYER0);
+		if (layer != 0 && ctl == 0) {
+			ctl = c;
+		}
+		if (layer != 0) {
+			IOLog("NativeDisplay: flip: ctl at 0x%04x mixer 0 0x%08x\n", c, layer);
+		}
+	}
+	if (found < 0 || ctl == 0) {
+		IOLog("NativeDisplay: flip: no pipe reads the panel memory (0x%llx)%s: one buffer\n", fPhys,
+		    ctl == 0 ? ", no ctl in use" : "");
+		return;
+	}
+	fPipeOff = native_mdss_pipes[found].off;
+	fFlushBits = native_mdss_pipes[found].flush;
+	fCtlOff = ctl;
+	fFlipLock = IOLockAlloc();
+	if (fFlipLock == NULL) {
+		return;
+	}
+	fPanel[0] = fSurface;
+	fFront = 0;
+	fFlip = true;
+	IOLog("NativeDisplay: flip: pipe at 0x%05x (flush 0x%x), ctl at 0x%04x: frames are flipped to\n", fPipeOff,
+	    fFlushBits, fCtlOff);
+}
+
+void
+AppleCLCD::flipTo(int which)
+{
+	NativeSurface *s = fPanel[which];
+	if (!fFlip || s == NULL || which == fFront) {
+		return;
+	}
+	native_mdss_write(fMdss, fPipeOff + NATIVE_SSPP_SRC0_ADDR, s->gpuPhys);
+	native_mdss_write(fMdss, fCtlOff + NATIVE_CTL_FLUSH, fFlushBits);
+	fFront = which;
+	if (++fFlips <= 3 || fFlips % 1000 == 0) {
+		IOLog("NativeDisplay: flip %llu: surface %u (0x%08x)\n", fFlips, s->id, s->gpuPhys);
+	}
+}
+
+uint32_t
+AppleCLCD::panelBack()
+{
+	if (!fFlip) {
+		return fSurface != NULL ? fSurface->id : 0;
+	}
+	IOLockLock(fFlipLock);
+	if (fPanel[1] == NULL) {
+		fPanel[1] = native_surface_create_gpu_panel(fWidth, fHeight, fRowBytes, NATIVE_FB_FORMAT_BGRA);
+		if (fPanel[1] == NULL) {
+			IOLog("NativeDisplay: flip: no second buffer in the GPU's pool: one buffer\n");
+			fFlip = false;
+			IOLockUnlock(fFlipLock);
+			return fSurface->id;
+		}
+		IOLog("NativeDisplay: flip: second buffer surface %u at 0x%08x\n", fPanel[1]->id, fPanel[1]->gpuPhys);
+	}
+	if (fBackReady) {
+		/* a finished frame not yet shown (two frames between vsync ticks): show it now, draw into the other */
+		fBackReady = false;
+		flipTo(1 - fFront);
+	}
+	uint32_t id = fPanel[1 - fFront]->id;
+	IOLockUnlock(fFlipLock);
+	return id;
+}
+
+void
+AppleCLCD::panelReady(uint32_t id)
+{
+	if (!fFlip) {
+		return;
+	}
+	IOLockLock(fFlipLock);
+	if (fPanel[1] != NULL && fPanel[1 - fFront]->id == id) {
+		fBackReady = true;
+	}
+	IOLockUnlock(fFlipLock);
+}
+
+extern "C" uint32_t
+native_display_panel_back(void)
+{
+	return gNativeCLCD != NULL ? gNativeCLCD->panelBack() : 0;
+}
+
+extern "C" void
+native_display_panel_ready(uint32_t id)
+{
+	if (gNativeCLCD != NULL) {
+		gNativeCLCD->panelReady(id);
+	}
 }
 
 /*
@@ -342,6 +521,14 @@ AppleCLCD::vsyncFired(OSObject *owner, IOTimerEventSource *sender)
 		0, 0,
 	};
 
+	if (fb->fFlip && fb->fBackReady) {
+		IOLockLock(fb->fFlipLock);
+		if (fb->fBackReady) {
+			fb->fBackReady = false;
+			fb->flipTo(1 - fb->fFront);
+		}
+		IOLockUnlock(fb->fFlipLock);
+	}
 	IOLockLock(fb->fLock);
 	for (unsigned int i = 0; i < fb->fClients->getCount(); i++) {
 		IOMobileFramebufferUserClient *client =
@@ -481,6 +668,12 @@ AppleCLCD::present(const uint8_t *rec)
 			/* the GPU has scaled this frame onto the panel itself (eagl): nothing to copy */
 			s->release();
 			continue;
+		}
+		if (fFlip && fFront != 0) {
+			IOLockLock(fFlipLock);
+			fBackReady = false;
+			flipTo(0);      /* a frame the CPU copies goes to the bootloader's panel memory: show that */
+			IOLockUnlock(fFlipLock);
 		}
 		uintptr_t src = s->kernelAddress();
 		uint32_t bpe = s->bytesPerElement ? s->bytesPerElement : 4;
