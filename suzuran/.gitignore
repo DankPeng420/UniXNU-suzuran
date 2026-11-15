@@ -1,0 +1,15 @@
+# built or Apple-derived: never committed
+*.img
+*.adt
+*.trustcache
+*.macho
+*.bin
+*.elf
+*.o
+*.log
+ci/
+ipsw/
+root/out/
+root/out8/
+root/dsc/
+__pycache__/

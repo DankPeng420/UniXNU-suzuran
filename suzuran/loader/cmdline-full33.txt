@@ -1,0 +1,1 @@
+-v cpus=8 sheng-smp=1 -no_corpses rd=disk0s42 unsealed_root=1 rootrw=1 sdhcirw=1 ignition_level=1 launchd_unsecure_cache=1 wdt=-1 keepsyms=1 lumiafb_stayon=1 procmon=10 procmon_tasks=0 nativesample=launchd lumiafb_hz=30 nativea53=0

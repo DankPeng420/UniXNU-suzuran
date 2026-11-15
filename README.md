@@ -5,10 +5,13 @@ on [UniXNU](https://github.com/UniXNU/UniXNU): Apple's open-source XNU kernel bu
 unmodified iPhone 8 userland, and drivers for the phone's hardware.
 
 It boots to the **home screen on all 8 cores**, with **touch, the side keys (camera key as Home) and the
-battery** working, in the iPhone 8's 750×1334 layout. Its **Adreno 430 GPU is up**: a user-space
-program draws OpenGL ES through Mesa's freedreno driver, and the pixels come out right. iOS itself does
-not use the GPU yet. It is a research port, not a usable phone OS: no radios, no audio, no camera, no
-power-off.
+battery** working, in the iPhone 8's 750×1334 layout, about 4 minutes from power-on to the lock screen.
+Its **Adreno 430 GPU is up**: Mesa's freedreno driver runs on it, and an experimental route renders iOS's
+own UI on it (not stable yet; the everyday image renders in software). It is a research port, not a usable
+phone OS: no radios, no audio, no camera, no power-off.
+
+**To boot it, see [suzuran/README.md](suzuran/README.md)**: the loader, the image build scripts, the iOS
+root scripts and step-by-step instructions for the last stable image (`full33`, tag `suzuran-full33`).
 
 This is a fork of [shrimpapplepro/UniXNU-lumia950xl](https://github.com/shrimpapplepro/UniXNU-lumia950xl)
 (the Lumia 950 XL board, the same SoC). The work for this phone is on the **`suzuran` branch**; the
@@ -31,7 +34,7 @@ Lumia's own README is kept at [docs/lumia950xl/README-lumia950xl.md](docs/lumia9
 | Touch | ✅ | `NativeTouch` (Synaptics ClearPad on BLSP1 QUP6, address 0x2c, reset active high) |
 | Buttons | ✅ power, volume, camera = Home | PM8994 PON + PMIC GPIOs (the loader adds the camera key's pull-up) |
 | Battery | ✅ level and charging | `NativeBattery` (PMI8994) |
-| GPU | 🟡 Adreno 430 runs Mesa freedreno (OpenGL ES 3.1) from user space; not yet used by iOS, slow fences | `NativeAdreno430` + `userland/mesa` |
+| GPU | 🟡 Adreno 430 runs Mesa freedreno (OpenGL ES 3.1); iOS's UI renders on it experimentally (flicker, no home-screen icons) | `NativeAdreno430` + `userland/mesa` + `userland/eagl` |
 | Power-off / reboot | ❌ ends in "Halt/Restart Timed Out" | — |
 | Wi-Fi, cellular, Bluetooth, audio, camera, sensors, RTC | ❌ | — |
 
@@ -50,7 +53,7 @@ boots a small bare-metal loader of ours that does what UEFI and DarwinBoot do on
 - the Apple device tree (from the iPhone 8's own, with this phone's devices), the trust cache, boot args,
   and an "addon" archive of files that the kernel writes into the iOS root at boot (the phone has no shell).
 
-The loader and the PC-side scripts that build the boot image are not in this repository yet.
+The loader and the PC-side scripts that build the boot image are in [suzuran/](suzuran/).
 
 ## The GPU (work in progress)
 
@@ -64,8 +67,12 @@ The loader and the PC-side scripts that build the boot image are not in this rep
 - `userland/gputest`, `userland/gltri`: tests started at boot; results go to the kernel log.
   First light (2026-11-12): `freedreno / FD430 / OpenGL ES 3.1 Mesa 25.0.7`, a red triangle on blue,
   pixel-checked.
-- Next: fence interrupts, OCMEM as the GPU's tile memory (Mesa renders with `FD_MESA_DEBUG=sysmem` for now),
-  then OpenGL ES for iOS itself (the EAGL hook HakiOS uses), so CoreAnimation and CoreImage run on the GPU.
+- Speed (2026-11-13): fences waited for in the kernel, a per-client lock: 35–39 fps in the triangle test,
+  a Mesa context in about 1.5 s.
+- OpenGL ES for iOS itself (2026-11-14/15, experimental): see [docs/suzuran-gl-route.md](docs/suzuran-gl-route.md).
+  CoreAnimation renders the lock screen, home screen and Settings on the GPU, with the screen surfaces
+  in GPU memory (no copies) and a page flip on the display pipe. Open: frames shown with layers missing,
+  home-screen icons not drawn. Not in the stable image.
 
 ## Building
 
@@ -79,8 +86,8 @@ is needed. A push to `suzuran` runs:
   cache, published on a `ci-userland-<run>` branch. A commit with `[userland]` in its message skips the
   kernel job.
 
-The repository variable `MACOS_RUNNER` picks the macOS runner (default `macos-latest`; `macos-15-intel`
-also works). Board values for this phone are selected by `NATIVE_TARGET_SUZURAN` (1 in this fork;
+The repository variable `MACOS_RUNNER` picks the macOS runner (default `macos-15-intel`; arm64 runners
+were often not acquired). Board values for this phone are selected by `NATIVE_TARGET_SUZURAN` (1 in this fork;
 `-DNATIVE_TARGET_SUZURAN=0` builds the Lumia's).
 
 ## Repository layout (additions on `suzuran`)
@@ -91,7 +98,11 @@ also works). Board values for this phone are selected by `NATIVE_TARGET_SUZURAN`
 | `drivers/NativeAddon/` | writes the files of the boot payload's addon archive into the iOS root |
 | `drivers/NativeTouch/`, `drivers/NativeCpuClock/` | Z5 Compact values under `NATIVE_TARGET_SUZURAN` |
 | `drivers/NativeGicV2/ArmCpu.patch` | spin-table release for firmware without PSCI |
-| `userland/` | gputest, gltri, Mesa build (`mesa/build-mesa.sh`), IOKit prototypes for the iPhoneOS SDK |
+| `drivers/NativeDisplay/` | the framebuffer and IOSurface drivers (planes, wrapped client pictures, GPU-memory surfaces, page flip) |
+| `drivers/NativeCpuClock/` | CPU temperatures (TSENS), optional A53/A57 clock steps |
+| `unixnu-overlay/patches/xnu-8796/` | kernel patches: console stamps, code-signature hash cache, `dyldallow` / `dyldinsert` |
+| `userland/` | gputest, gltri, Mesa build (`mesa/build-mesa.sh`), the OpenGL ES layer (`eagl/`, `inject/`), IOKit prototypes |
+| `suzuran/` | the loader, boot-image and iOS-root scripts, boot batch file, **how to boot** |
 
 Everything else is the Lumia 950 XL board as forked; see its README.
 
