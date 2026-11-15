@@ -80,7 +80,7 @@
 #include "hakios.gl.h"
 
 void suzuran_log(const char *line);     /* suzuran: suzuran_log.c */
-int suzuran_panel(unsigned selector, uint32_t *id);     /* suzuran: suzuran_log.c (page flip) */
+int suzuran_panel(unsigned selector, uint32_t *id, uint32_t screen);     /* suzuran: suzuran_log.c (page flip) */
 
 /* ---- OpenGL ES: the types, the few names used here, the library's functions --------------------- */
 
@@ -265,7 +265,8 @@ struct eagl {
 	GLuint panel_writer;
 	uint32_t panel_ids[2];          /* the panel's buffers (the kernel flips between them): their IOSurfaces ... */
 	GLuint panel_textures[2];       /* ... and textures */
-	uint32_t panel_drawn;           /* the one this frame went onto, to be told of once the GPU is done */
+	uint32_t panel_drawn;           /* the one this frame went onto, to be told of once the GPU is done ... */
+	uint32_t panel_screen;          /* ... and the screen surface whose frame it is */
 	int panel_state;                /* 0 not tried, 1 made, -1 not to be had */
 	uint32_t screens[2];            /* the IOSurfaces the screen's frames are drawn into: the first two such */
 	size_t panel_width, panel_height;
@@ -868,7 +869,7 @@ present_to_panel(struct eagl *e, struct image *image)
 	 */
 	uint32_t back = 1;
 
-	if (suzuran_panel(0x7c, &back) != 0 || back == 0) {
+	if (suzuran_panel(0x7c, &back, 0) != 0 || back == 0) {
 		back = 1;
 	}
 	unsigned slot = 2;
@@ -919,6 +920,7 @@ present_to_panel(struct eagl *e, struct image *image)
 	}
 	e->panel_texture = e->panel_textures[slot];
 	e->panel_drawn = back;
+	e->panel_screen = id;
 	size_t lw = (size_t)image->width, lh = (size_t)image->height, pw = e->panel_width, ph = e->panel_height;
 	size_t fw, fh;
 
@@ -1394,7 +1396,7 @@ frame_end(struct eagl *e, bool finished)
 		if (finished || in_place == 0 || !wait_for_frames) {
 			glFinish();
 		}
-		(void)suzuran_panel(0x7b, &e->panel_drawn);
+		(void)suzuran_panel(0x7b, &e->panel_drawn, e->panel_screen);
 		e->panel_drawn = 0;
 	}
 	waited = now_us();

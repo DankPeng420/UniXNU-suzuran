@@ -157,14 +157,15 @@ public:
 	bool          fFlip;          /* the pipe was found: the GPU's frames are flipped to, not copied */
 	NativeSurface *fPanel[2];     /* [0] the bootloader's panel memory (fSurface), [1] a second, in the GPU's pool */
 	int           fFront;         /* which one the pipe shows */
-	volatile bool fBackReady;     /* the other holds a finished frame (eagl, through NativeAdreno430) */
+	volatile bool fBackReady;     /* the other holds a frame (eagl, through NativeAdreno430) ... */
+	uint32_t      fBackFor;       /* ... of this screen surface: shown when that surface is swapped to */
 	uint64_t      fFlips;
 	IOLock       *fFlipLock;
 
 	void probeFlip();
 	void flipTo(int which);
 	uint32_t panelBack();
-	void panelReady(uint32_t id);
+	void panelReady(uint32_t id, uint32_t screen);
 
 	bool start(IOService *provider) APPLE_KEXT_OVERRIDE;
 	void addClient(IOMobileFramebufferUserClient *client);
@@ -441,24 +442,20 @@ AppleCLCD::panelBack()
 		}
 		IOLog("NativeDisplay: flip: second buffer surface %u at 0x%08x\n", fPanel[1]->id, fPanel[1]->gpuPhys);
 	}
-	if (fBackReady) {
-		/* a finished frame not yet shown (two frames between vsync ticks): show it now, draw into the other */
-		fBackReady = false;
-		flipTo(1 - fFront);
-	}
 	uint32_t id = fPanel[1 - fFront]->id;
 	IOLockUnlock(fFlipLock);
 	return id;
 }
 
 void
-AppleCLCD::panelReady(uint32_t id)
+AppleCLCD::panelReady(uint32_t id, uint32_t screen)
 {
 	if (!fFlip) {
 		return;
 	}
 	IOLockLock(fFlipLock);
 	if (fPanel[1] != NULL && fPanel[1 - fFront]->id == id) {
+		fBackFor = screen;
 		fBackReady = true;
 	}
 	IOLockUnlock(fFlipLock);
@@ -471,10 +468,10 @@ native_display_panel_back(void)
 }
 
 extern "C" void
-native_display_panel_ready(uint32_t id)
+native_display_panel_ready(uint32_t id, uint32_t screen)
 {
 	if (gNativeCLCD != NULL) {
-		gNativeCLCD->panelReady(id);
+		gNativeCLCD->panelReady(id, screen);
 	}
 }
 
@@ -521,14 +518,6 @@ AppleCLCD::vsyncFired(OSObject *owner, IOTimerEventSource *sender)
 		0, 0,
 	};
 
-	if (fb->fFlip && fb->fBackReady) {
-		IOLockLock(fb->fFlipLock);
-		if (fb->fBackReady) {
-			fb->fBackReady = false;
-			fb->flipTo(1 - fb->fFront);
-		}
-		IOLockUnlock(fb->fFlipLock);
-	}
 	IOLockLock(fb->fLock);
 	for (unsigned int i = 0; i < fb->fClients->getCount(); i++) {
 		IOMobileFramebufferUserClient *client =
@@ -610,6 +599,21 @@ static uint64_t native_fb_swap_count;
 void
 AppleCLCD::swap(const uint8_t *rec)
 {
+	/*
+	 * The page flip, here and not at eagl's word: eagl puts a frame on the buffer not shown whenever
+	 * CoreAnimation flushes, also partway through a frame (boot 67: frames seen with half their layers),
+	 * and only a swap says the frame is whole. The buffer is shown if it holds the surface swapped to.
+	 */
+	if (fFlip) {
+		IOLockLock(fFlipLock);
+		for (uint32_t layer = 0; layer < NATIVE_FB_LAYERS && fBackReady; layer++) {
+			if (get32(rec, 0x54 + 4 * layer) == fBackFor) {
+				fBackReady = false;
+				flipTo(1 - fFront);
+			}
+		}
+		IOLockUnlock(fFlipLock);
+	}
 	IOLockLock(fLock);
 	memcpy(fPending, rec, NATIVE_FB_SWAP_REC_SIZE);
 	fDirty = true;

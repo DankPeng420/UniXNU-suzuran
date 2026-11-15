@@ -20,13 +20,14 @@ static io_connect_t gpu_connection(void)
 }
 
 // The panel's page flip (NativeAdreno430 0x7c: which buffer to draw onto; 0x7b: that one is drawn): 0, or -1.
-int suzuran_panel(unsigned selector, uint32_t *id)
+int suzuran_panel(unsigned selector, uint32_t *id, uint32_t screen)
 {
     io_connect_t gpu = gpu_connection();
     struct { uint32_t surface, handle; uint64_t size; uint32_t offset, rowBytes, width, height, format, planes; } r;
     if (!gpu) return -1;
     memset(&r, 0, sizeof r);
     r.surface = *id;
+    r.handle = screen;
     size_t out = sizeof r;
     if (IOConnectCallStructMethod(gpu, selector, &r, sizeof r, &r, &out) != KERN_SUCCESS) return -1;
     *id = r.surface;

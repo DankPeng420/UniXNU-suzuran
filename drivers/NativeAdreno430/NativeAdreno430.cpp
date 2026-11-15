@@ -38,7 +38,7 @@
 
 // NativeDisplay's: the panel buffer to draw the next frame onto (an IOSurface ID), and that it now holds one.
 extern "C" uint32_t native_display_panel_back(void);
-extern "C" void native_display_panel_ready(uint32_t id);
+extern "C" void native_display_panel_ready(uint32_t id, uint32_t screen);
 
 // NativeSurface's (drivers/NativeDisplay): an IOSurface whose memory the GPU can address, held; null if none.
 extern "C" OSObject *native_surface_gpu(uint32_t id, IOMemoryDescriptor **memory, uint8_t **kva, uint32_t *phys,
@@ -1076,7 +1076,7 @@ IOReturn NativeAdreno430UserClient::externalMethod(uint32_t selector, IOExternal
         ret = r.surface.surface ? kIOReturnSuccess : kIOReturnNotReady;
         break;
     case msm::kPanelReady:
-        native_display_panel_ready(r.surface.surface);
+        native_display_panel_ready(r.surface.surface, r.surface.handle);   // (handle: the screen surface it holds)
         ret = kIOReturnSuccess;
         break;
     case msm::kLog:
