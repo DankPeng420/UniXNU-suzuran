@@ -1,0 +1,9 @@
+run 43703300044 attempt 1 sha 7c77b3f869cd4edfa997db5d66ee9209749b0290 status success
+Sun Nov 15 10:28:59 UTC 2026
+6069: 1413 |                                             "(kcdata_memcpy error: %d, length: %ld)\n",
+6075: 1418 |                                     "(os_reason_alloc_buffer error: %d, kcdata error: %d, length: %ld)\n",
+7514: 1364 |                 IOLog("IOPolledFilePollersSetup for corefile failed with error: 0x%x\n", err);
+148421:_port_r 1392 |                 NETE  equest_taM_LOG(LOG_ERR, "|ble, struct i error: corruptionp109 | 2281
+148434: 1398 |                 NETEM_LOG(LOG_ERR, "| error: duplication_p %d > %d",
+25994: 1049 |         os_log_error:1935:4: warning: cast from 'void (*)(void)' to 'sy_call_t *' (aka 'int (*)(struct proc *, void *, int *)') converts to incompatible function type [-Wcast-function-type-strict]
+f5c8b4cecaf4f3f3a03a6a6bad21ca3c856d01391788e8f771ef2917068fc0be  /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/kernel/kernel.macho

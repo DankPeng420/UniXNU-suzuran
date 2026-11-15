@@ -1,0 +1,2 @@
+NativeAddon: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-addon/libNativeAddon.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-addon/libNativeAddon.a

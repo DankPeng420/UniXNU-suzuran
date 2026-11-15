@@ -1,0 +1,3 @@
+NativeAES16: /Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-aes16/libNativeAES16.a
+  link with  -Wl,-force_load,/Users/runner/work/UniXNU-suzuran/UniXNU-suzuran/out/lumia950/tree/build/native-aes16/libNativeAES16.a
+NativeAES16: 11 base-class imports bound, 9 bindings unused
