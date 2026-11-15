@@ -10,7 +10,7 @@ touch, keys (camera key = Home) and battery. It takes about 4 minutes from power
 (the very first boot takes longer, about 9 minutes, while the kernel caches code-signature hashes). There is
 no Wi-Fi, cellular, audio, camera, or power-off.
 
-**This image is `full33`**: kernel from commit `8840f7f` (tag `suzuran-full33`), loader v19, the
+**This image is `full33`**: kernel from commit `8840f7f`, loader v19, the
 boot-args below. It is the last stable image. The OpenGL ES work done afterwards is described at the end;
 it is not part of this image.
 
@@ -64,8 +64,8 @@ each writes a log next to itself.
 
 ## 3. Kernel and userland tools (GitHub Actions)
 
-1. Fork this repository. In the fork, push tag `suzuran-full33` (commit `8840f7f`) to a branch named
-   `suzuran` (the workflow runs on pushes to `suzuran`), or push the current `suzuran` branch (its kernel
+1. Fork this repository. In the fork, push commit `8840f7f` to a branch named
+   `suzuran` (`git push origin 8840f7f:refs/heads/suzuran --force`) (the workflow runs on pushes to `suzuran`), or push the current `suzuran` branch (its kernel
    should behave the same with these boot-args, but was not tested with them).
 2. Wait for the workflow (about 25 minutes). Download the **`lumia950-kernel`** artifact of that run and save
    it as `ci\lumia950-kernel-cpu2.zip` in this folder.

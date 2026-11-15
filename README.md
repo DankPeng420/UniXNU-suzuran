@@ -11,7 +11,7 @@ own UI on it (not stable yet; the everyday image renders in software). It is a r
 phone OS: no radios, no audio, no camera, no power-off.
 
 **To boot it, see [suzuran/README.md](suzuran/README.md)**: the loader, the image build scripts, the iOS
-root scripts and step-by-step instructions for the last stable image (`full33`, tag `suzuran-full33`).
+root scripts and step-by-step instructions for the last stable image (`full33`, kernel from commit `8840f7f`).
 
 This is a fork of [shrimpapplepro/UniXNU-lumia950xl](https://github.com/shrimpapplepro/UniXNU-lumia950xl)
 (the Lumia 950 XL board, the same SoC). The work for this phone is on the **`suzuran` branch**; the
