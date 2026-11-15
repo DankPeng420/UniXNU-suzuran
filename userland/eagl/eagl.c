@@ -263,6 +263,7 @@ struct eagl {
 	GLuint panel_texture;           /* the panel's own memory, IOSurface 1 (present_to_panel) */
 	GLuint panel_writer;
 	int panel_state;                /* 0 not tried, 1 made, -1 not to be had */
+	uint32_t screens[2];            /* the IOSurfaces the screen's frames are drawn into: the first two such */
 	size_t panel_width, panel_height;
 	GLuint program;                 /* the one in use, as CoreAnimation has it */
 	GLuint plain, lookup;           /* programs of ours for when that is none (plain_draw_begin()) */
@@ -841,6 +842,19 @@ present_to_panel(struct eagl *e, struct image *image)
 	IOSurfaceRef surface = image->surface;
 
 	if (!present_panel || e->panel_state < 0 || IOSurfaceGetPixelFormat(surface) != 'b3a8') {
+		return;
+	}
+	/*
+	 * Only the screen's two: another 'b3a8' surface the size of the screen is a snapshot (boot 60: id 148, the
+	 * wallpaper alone, put on the panel between frames -- the home screen flickered to its wallpaper).
+	 */
+	uint32_t id = IOSurfaceGetID(surface);
+	if (e->screens[0] == 0) {
+		e->screens[0] = id;
+	} else if (e->screens[1] == 0 && id != e->screens[0]) {
+		e->screens[1] = id;
+	}
+	if (id != e->screens[0] && id != e->screens[1]) {
 		return;
 	}
 	if (e->panel_state == 0) {

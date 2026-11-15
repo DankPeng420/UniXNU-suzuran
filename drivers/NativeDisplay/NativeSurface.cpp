@@ -600,7 +600,7 @@ IOSurfaceRootUserClient::addRef(NativeSurface *s, NativeSurfaceRef **refOut, boo
 	s->retain();
 	ref->surface = s;
 	ref->count = 1;
-	ref->data = s->memory->createMappingInTask(fTask, 0, kIOMapAnywhere | s->mapCache);
+	ref->data = s->memory->createMappingInTask(fTask, 0, kIOMapAnywhere | s->mapCache | (s->wrapped ? kIOMapReadOnly : 0));
 	ref->state = s->state->createMappingInTask(fTask, 0, kIOMapAnywhere | kIOMapReadOnly);
 	if (ref->data == NULL || ref->state == NULL) {
 		ref->release();
@@ -950,18 +950,29 @@ IOSurfaceRootUserClient::wrapClientImage(IOExternalMethodArguments *args)
 	    r.bytesPerElement > 16 || r.width > NATIVE_SURFACE_MAX_DIM || r.height > NATIVE_SURFACE_MAX_DIM ||
 	    r.size > NATIVE_SURFACE_MAX_ALLOC || (uint64_t)r.bytesPerRow * (r.height - 1) + (uint64_t)r.width * r.bytesPerElement >
 	    r.size + (uint64_t)r.bytesPerRow) {
-		if (said++ < 8) {
+		static unsigned refused;
+		if (refused++ < 8) {
 			IOLog("NativeSurface: wrap of %ux%u fmt 0x%x bpe %u bpr %u size %u refused\n", r.width, r.height, r.format,
 			    r.bytesPerElement, r.bytesPerRow, r.size);
 		}
 		return kIOReturnBadArgument;
 	}
 	const uint64_t first = trunc_page_64(r.address), length = round_page_64(r.address + r.size) - first;
-	IOMemoryDescriptor *memory = IOMemoryDescriptor::withAddressRange(first, length, kIODirectionInOut, fTask);
+	/*
+	 * (read only: a picture is often memory the client may only read -- an icon mapped from its cache
+	 * file; asked for writing too, wiring it failed and such pictures were not drawn: boot 60's icons)
+	 */
+	IOMemoryDescriptor *memory = IOMemoryDescriptor::withAddressRange(first, length, kIODirectionOut, fTask);
 	if (memory == NULL) {
 		return kIOReturnNoMemory;
 	}
-	if (memory->prepare() != kIOReturnSuccess) {
+	IOReturn wired = memory->prepare();
+	if (wired != kIOReturnSuccess) {
+		static unsigned failed;
+		if (failed++ < 8) {
+			IOLog("NativeSurface: wrap of %ux%u fmt 0x%x at 0x%llx: memory not wired (0x%x)\n", r.width, r.height,
+			    r.format, r.address, wired);
+		}
 		memory->release();
 		return kIOReturnVMError;
 	}
@@ -987,7 +998,7 @@ IOSurfaceRootUserClient::wrapClientImage(IOExternalMethodArguments *args)
 		s->release();
 		return kIOReturnNoResources;
 	}
-	if (said++ < 8) {
+	if (said++ < 8 || said % 500 == 0) {
 		IOLog("NativeSurface: wrapped a picture of the client's: id %u %ux%u fmt 0x%x bpe %u bpr %u size %u\n", s->id,
 		    r.width, r.height, r.format, r.bytesPerElement, r.bytesPerRow, r.size);
 	}
